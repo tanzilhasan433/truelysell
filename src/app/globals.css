@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root {
+  --primary: #ff008a;
+  --primary-blue: #4c40ed;
+  --secondary: #282b8b;
+  --secondary-pink: #ff008a;
+
+  --success: #03c95a;
+  --info: #5625e8;
+  --warning: #ffc107;
+  --danger: #e70d0d;
+
+  --dark: #111827;
+  --light: #e9eaeb;
+  --white: #ffffff;
+  --black: #000000;
+  --purple: #ab47bc;
+  --pink: #fd3995;
+  --skyblue: #0dcaf0;
+
+  --primary-hover: #cc0070; /* ~10% darker than #ff008a */
+  --secondary-hover: #20226f; /* ~10% darker than #282b8b */
+  --success-hover: #02a348; /* ~10% darker */
+  --info-hover: #461ec0; /* ~10% darker */
+  --warning-hover: #e0a800; /* ~10% darker */
+  --danger-hover: #c60b0b; /* ~10% darker */
+  --light-hover: #cfd1d2; /* ~10% darker */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #28283c;
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+h1 {
+  font-size: 36px;
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
+h2 {
+  font-size: 32px;
+}
+h3 {
+  font-size: 28px;
+}
+h4 {
+  font-size: 24px;
+}
+h5 {
+  font-size: 20px;
+}
+h6 {
+  font-size: 16px;
+}
+Link {
+  color: #2a313d;
+  text-decoration: none;
+  transition: ease all 0.5s;
+  -webkit-transition: ease all 0.5s;
+  -ms-transition: ease all 0.5s;
+}
+Link:hover,
+Link:focus {
+  color: #2229c1;
+  text-decoration: none;
+  outline: none;
+  transition: ease all 0.5s;
+  -webkit-transition: ease all 0.5s;
+  -ms-transition: ease all 0.5s;
+}
+button:focus {
+  outline: 0;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
