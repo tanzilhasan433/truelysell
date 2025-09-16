@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={` antialiased`}>
         <Header />
-        {children}
+        <div className="my-20"> {children}</div>
       </body>
     </html>
   );
