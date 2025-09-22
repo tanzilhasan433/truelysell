@@ -1,7 +1,15 @@
-import React from "react";
+import DashboardCharts from "@/components/admin/DashboardCharts";
+import DashboardTopProviderTables from "@/components/admin/DashboardTopProviderTables";
+import StatCards from "@/components/admin/StatCards";
 
-const Admin = () => {
-  return <div></div>;
+const AdminDashboardPage = () => {
+  return (
+    <div>
+      <StatCards />
+      <DashboardCharts />
+      <DashboardTopProviderTables />
+    </div>
+  );
 };
 
-export default Admin;
+export default AdminDashboardPage;
