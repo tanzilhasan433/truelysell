@@ -4,6 +4,8 @@ import { FaAngleRight } from "react-icons/fa";
 import AboutBestSolution from "./AboutBestSolution";
 import WhyChooseUs from "./WhyChooseUS";
 import AboutHowItWorks from "./AboutHowItWorks";
+import BestServices from "./BestServices";
+import Testimonials from "./Testimonials";
 const AboutComponent = () => {
   return (
     <div>
@@ -14,6 +16,8 @@ const AboutComponent = () => {
       <AboutBestSolution/>
       <WhyChooseUs />
       <AboutHowItWorks />
+      <BestServices />
+      <Testimonials />
     </div>
   );
 };
