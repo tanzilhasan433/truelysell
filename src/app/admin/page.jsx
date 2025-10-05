@@ -1,6 +1,6 @@
-import DashboardCharts from "@/components/admin/DashboardCharts";
-import DashboardTopProviderTables from "@/components/admin/DashboardTopProviderTables";
-import StatCards from "@/components/admin/StatCards";
+import DashboardCharts from "@/components/admin/dashboard/DashboardCharts";
+import DashboardTopProviderTables from "@/components/admin/dashboard/DashboardTopProviderTables";
+import StatCards from "@/components/admin/dashboard/StatCards";
 
 const AdminDashboardPage = () => {
   return (

@@ -5,9 +5,10 @@ import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import logo from "@/assets/admin/img/logo.svg";
+import logoWhite from "@/assets/img/logo-white.svg";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
-const Sidebar = ({ navLinks }) => {
+const Sidebar = ({ navLinks, role }) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
@@ -52,9 +53,14 @@ const Sidebar = ({ navLinks }) => {
       {/* Sidebar */}
       <aside
         className={`
+        ${
+          role !== "admin"
+            ? "bg-white text-[#080C18]"
+            : "bg-[#080C18] shadow-xl"
+        }
           fixed md:sticky top-0 left-0 z-40 h-screen rounded-tr-2xl
           w-64 md:w-64 lg:w-[270px]
-          bg-[#080C18] backdrop-blur-xl border-r border-blue-100 shadow-xl
+           backdrop-blur-xl border-r border-blue-100 
           flex flex-col py-6 px-4 space-y-2
           transform transition-transform duration-300 ease-in-out
           ${
@@ -64,8 +70,13 @@ const Sidebar = ({ navLinks }) => {
           }
         `}
       >
-        <Link href={"/"} className="flex items-center mb-8 gap-2 mt-14 md:mt-0">
-          <Image src={logo} alt="Logo" />
+        <Link
+          href={"/"}
+          className={`flex items-center ${
+            role !== "admin" ? "" : "mb-8 mt-14 md:mt-0"
+          } gap-2 `}
+        >
+          <Image src={role !== "admin" ? logoWhite : logo} alt="Logo" />
         </Link>
 
         <nav className="flex-1 space-y-1 overflow-y-scroll sidebar-scroll">
@@ -114,8 +125,8 @@ const Sidebar = ({ navLinks }) => {
                                     href={child.path}
                                     className={`block py-1 px-2 rounded ${
                                       isActive(child.path)
-                                        ? "bg-[var(--primary-blue)] text-white"
-                                        : "hover:bg-[var(--primary-blue)] text-white"
+                                        ? "text-[var(--primary-blue)] "
+                                        : "hover:text-[var(--primary-blue)] text-white"
                                     }`}
                                   >
                                     {child.label}
@@ -150,8 +161,16 @@ const Sidebar = ({ navLinks }) => {
                           href={item.path}
                           className={`flex items-center gap-2 py-2 px-3 rounded ${
                             isActive(item.path)
-                              ? "bg-[var(--primary-blue)] text-white"
-                              : "hover:bg-[var(--primary-blue)] text-white"
+                              ? ` ${
+                                  role !== "admin"
+                                    ? " text-[var(--primary)]"
+                                    : " bg-[var(--primary-blue)] text-white"
+                                }`
+                              : `   ${
+                                  role !== "admin"
+                                    ? " text-[#080C18] hover:text-[var(--primary)]"
+                                    : " text-white hover:bg-[var(--primary-blue)]"
+                                }`
                           }`}
                         >
                           {item.icon}
@@ -171,31 +190,3 @@ const Sidebar = ({ navLinks }) => {
 };
 
 export default Sidebar;
-
-{
-  /* {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`group flex items-center gap-3 px-3 py-2 rounded-full font-medium transition-all duration-200 relative overflow-visible ${
-                  isActive
-                    ? "bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg"
-                    : "hover:bg-blue-100/40 text-blue-900"
-                }`}
-              >
-                <span className="text-lg group-hover:scale-125 transition-transform duration-200">
-                  {link.icon}
-                </span>{" "}
-                <span className="truncate text-sm md:text-base">
-                  {link.labelKey}
-                </span>
-                {isActive && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-400 rounded-full shadow-lg animate-pulse" />
-                )}
-              </Link>
-            );
-          })} */
-}

@@ -191,12 +191,14 @@ const AdminHeader = () => {
           {/* Profile Menu */}
           <div className="relative" ref={menuRef}>
             <button
-              className="w-10 h-10 md:w-10 md:h-10 rounded-full border border-gray-400 flex items-center justify-center  text-gray-400 font-bold shadow hover:shadow-xl transition-transform hover:scale-110 focus:outline-none text-sm touch-manipulation"
+              className="w-10 h-10 md:w-10 md:h-10 rounded-full border border-gray-400 flex items-center justify-center  text-gray-400 font-bold  focus:outline-none text-sm touch-manipulation"
               onClick={() => setShowMenu((v) => !v)}
               type="button"
               aria-label="Profile menu"
             >
-              <span className="border w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 m-1">
+              <div className="bg-gray-400 h-7 w-7 rounded-full animate-ping"></div>
+
+              <span className="border absolute w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 m-1">
                 {userNm?.charAt(0)}
               </span>
             </button>
