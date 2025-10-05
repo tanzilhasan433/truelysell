@@ -2,12 +2,13 @@
 import HeadingWithAddButton from "@/components/shared/HeadingWithAddButton";
 import { useState } from "react";
 import MyServices from "@/components/provider/myServicesComponents/MyServices";
-import { ServicesData } from "@/data/json/inactive-services";
 
-const activeServices = ServicesData.filter(
+import { services } from "@/data/json/provider-my-services";
+
+const activeServices = services.filter(
   (service) => service.status === "Active"
 );
-const inactiveServices = ServicesData.filter(
+const inactiveServices = services.filter(
   (service) => service.status === "Inactive"
 );
 
