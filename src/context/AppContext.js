@@ -7,9 +7,19 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState("");
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
-  const valueItems = { user, setUser, isSidebarOpen, toggleSidebar };
+  const valueItems = {
+    user,
+    setUser,
+    isSidebarOpen,
+    toggleSidebar,
+    loading,
+    setLoading,
+    userRole,
+  };
 
   return (
     <AppContext.Provider value={valueItems}>{children}</AppContext.Provider>

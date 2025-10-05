@@ -85,7 +85,7 @@ export default function Header() {
                 </Link>
               </div>
             </div>
-            <div className="relative group">
+            {/* <div className="relative group">
               <button className="px-1 py-2 text-gray-800 hover:text-[var(--primary-hover)] font-medium transition-colors relative group flex items-center">
                 Customers
                 <HiChevronDown className="w-5 h-5 ml-1  " />
@@ -124,7 +124,7 @@ export default function Header() {
                   sub1
                 </Link>
               </div>
-            </div>
+            </div> */}
             <div className="relative group">
               <button className="px-1 py-2 text-gray-800 hover:text-[var(--primary-hover)] font-medium transition-colors relative group flex items-center">
                 Pages
@@ -218,7 +218,9 @@ export default function Header() {
               </div>
             </div>
 
-            <NavLink href="/">Become a Provider</NavLink>
+            {/* <NavLink href="/">Become a Provider</NavLink> */}
+            <NavLink href="/customer">Customer</NavLink>
+            <NavLink href="/provider">Provider</NavLink>
             <NavLink href="/admin">Admin</NavLink>
           </nav>{" "}
           {/* Auth Buttons for Desktop */}
