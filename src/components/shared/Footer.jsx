@@ -204,7 +204,7 @@ export default function Footer() {
       </div>
 
     <div className="text-center">
-        <div className="text-gray-400 ">© 2024 All Rights Reserved</div>
+        <div className="text-gray-400 ">© 2025 All Rights Reserved</div>
     
     </div>      
     </footer>
