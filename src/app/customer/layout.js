@@ -1,6 +1,6 @@
 import Sidebar from "@/components/shared/Sidebar";
 import { RxDashboard } from "react-icons/rx";
-import { FaBox, FaList, FaStar, FaBook, FaUniversity } from "react-icons/fa";
+// import { FaBox, FaList, FaStar, FaBook, FaUniversity } from "react-icons/fa";
 import AdminHeader from "@/components/admin/AdminHeader";
 
 export const metadata = {
@@ -13,6 +13,7 @@ const navLinks = [
     items: [
       { label: "Dashboard", icon: <RxDashboard />, path: "/customer" },
       { label: "Booking", icon: <RxDashboard />, path: "/customer/booking" },
+      { label: "Favorites", icon: <RxDashboard />, path: "/customer/favorite" },
     ],
   },
 ];
