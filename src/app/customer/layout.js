@@ -14,6 +14,11 @@ const navLinks = [
       { label: "Dashboard", icon: <RxDashboard />, path: "/customer" },
       { label: "Booking", icon: <RxDashboard />, path: "/customer/booking" },
       { label: "Favorites", icon: <RxDashboard />, path: "/customer/favorite" },
+      { label: "Wallet", icon: <RxDashboard />, path: "/customer/wallet" },
+      { label: "Reviews", icon: <RxDashboard />, path: "/customer/reviews" },
+      { label: "Chat", icon: <RxDashboard />, path: "/customer/chat" },
+      { label: "Settings", icon: <RxDashboard />, path: "/customer/settings" },
+      { label: "Logout", icon: <RxDashboard />, path: "/customer/logout" },
     ],
   },
 ];

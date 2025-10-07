@@ -3,7 +3,7 @@ const CustomerFavoritePage = () => {
     return (
         
         <div>
-cutomer favorite pages 
+           cutomer favorite pages 
         </div>
     );
 };

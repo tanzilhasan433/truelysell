@@ -1,12 +1,12 @@
 import React from 'react';
 
-const wallet = () => {
+const CustomerWalletPage = () => {
     return (
         
         <div>
-            this is wallet.... 
+            this is cutomer wallet page   .... 
         </div>
     );
 };
 
-export default wallet;
+export default CustomerWalletPage;
