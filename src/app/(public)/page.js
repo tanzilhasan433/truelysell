@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function HomePage() {
   // const { user, setUser } = useAppContext();
   return (
-    <div className="h-[1200px]">
+    <div className="">
       <HomeHeroSection />
     </div>
   );
