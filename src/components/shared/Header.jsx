@@ -357,6 +357,7 @@ import RegistrationFormModal from "../auth/RegistrationFormModal";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Dummy user and role for now
   const user = "";
@@ -427,8 +428,24 @@ export default function Header() {
             ) : (
               <div className="flex items-center gap-2">
                 {/* ✅ Login Modal component safely rendered */}
-                <LoginFormModal />
-                <RegistrationFormModal />
+                <LoginFormModal
+                  isOpen={isLoginOpen}
+                  onClose={() => setIsLoginOpen(false)}
+                  setIsLoginOpen={setIsLoginOpen}
+                />
+                <RegistrationFormModal
+                  isOpen={isLoginOpen}
+                  onClose={() => setIsLoginOpen(false)}
+                  setIsLoginOpen={setIsLoginOpen}
+                />
+                {/* <button
+                  className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
+                  bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                  hover:opacity-90 transition-all duration-200"
+                >
+                  <MdPerson size={15} />
+                  <span>Join Us</span>
+                </button> */}
               </div>
             )}
           </div>
