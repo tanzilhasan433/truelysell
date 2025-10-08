@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
@@ -12,7 +12,7 @@ const Sidebar = ({ navLinks, role }) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
-
+  const router = useRouter();
   const toggleMenu = (label) => {
     setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
   };
@@ -27,6 +27,11 @@ const Sidebar = ({ navLinks, role }) => {
   // helper: check if parent should be open based on active child
   const isParentActive = (children) =>
     children?.some((child) => pathname === child.path);
+
+  const handleLogout = () => {
+    localStorage.clear(); // remove all localStorage data
+    router.push("/"); // redirect to home
+  };
 
   return (
     <>
@@ -88,6 +93,23 @@ const Sidebar = ({ navLinks, role }) => {
               <ul className="text-[14px]">
                 {section.items.map((item, i) => {
                   const parentActive = isParentActive(item.children);
+                  if (item.label === "Logout") {
+                    return (
+                      <li key={i}>
+                        <button
+                          onClick={handleLogout}
+                          className={`flex items-center gap-2 w-full text-left py-2 px-3 rounded ${
+                            role !== "admin"
+                              ? "text-[#080C18] hover:text-[var(--primary)]"
+                              : "text-white hover:bg-[var(--primary-blue)]"
+                          }`}
+                        >
+                          {item.icon}
+                          {item.label}
+                        </button>
+                      </li>
+                    );
+                  }
 
                   return (
                     <li key={i}>
@@ -135,26 +157,6 @@ const Sidebar = ({ navLinks, role }) => {
                               ))}
                             </ul>
                           </div>
-
-                          {/* {(openMenus[item.label] || parentActive) && (
-                            
-                            <ul className="ml-6 mt-1 space-y-1">
-                              {item.children.map((child, j) => (
-                                <li key={j}>
-                                  <Link
-                                    href={child.path}
-                                    className={`block py-1 px-2 rounded ${
-                                      isActive(child.path)
-                                        ? "bg-[var(--primary-blue)] text-white"
-                                        : "hover:bg-[var(--primary-blue)] text-white"
-                                    }`}
-                                  >
-                                    {child.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )} */}
                         </>
                       ) : (
                         <Link

@@ -7,6 +7,8 @@ import { HiX, HiMenu, HiChevronDown } from "react-icons/hi";
 
 import logo from "@/assets/img/logo.svg";
 import Image from "next/image";
+import { FaLock, FaSearch } from "react-icons/fa";
+import { MdLock, MdPerson } from "react-icons/md";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +27,8 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const user = "arzena";
+  const user = "";
+  const role = "";
 
   return (
     <header
@@ -218,7 +221,6 @@ export default function Header() {
               </div>
             </div>
 
-            {/* <NavLink href="/">Become a Provider</NavLink> */}
             <NavLink href="/customer">Customer</NavLink>
             <NavLink href="/provider">Provider</NavLink>
             <NavLink href="/admin">Admin</NavLink>
@@ -227,18 +229,39 @@ export default function Header() {
           <div className="hidden xl:flex items-center space-x-2 lg:space-x-4">
             {user ? (
               <Link
-                href={"/"}
-                className="px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                href={`${
+                  role === "admin"
+                    ? "/admin"
+                    : role === "provider"
+                    ? "/provider"
+                    : role === "customer"
+                    ? "/customer"
+                    : "/"
+                }`}
+                className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
+                 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                 hover:opacity-90 transition-all duration-200  hover:text-[var(--primary)]"
               >
-                Sign In
+                Dashboard
               </Link>
             ) : (
-              <Link
-                href="/login"
-                className="px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-              >
-                Login
-              </Link>
+              <div className="flex items-center gap-2">
+                <button
+                  className="flex items-center gap-1 px-4 py-2 rounded  font-medium text-sm 
+                 bg-gray-200/80 text-gray-800 "
+                >
+                  <MdLock size={15} className=" " />
+                  <span>Sign In</span>
+                </button>
+                <button
+                  className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
+                 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                 hover:opacity-90 transition-all duration-200  hover:text-[var(--primary)] "
+                >
+                  <MdPerson size={15} className=" " />
+                  <span>Join Us</span>
+                </button>
+              </div>
             )}
 
             {/* Language Switcher */}

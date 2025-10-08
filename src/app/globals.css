@@ -27,6 +27,10 @@
   --danger-hover: #c60b0b; /* ~10% darker */
   --light-hover: #cfd1d2; /* ~10% darker */
 }
+body::selection {
+  background-color: #ff008a;
+  color: white;
+}
 
 h1,
 h2,
@@ -89,4 +93,37 @@ ul {
 
 .sidebar-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
+}
+
+@keyframes slowBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+.animate-slow-bounce {
+  animation: slowBounce 5s ease-in-out infinite;
+}
+@keyframes leftRightBounce {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+}
+
+.animate-leftRightBounce {
+  animation: leftRightBounce 5s ease-in-out infinite;
 }
