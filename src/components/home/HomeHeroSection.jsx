@@ -21,15 +21,22 @@ export default function HomeHeroSection() {
       <div
         className="absolute -left-40 -bottom-40 w-60 h-80 rounded-full opacity-80 blur-2xl z-0"
         style={{ background: "radial-gradient(circle, #d1b3ff, #e0ccff)" }}
-        // style={{ background: "radial-gradient(circle, #efe6ff, #f9f5ff)" }}
       />
       <div
-        className="absolute -right-28 -top-14 w-80 h-80 rounded-full opacity-60 blur-2xl z-0"
-        style={{ background: "radial-gradient(circle, #ffeef6, #fff3fb)" }}
+        className="absolute -right-28 -top-14 w-40 h-40 rounded-full opacity-60 blur-2xl z-0"
+        style={{ background: "radial-gradient(circle, #d1b3ff, #e0ccff)" }}
+      />
+      <div
+        className="absolute -left-40 top-0 w-80 h-12 rounded-full opacity-60 blur-2xl z-0"
+        style={{ background: "radial-gradient(circle, #d1b3ff, #e0ccff)" }}
+      />
+      <div
+        className="absolute left-[350px] top-0 w-[800px] h-10 rounded-full opacity-60 blur-2xl z-0"
+        style={{ background: "radial-gradient(circle, #d1b3ff, #e0ccff)" }}
       />
 
-      <div className="relative z-20 container mx-auto  lg:ps-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12  gap-8 ">
+      <div className="relative z-20 container mx-auto px-5 lg:ps-16 lg:px-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12   lg:gap-8 ">
           {/* LEFT SIDE */}
           <div className="lg:col-span-7 py-16">
             <h3 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
@@ -82,8 +89,8 @@ export default function HomeHeroSection() {
               </div>
 
               <button
-                className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
-                 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm
+                 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)]
                  hover:opacity-90 transition-all duration-200  hover:text-[var(--primary)]"
               >
                 <FaSearch />
