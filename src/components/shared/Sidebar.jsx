@@ -7,12 +7,14 @@ import Image from "next/image";
 import logo from "@/assets/admin/img/logo.svg";
 import logoWhite from "@/assets/img/logo-white.svg";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { useAppContext } from "@/context/AppContext";
 
 const Sidebar = ({ navLinks, role }) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
   const router = useRouter();
+  const { logout } = useAppContext();
   const toggleMenu = (label) => {
     setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
   };
@@ -27,11 +29,6 @@ const Sidebar = ({ navLinks, role }) => {
   // helper: check if parent should be open based on active child
   const isParentActive = (children) =>
     children?.some((child) => pathname === child.path);
-
-  const handleLogout = () => {
-    localStorage.clear(); // remove all localStorage data
-    router.push("/"); // redirect to home
-  };
 
   return (
     <>
@@ -97,7 +94,7 @@ const Sidebar = ({ navLinks, role }) => {
                     return (
                       <li key={i}>
                         <button
-                          onClick={handleLogout}
+                          onClick={logout}
                           className={`flex items-center gap-2 w-full text-left py-2 px-3 rounded ${
                             role !== "admin"
                               ? "text-[#080C18] hover:text-[var(--primary)]"

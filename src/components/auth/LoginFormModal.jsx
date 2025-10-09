@@ -8,11 +8,12 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
+import { useAppContext } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  //   const [modalHide, setModalHide] = useState(true);
+  const { server, login } = useAppContext();
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -21,13 +22,36 @@ export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
     },
   });
 
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
     console.log("Login data:", data);
-    // setIsModalOpen(false);
-    onClose();
+    try {
+      const response = await fetch(`${server}auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        toast.success("Login Success");
+        onClose();
+
+        login({
+          userName: result.userName,
+          userId: result.userId,
+          userRole: result.userRole,
+          token: result.token,
+        });
+      } else {
+        const errorData = await response.json();
+        console.log("errorData", errorData);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
-  //   if (!isOpen) return null;
   return (
     <div>
       {/* Trigger button */}

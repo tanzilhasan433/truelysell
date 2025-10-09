@@ -1,3 +1,4 @@
+import ExploreCategoriesSection from "@/components/home/ExploreCategoriesSection";
 import HomeHeroSection from "@/components/home/HomeHeroSection";
 import Link from "next/link";
 
@@ -6,6 +7,7 @@ export default function HomePage() {
   return (
     <div className="">
       <HomeHeroSection />
+      <ExploreCategoriesSection />
     </div>
   );
 }
