@@ -1,7 +1,7 @@
 "use client";
 
 const CustomerDashboardPage = () => {
-  return <div></div>;
+  return <div>this is customer dashboard </div>;
 };
 
 export default CustomerDashboardPage;

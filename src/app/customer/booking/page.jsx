@@ -1,17 +1,4 @@
-// "use client";
 
-// // import BookingComponent from "@/components/customer/booking/BookingComponent";
-// import BookingList from "@/components/customer/booking/BookingList";
-
-// const CustomerBookingPage = () => {
-//   return <div>
-//     this is booking pages..... 
-//     {/* <BookingComponent></BookingComponent> */}
-//     <BookingList></BookingList>
-//   </div>;
-// };
-
-// export default CustomerBookingPage;
 
 "use client";
 

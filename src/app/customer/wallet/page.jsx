@@ -1,3 +1,4 @@
+import CustomerWalletComponent from '@/components/customer/wallet/CustomerWalletComponent';
 import React from 'react';
 
 const CustomerWalletPage = () => {
@@ -5,6 +6,7 @@ const CustomerWalletPage = () => {
         
         <div>
             this is cutomer wallet page   .... 
+            <CustomerWalletComponent />
         </div>
     );
 };
