@@ -16,6 +16,7 @@ import cat10 from "@/assets/img/icons/category-10.svg";
 import cat11 from "@/assets/img/icons/category-11.svg";
 import cat12 from "@/assets/img/icons/category-12.svg";
 import Image from "next/image";
+import ViewAllButton from "../shared/ViewAllButton";
 
 const categories = [
   {
@@ -109,20 +110,19 @@ export default function ExploreCategoriesSection() {
           {categories.map((cat) => (
             <div
               key={cat.id}
-              className="group relative border-2 border-gray-200/20 rounded-lg py-4 px-6 flex flex-col items-center text-center transition-all duration-300 hover:border hover:border-[var(--primary)]  hover:shadow-[0px_0px_15px_rgba(0,0,0,0.1)] shadow cursor-pointer"
+              className="group relative border border-gray-200/70 rounded-lg py-4 px-2 flex flex-col items-center text-center transition-all duration-300 hover:border hover:border-[var(--primary)]  hover:shadow-[0px_0px_15px_rgba(0,0,0,0.1)] shadow cursor-pointer"
             >
               <div
-                className="absolute top-2 left-24 -translate-x-1/2 w-full h-14  blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-300 z-0"
+                className="absolute top-2 left-24 -translate-x-1/2 w-full h-14   blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-300 z-0"
                 style={{
                   background: "radial-gradient(circle, #d1b3ff, #e0ccff)",
                 }}
               />
               <div>
-                {" "}
                 <Image src={cat.img} alt=" " />
               </div>
 
-              <p className="font-semibold text-gray-700 mb-1 text-sm">
+              <p className="font-semibold text-gray-700 mb-1 text-sm ">
                 {cat.title}
               </p>
               <p className="text-xs text-gray-500 group-hover:hidden">
@@ -148,12 +148,7 @@ export default function ExploreCategoriesSection() {
         </div>
 
         {/* Button */}
-        <div className="mt-10">
-          <button className="bg-[var(--dark)] text-white px-4 py-2 rounded hover:bg-gray-800 transition-all flex items-center justify-center mx-auto gap-2 text-xs">
-            View All
-            <IoIosArrowForward />
-          </button>
-        </div>
+        <ViewAllButton pageLink="/" />
       </div>
     </section>
   );

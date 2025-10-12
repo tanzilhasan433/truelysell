@@ -43,8 +43,8 @@ export default function RegistrationFormModal() {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
-            <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 relative my-5 lg:h-[650px]">
+          <div className="absolute top-0 left-0 w-full h-full min-h-screen z-50 bg-black/50 flex justify-center items-start py-10">
+            <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 relative">
               {/* Header */}
               <div className="flex justify-between mb-4">
                 <h2 className="text-2xl font-semibold mx-auto">Registration</h2>
