@@ -52,7 +52,7 @@ export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
         console.log("errorData", errorData);
       }
     } catch (error) {
-      console.log("error", error);
+      console.log("errorr", error);
     }
   };
 
