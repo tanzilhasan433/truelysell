@@ -19,9 +19,9 @@ const AdminHeader = () => {
   const userNm = "Arzena";
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user && !loading) router.push("/login");
-  }, [user, router, loading]);
+  // useEffect(() => {
+  //   if (!user && !loading) router.push("/login");
+  // }, [user, router, loading]);
 
   // Close menu when clicking outside
   useEffect(() => {

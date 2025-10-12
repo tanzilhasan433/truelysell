@@ -4,8 +4,8 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
-import logo from "@/assets/img/logo.svg";
-import logoWhite from "@/assets/img/logo-white.svg";
+import logo from "@/assets/img/logo-white.svg";
+import logoWhite from "@/assets/img/logo.svg";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { useAppContext } from "@/context/AppContext";
 

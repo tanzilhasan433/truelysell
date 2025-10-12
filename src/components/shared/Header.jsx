@@ -119,6 +119,7 @@ export default function Header() {
               <MobileNavLink href="/">Pages</MobileNavLink>
               <MobileNavLink href="/customer">Customers</MobileNavLink>
               <MobileNavLink href="/provider">Provider</MobileNavLink>
+              <MobileNavLink href="/admin">admin</MobileNavLink>
               <div className="border-t border-gray-200 my-2 pt-2 space-y-3">
                 {user ? (
                   <MobileNavLink
