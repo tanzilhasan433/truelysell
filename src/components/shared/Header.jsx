@@ -42,7 +42,6 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex space-x-1">
-            <NavLink href="/">Categories</NavLink>
             <Dropdown title="Home">
               <DropdownLink href="/">Sub1</DropdownLink>
               <DropdownLink href="/">Sub2</DropdownLink>
