@@ -99,8 +99,8 @@ export default function RegistrationFormModal() {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="absolute top-0 left-0 w-full h-full min-h-screen z-50 bg-black/50 flex justify-center items-start py-10">
-            <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 relative">
+          <div className="absolute top-0 left-0 w-full h-full min-h-screen z-50 bg-black/50 flex justify-center items-start py-10 overflow-y-auto">
+            <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 relative ">
               {/* Header */}
               <div className="flex justify-between mb-4">
                 <h2 className="text-2xl font-semibold mx-auto">Registration</h2>
@@ -117,14 +117,25 @@ export default function RegistrationFormModal() {
               </p>
 
               {/* Form */}
-              <form onSubmit={handleSubmit(handleLogin)} className="space-y-5">
+              <form onSubmit={handleSubmit(handleLogin)} className="space-y-5 ">
                 <div>
                   <label className="text-sm font-medium text-gray-700">
-                    FUll Name
+                    First Name
                   </label>
                   <input
                     type="text"
-                    {...register("userName")}
+                    {...register("FirstName")}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    {...register("LastName")}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
                     required
                   />
@@ -135,10 +146,41 @@ export default function RegistrationFormModal() {
                   </label>
                   <input
                     type="email"
-                    {...register("email")}
+                    {...register("Email")}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
                     required
                   />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    Mobile No
+                  </label>
+                  <input
+                    type="tel"
+                    {...register("MobileNo")}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="UserRoles"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    User Role
+                  </label>
+                  <select
+                    id="UserRoles"
+                    {...register("UserRoles")}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
+                    required
+                  >
+                    <option value="" className="text-gray-400">
+                      Select User Role
+                    </option>
+                    <option value="english">English</option>
+                  </select>
                 </div>
 
                 <div>
@@ -157,7 +199,7 @@ export default function RegistrationFormModal() {
                     <input
                       type={showPassword ? "text" : "password"}
                       // placeholder="Enter your password"
-                      {...register("password")}
+                      {...register("Password")}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none "
                       required
                     />
