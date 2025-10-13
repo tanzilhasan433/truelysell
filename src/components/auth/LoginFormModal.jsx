@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 
 export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
   const [showPassword, setShowPassword] = useState(false);
-  const { server, login } = useAppContext();
+  const { login } = useAppContext();
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -26,7 +26,7 @@ export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
     console.log("Login data:", data);
     try {
       const response = await fetch(
-        `https://dpaauthapi.swapstartup.com/api/login`,
+        `${process.env.NEXT_PUBLIC_API_AUTH_URL}login`,
         {
           method: "POST",
           headers: {
@@ -49,10 +49,10 @@ export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
         });
       } else {
         const errorData = await response.json();
-        console.log("errorData", errorData);
+        console.log("from loginerrorData", errorData);
       }
     } catch (error) {
-      console.log("errorr", error);
+      console.log("from login errorr", error);
     }
   };
 

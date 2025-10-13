@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdLock } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
@@ -9,22 +9,78 @@ import { FaFacebookF } from "react-icons/fa";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
 import LoginFormModal from "./LoginFormModal";
+import toast from "react-hot-toast";
 
 export default function RegistrationFormModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [roles, setRoles] = useState();
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
-      userName: "",
-      password: "",
+      FirstName: "",
+      LastName: "",
+      Email: "",
+      MobileNo: "",
+      IsActive: true,
+      Password: "",
+      UserRoles: [{ RoleId: 0 }],
     },
   });
 
-  const handleLogin = (data) => {
+  const getRoles = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PUBLIC_URL}dropdown/getroles`,
+        {
+          method: "Get",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        console.log("roles", result);
+      } else {
+        const errorData = await response.json();
+        console.log("from get roles errorData", errorData);
+      }
+    } catch (error) {
+      console.log(" roles errorr", error);
+    }
+  };
+  useEffect(() => {
+    getRoles();
+  }, []);
+
+  const handleLogin = async (data) => {
     console.log("Login data:", data);
-    setIsModalOpen(false);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PUBLIC_URL}userregistration/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        console.log("result", result);
+        toast.success("Login Success");
+        setIsModalOpen(false);
+      } else {
+        const errorData = await response.json();
+        console.log("errorData", errorData);
+      }
+    } catch (error) {
+      console.log("errorr", error);
+    }
   };
 
   return (
@@ -68,7 +124,6 @@ export default function RegistrationFormModal() {
                   </label>
                   <input
                     type="text"
-                    //   placeholder="Enter your username"
                     {...register("userName")}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
                     required
@@ -80,7 +135,6 @@ export default function RegistrationFormModal() {
                   </label>
                   <input
                     type="email"
-                    //   placeholder="Enter your username"
                     {...register("email")}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none "
                     required
@@ -92,12 +146,12 @@ export default function RegistrationFormModal() {
                     <label className="text-sm font-medium text-gray-700">
                       Password
                     </label>
-                    <Link
+                    {/* <Link
                       href="#"
                       className="text-[var(--primary)] underline text-sm font-medium "
                     >
                       Forgot Password?
-                    </Link>
+                    </Link> */}
                   </div>
                   <div className="relative mt-1">
                     <input
@@ -116,12 +170,12 @@ export default function RegistrationFormModal() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-600">
+                {/* <div className="flex items-center justify-between text-sm text-gray-600">
                   <label className="flex items-center gap-2">
                     <input type="checkbox" className="w-4 h-4 rounded" />
                     Remember Me
                   </label>
-                </div>
+                </div> */}
 
                 <button
                   type="submit"
@@ -132,16 +186,16 @@ export default function RegistrationFormModal() {
               </form>
 
               {/* Divider */}
-              <div className="flex items-center my-5">
+              {/* <div className="flex items-center my-5">
                 <div className="flex-grow h-px bg-gray-300"></div>
                 <span className="px-2 text-gray-500 text-sm">
                   Or sign up with
                 </span>
                 <div className="flex-grow h-px bg-gray-300"></div>
-              </div>
+              </div> */}
 
               {/* Social buttons */}
-              <div className="flex gap-3">
+              {/* <div className="flex gap-3">
                 <button className="w-1/2 flex items-center justify-center gap-2 py-2  rounded-md bg-gray-200">
                   <FcGoogle size={20} />
                   <span>Google</span>
@@ -150,10 +204,10 @@ export default function RegistrationFormModal() {
                   <FaFacebookF size={20} className="text-[#1877f2]" />
                   <span>Facebook</span>
                 </button>
-              </div>
+              </div> */}
 
               {/* Footer */}
-              <p className="text-center text-sm mt-6">
+              {/* <p className="text-center text-sm mt-6">
                 Already have a account?
                 <button
                   onClick={() => {
@@ -163,7 +217,7 @@ export default function RegistrationFormModal() {
                 >
                   Sign In
                 </button>
-              </p>
+              </p> */}
               {/* <LoginFormModal
                 isOpen={isLoginOpen}
                 onClose={() => setIsLoginOpen(false)}

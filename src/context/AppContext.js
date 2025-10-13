@@ -18,7 +18,6 @@ export const AppProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(null);
   const [token, setToken] = useState(null);
 
-  const server = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
     const storedUserId = localStorage.getItem("userId");
@@ -60,7 +59,6 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("user");
   }, []);
   const valueItems = {
-    server,
     loading,
     setLoading,
     userName,
