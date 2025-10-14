@@ -14,18 +14,15 @@ export const AppProvider = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState(null);
-  const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [token, setToken] = useState(null);
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
-    const storedUserId = localStorage.getItem("userId");
     const storedUserRole = localStorage.getItem("userRole");
     const storedToken = localStorage.getItem("user");
 
     if (storedUserName) setUserName(storedUserName);
-    if (storedUserId) setUserId(storedUserId);
     if (storedUserRole) setUserRole(storedUserRole);
     if (storedToken) setToken(storedToken);
 
@@ -34,14 +31,13 @@ export const AppProvider = ({ children }) => {
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
   // ✅ Login Handler — store data in both state & localStorage
-  const login = useCallback(({ userName, userId, userRole, token }) => {
+  const login = useCallback(({ userName, userRole, token }) => {
     setUserName(userName);
-    setUserId(userId);
+
     setUserRole(userRole);
     setToken(token);
 
     localStorage.setItem("userName", userName);
-    localStorage.setItem("userId", userId);
     localStorage.setItem("userRole", userRole);
     localStorage.setItem("user", token);
   }, []);
@@ -49,12 +45,10 @@ export const AppProvider = ({ children }) => {
   // ✅ Logout Handler — clear state & localStorage
   const logout = useCallback(() => {
     setUserName(null);
-    setUserId(null);
     setUserRole(null);
     setToken(null);
 
     localStorage.removeItem("userName");
-    localStorage.removeItem("userId");
     localStorage.removeItem("userRole");
     localStorage.removeItem("user");
   }, []);
@@ -62,7 +56,6 @@ export const AppProvider = ({ children }) => {
     loading,
     setLoading,
     userName,
-    userId,
     userRole,
     token,
     isSidebarOpen,

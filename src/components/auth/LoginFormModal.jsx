@@ -3,17 +3,24 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { MdLock } from "react-icons/md";
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebookF } from "react-icons/fa";
-import Link from "next/link";
+
 import { IoClose } from "react-icons/io5";
 import { useAppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import RegistrationFormModal from "./RegistrationFormModal";
 
-export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
+export default function LoginFormModal({
+  isOpen,
+  onClose,
+  setIsLoginOpen,
+  isRegistrationOpen,
+  setIsRegistrationOpen,
+}) {
   const [showPassword, setShowPassword] = useState(false);
+
   const { login } = useAppContext();
+  const router = useRouter();
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -37,36 +44,35 @@ export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log("result", result);
-        toast.success("Login Success");
-        onClose();
+        if (result.error) {
+          toast.error(result.error);
+        } else {
+          toast.success("Login Success");
+          onClose();
 
-        login({
-          userName: result.userName,
-          userId: result.userId,
-          userRole: result.userRole,
-          token: result.token,
-        });
+          const redirect =
+            result.data.roles === "Admin"
+              ? "/admin"
+              : result.data.roles === "Customer"
+              ? "/customer"
+              : result.data.roles === "Provider"
+              ? "/provider"
+              : "/";
+          router.push(redirect);
+          login({
+            userName: result.data.name,
+            userRole: result.data.roles,
+            token: result.data.token,
+          });
+        }
       } else {
         const errorData = await response.json();
-        console.log("from loginerrorData", errorData);
       }
-    } catch (error) {
-      console.log("from login errorr", error);
-    }
+    } catch (error) {}
   };
 
   return (
     <div>
-      {/* Trigger button */}
-      <button
-        onClick={() => setIsLoginOpen(true)}
-        className="flex items-center gap-1 px-4 py-2 rounded font-medium text-sm bg-gray-200/80 text-gray-800"
-      >
-        <MdLock size={15} />
-        <span>Sign In</span>
-      </button>
-
       {/* Modal */}
       {isOpen && (
         // <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 ">
@@ -150,34 +156,27 @@ export default function LoginFormModal({ isOpen, onClose, setIsLoginOpen }) {
               </button>
             </form>
 
-            {/* Divider */}
-            {/* <div className="flex items-center my-5">
-              <div className="flex-grow h-px bg-gray-300"></div>
-              <span className="px-2 text-gray-500 text-sm">
-                Or sign in with
-              </span>
-              <div className="flex-grow h-px bg-gray-300"></div>
-            </div> */}
-
-            {/* Social buttons */}
-            {/* <div className="flex gap-3">
-              <button className="w-1/2 flex items-center justify-center gap-2 py-2  rounded-md bg-gray-200">
-                <FcGoogle size={20} />
-                <span>Google</span>
-              </button>
-              <button className="w-1/2 flex items-center justify-center gap-2 py-2  rounded-md bg-gray-200">
-                <FaFacebookF size={20} className="text-[#1877f2]" />
-                <span>Facebook</span>
-              </button>
-            </div> */}
-
             {/* Footer */}
             <p className="text-center text-sm mt-6">
               Don’t have an account?{" "}
-              <a href="#" className="text-[var(--primary)] font-medium">
+              <button
+                onClick={() => {
+                  setIsRegistrationOpen(true);
+                  onClose();
+                }}
+                className="text-[var(--primary)] font-medium"
+              >
                 Join us Today
-              </a>
+              </button>
             </p>
+            <RegistrationFormModal
+              isOpen={isRegistrationOpen}
+              onClose={() => setIsRegistrationOpen(false)}
+              onSuccess={() => {
+                setIsRegistrationOpen(false);
+                setIsLoginOpen(true);
+              }}
+            />
           </div>
         </div>
       )}

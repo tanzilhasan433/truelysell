@@ -8,15 +8,15 @@ import { HiX, HiMenu, HiChevronDown } from "react-icons/hi";
 import logo from "@/assets/img/logo.svg";
 import LoginFormModal from "../auth/LoginFormModal";
 import RegistrationFormModal from "../auth/RegistrationFormModal";
+import { MdLock } from "react-icons/md";
+import { useAppContext } from "@/context/AppContext";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-
-  // Dummy user and role for now
-  const user = "";
-  const role = "";
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+  const { userRole, token, logout } = useAppContext();
 
   // ✅ Scroll listener only once
   useEffect(() => {
@@ -55,41 +55,67 @@ export default function Header() {
               <DropdownLink href="/pages/blog">Blog</DropdownLink>
               <DropdownLink href="/pages/contact-us">Contact Us</DropdownLink>
             </Dropdown>
-            <NavLink href="/customer">Customer</NavLink>
-            <NavLink href="/provider">Provider</NavLink>
-            <NavLink href="/admin">Admin</NavLink>
+
+            <NavLink
+              href={
+                userRole === "Admin"
+                  ? "/admin"
+                  : userRole === "Provider"
+                  ? "/provider"
+                  : userRole === "Customer"
+                  ? "/customer"
+                  : "/"
+              }
+            >
+              {userRole}
+            </NavLink>
           </nav>
 
           {/* Auth Buttons for Desktop */}
           <div className="hidden xl:flex items-center space-x-2 lg:space-x-4">
-            {user ? (
-              <Link
-                href={
-                  role === "admin"
-                    ? "/admin"
-                    : role === "provider"
-                    ? "/provider"
-                    : role === "customer"
-                    ? "/customer"
-                    : "/"
-                }
+            {token ? (
+              <button
+                onClick={() => logout()}
                 className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
                  bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
                  hover:opacity-90 transition-all duration-200"
               >
-                Dashboard
-              </Link>
+                Sign out
+              </button>
             ) : (
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsLoginOpen(true)}
+                  className="flex items-center gap-1 px-4 py-2 rounded font-medium text-sm bg-gray-200/80 text-gray-800"
+                >
+                  <MdLock size={15} />
+                  <span>Sign In</span>
+                </button>
                 <LoginFormModal
                   isOpen={isLoginOpen}
                   onClose={() => setIsLoginOpen(false)}
                   setIsLoginOpen={setIsLoginOpen}
+                  isRegistrationOpen={isRegistrationOpen}
+                  setIsRegistrationOpen={setIsRegistrationOpen}
                 />
+                <button
+                  onClick={() => {
+                    setIsRegistrationOpen(true);
+                  }}
+                  className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
+                  bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                  hover:opacity-90 transition-all duration-200"
+                >
+                  <MdLock size={15} />
+                  <span>Join Us</span>
+                </button>
                 <RegistrationFormModal
-                  isOpen={isLoginOpen}
-                  onClose={() => setIsLoginOpen(false)}
-                  setIsLoginOpen={setIsLoginOpen}
+                  isOpen={isRegistrationOpen}
+                  onClose={() => setIsRegistrationOpen(false)}
+                  onSuccess={() => {
+                    setIsRegistrationOpen(false);
+                    setIsLoginOpen(true);
+                  }}
                 />
               </div>
             )}
@@ -113,39 +139,80 @@ export default function Header() {
         {isMenuOpen && (
           <div className="xl:hidden mt-4 py-4 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-100 animate-fadeIn">
             <nav className="flex flex-col space-y-2">
-              <MobileNavLink href="/">Home</MobileNavLink>
-              <MobileNavLink href="/">Services</MobileNavLink>
-              <MobileNavLink href="/">Pages</MobileNavLink>
-              <MobileNavLink href="/customer">Customers</MobileNavLink>
-              <MobileNavLink href="/provider">Provider</MobileNavLink>
-              <MobileNavLink href="/admin">admin</MobileNavLink>
+              <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </MobileNavLink>
+              <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
+                Services
+              </MobileNavLink>
+              <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
+                Pages
+              </MobileNavLink>
+              <MobileNavLink
+                onClick={() => setIsMenuOpen(false)}
+                href={
+                  userRole === "Admin"
+                    ? "/admin"
+                    : userRole === "Provider"
+                    ? "/provider"
+                    : userRole === "Customer"
+                    ? "/customer"
+                    : "/"
+                }
+              >
+                {userRole}
+              </MobileNavLink>
+
               <div className="border-t border-gray-200 my-2 pt-2 space-y-3">
-                {user ? (
-                  <MobileNavLink
-                    href={
-                      role === "admin"
-                        ? "/admin"
-                        : role === "provider"
-                        ? "/provider"
-                        : role === "customer"
-                        ? "/customer"
-                        : "/"
-                    }
-                    isHighlighted
+                {token ? (
+                  <button
+                    onClick={() => logout()}
+                    className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
+                 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                 hover:opacity-90 transition-all duration-200"
                   >
-                    Dashboard
-                  </MobileNavLink>
+                    Sign out
+                  </button>
                 ) : (
                   <div className="flex items-center gap-2 ms-4">
+                    <button
+                      onClick={() => {
+                        setIsLoginOpen(true);
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center gap-1 px-4 py-2 rounded font-medium text-sm bg-gray-200/80 text-gray-800"
+                    >
+                      <MdLock size={15} />
+                      <span>Sign In</span>
+                    </button>
                     <LoginFormModal
                       isOpen={isLoginOpen}
                       onClose={() => setIsLoginOpen(false)}
                       setIsLoginOpen={setIsLoginOpen}
+                      isRegistrationOpen={isRegistrationOpen}
+                      setIsRegistrationOpen={setIsRegistrationOpen}
                     />
+                    <button
+                      onClick={() => {
+                        setIsRegistrationOpen(true);
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
+                  bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
+                  hover:opacity-90 transition-all duration-200"
+                    >
+                      <MdLock size={15} />
+                      <span>Join Us</span>
+                    </button>
                     <RegistrationFormModal
-                      isOpen={isLoginOpen}
-                      onClose={() => setIsLoginOpen(false)}
-                      setIsLoginOpen={setIsLoginOpen}
+                      isOpen={isRegistrationOpen}
+                      onClose={() => setIsRegistrationOpen(false)}
+                      onSuccess={() => {
+                        setIsRegistrationOpen(false);
+                        setIsLoginOpen(true);
+                      }}
+                      isRegistrationOpen={isRegistrationOpen}
+                      setIsRegistrationOpen={setIsRegistrationOpen}
                     />
                   </div>
                 )}
@@ -196,13 +263,14 @@ function DropdownLink({ href, children }) {
   );
 }
 
-function MobileNavLink({ href, children, isHighlighted = false }) {
+function MobileNavLink({ href, children, isHighlighted = false, onClick }) {
   return (
     <Link
       href={href}
       className={`px-4 py-2.5 block transition-all duration-200  ${
         isHighlighted ? "" : ""
       }`}
+      onClick={onClick}
     >
       {children}
     </Link>
