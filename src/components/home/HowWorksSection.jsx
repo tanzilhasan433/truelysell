@@ -32,7 +32,7 @@ const steps = [
 
 const HowWorksSection = () => {
   return (
-    <div className="bg-black relative max-w-6xl mx-auto my-10 w-full rounded-md  py-16 px-4">
+    <div className="bg-black relative max-w-6xl mx-auto w-full rounded-md  py-16 px-4">
       <div
         className="absolute -left-6 top-24 w-36 h-16  opacity-80 blur-3xl z-0"
         style={{

@@ -38,7 +38,7 @@ export default function RegistrationFormModal({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_PUBLIC_URL}dropdown/getroles`,
         {
-          method: "Get",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },

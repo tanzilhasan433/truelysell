@@ -81,7 +81,7 @@ const providers = [
 
 const PopularProviderSection = () => {
   return (
-    <div className="py-16  text-center">
+    <div className="  text-center">
       <TitleWithSubTitle
         heading="Popular"
         headingClr=" Providers"

@@ -2,40 +2,65 @@
 
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useAppContext } from "@/context/AppContext";
 
 const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
   const { register, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
-      name: "",
-      userName: "",
-      phone: 0,
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-      status: true,
+      FirstName: "",
+      LastName: "",
+      Email: "",
+      MobileNo: "",
+      IsActive: true,
+      Password: "",
     },
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  // const [showConfirm, setShowConfirm] = useState(false);
+  const [roles, setRoles] = useState();
+
   // State for preview
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
+  // const [preview, setPreview] = useState("https://i.pravatar.cc/80");
 
-  // Ref for file input
-  const fileInputRef = useRef(null);
+  // // Ref for file input
+  // const fileInputRef = useRef(null);
 
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
+  // const handleUploadClick = () => {
+  //   fileInputRef.current.click(); // Open file browser
+  // };
+
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setPreview(URL.createObjectURL(file)); // Show preview
+  //     setValue("image", file); // Save to form
+  //   }
+  // };
+  const getRoles = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getroles`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+
+        setRoles(result.data);
+      } else {
+        const errorData = await response.json();
+      }
+    } catch (error) {}
   };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
-    }
-  };
+  useEffect(() => {
+    getRoles();
+  }, []);
 
   if (!isOpen) return null;
 
@@ -45,7 +70,6 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">
-            Add{" "}
             {role === "customer"
               ? "Customer"
               : role === "provider"
@@ -64,7 +88,7 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Upload */}
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <img
               src={preview}
               alt="preview"
@@ -92,42 +116,41 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
             and .jpg.
           </p>
 
-          {/* Hidden File Input */}
           <input
             type="file"
             accept="image/png, image/jpeg"
             ref={fileInputRef}
             onChange={handleFileChange}
             className="hidden"
-          />
+          /> */}
 
           {/* Name */}
           <input
             type="text"
-            placeholder="Name"
-            {...register("name")}
+            placeholder="First Name"
+            {...register("FirstName")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
 
           {/* Job Title */}
           <input
             type="text"
-            placeholder="User Name"
-            {...register("userName")}
+            placeholder="Last Name"
+            {...register("LastName")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
           {/* phone */}
           <input
             type="tel"
             placeholder="Phone"
-            {...register("phone")}
+            {...register("MobileNo")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
           {/* phone */}
           <input
             type="email"
             placeholder="Email"
-            {...register("email")}
+            {...register("Email")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
           {/* password */}
@@ -135,7 +158,7 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              {...register("password")}
+              {...register("Password")}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             />
             <span
@@ -147,7 +170,7 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
           </div>
           {/*confirm  password */}
 
-          <div className="relative">
+          {/* <div className="relative">
             <input
               type={showConfirm ? "text" : "password"}
               placeholder="Confirm Password"
@@ -160,27 +183,39 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
             >
               {showConfirm ? <FaEyeSlash /> : <FaEye />}
             </span>
-          </div>
+          </div> */}
 
-          <select
-            {...register("role")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
-          >
-            <option value="" className="text-sm  ">
-              Select Role
-            </option>
-            <option value="admin">Admin</option>
-            <option value="provider">Provider</option>
-            <option value="customer">Customer</option>
-          </select>
+          <div>
+            {/* <label
+              htmlFor="UserRoles"
+              className="text-sm font-medium text-gray-700"
+            >
+              User Role
+            </label> */}
+            <select
+              id="RoleId"
+              {...register("RoleId")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2  focus:outline-none "
+              required
+            >
+              <option value="" disabled className="text-gray-400">
+                Select a role
+              </option>
+              {roles?.map((role) => (
+                <option key={role.id} value={role.id} className="text-gray-700">
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Status */}
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Status</label>
+            <label className="text-sm font-medium text-gray-600">Status</label>
             <input
               type="checkbox"
-              {...register("status")}
-              className="toggle toggle-success"
+              {...register("IsActive")}
+              className="toggle toggle-success "
             />
           </div>
 

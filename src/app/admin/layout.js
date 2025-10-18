@@ -50,37 +50,37 @@ const navLinks = [
   {
     section: "Finance & Accounts",
     items: [
-      {
-        label: "Bank Transfer",
-        icon: <FaUniversity />,
-        path: "/admin/bank-transfer",
-      },
-      { label: "Wallet", icon: <FaList />, path: "/admin/wallet" },
-      {
-        label: "ReFund Request",
-        icon: <FaList />,
-        path: "/admin/refund-request",
-      },
+      // {
+      //   label: "Bank Transfer",
+      //   icon: <FaUniversity />,
+      //   path: "/admin/bank-transfer",
+      // },
+      // { label: "Wallet", icon: <FaList />, path: "/admin/wallet" },
+      // {
+      //   label: "ReFund Request",
+      //   icon: <FaList />,
+      //   path: "/admin/refund-request",
+      // },
       {
         label: "Cash on Delivery",
         icon: <FaList />,
         path: "/admin/cash-on-delivery",
       },
-      {
-        label: "Payouts",
-        icon: <FaList />,
-        children: [
-          { label: "Payout Requests", path: "/admin/payouts" },
-          { label: "Payout Settings", path: "/admin/payouts/payout-settings" },
-        ],
-      },
-      { label: "Sales Transactions", icon: <FaList />, path: "/admin" },
+      // {
+      //   label: "Payouts",
+      //   icon: <FaList />,
+      //   children: [
+      //     { label: "Payout Requests", path: "/admin/payouts" },
+      //     { label: "Payout Settings", path: "/admin/payouts/payout-settings" },
+      //   ],
+      // },
+      // { label: "Sales Transactions", icon: <FaList />, path: "/admin" },
     ],
   },
-  {
-    section: "Others",
-    items: [{ label: "Chat", icon: <FaBook />, path: "/admin" }],
-  },
+  // {
+  //   section: "Others",
+  //   items: [{ label: "Chat", icon: <FaBook />, path: "/admin" }],
+  // },
   {
     section: "Contents",
     items: [
@@ -116,27 +116,27 @@ const navLinks = [
       { label: "FAQ", icon: <FaBook />, path: "/admin/faq" },
     ],
   },
-  {
-    section: "Membership",
-    items: [
-      { label: "Membership", icon: <FaBook />, path: "/bookings" },
-      { label: "Membership Addons", icon: <FaBook />, path: "/bookings" },
-    ],
-  },
-  {
-    section: "Reports",
-    items: [
-      { label: "Admin Earnings", icon: <FaBook />, path: "/bookings" },
-      { label: "Provider Earnings", icon: <FaBook />, path: "/bookings" },
-      { label: "Provider Sales", icon: <FaBook />, path: "/bookings" },
-      { label: "Provider Wallet", icon: <FaBook />, path: "/bookings" },
-      { label: "Customer Wallet", icon: <FaBook />, path: "/bookings" },
-      { label: "Membership transaction", icon: <FaBook />, path: "/bookings" },
-      { label: "Refund Report", icon: <FaBook />, path: "/bookings" },
-      { label: "Register Report", icon: <FaBook />, path: "/bookings" },
-      { label: "Sales Report", icon: <FaBook />, path: "/bookings" },
-    ],
-  },
+  // {
+  //   section: "Membership",
+  //   items: [
+  //     { label: "Membership", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Membership Addons", icon: <FaBook />, path: "/bookings" },
+  //   ],
+  // },
+  // {
+  //   section: "Reports",
+  //   items: [
+  //     { label: "Admin Earnings", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Provider Earnings", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Provider Sales", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Provider Wallet", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Customer Wallet", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Membership transaction", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Refund Report", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Register Report", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Sales Report", icon: <FaBook />, path: "/bookings" },
+  //   ],
+  // },
   {
     section: "User Management",
     items: [
@@ -159,47 +159,47 @@ const navLinks = [
         icon: <FaBook />,
         path: "/admin/delete-account-requests",
       },
-      // {
-      //   label: "Verification Requests",
-      //   icon: <FaBook />,
-      //   path: "/admin/verification-requests",
-      // },
+      {
+        label: "Verification Requests",
+        icon: <FaBook />,
+        path: "/admin/verification-requests",
+      },
     ],
   },
   {
     section: "Marketing",
     items: [
       { label: "Coupons", icon: <FaBook />, path: "/admin/coupons" },
-      { label: "Service Offers", icon: <FaBook />, path: "/bookings" },
-      { label: "Features Services", icon: <FaBook />, path: "/bookings" },
-      { label: "Email Newsletter", icon: <FaBook />, path: "/bookings" },
+      // { label: "Service Offers", icon: <FaBook />, path: "/bookings" },
+      // { label: "Features Services", icon: <FaBook />, path: "/bookings" },
+      // { label: "Email Newsletter", icon: <FaBook />, path: "/bookings" },
     ],
   },
-  {
-    section: "Management",
-    items: [
-      { label: "Cache System", icon: <FaBook />, path: "/bookings" },
-      { label: "Email Templates", icon: <FaBook />, path: "/bookings" },
-      { label: "SMS Templates", icon: <FaBook />, path: "/bookings" },
-      { label: "Menu Management", icon: <FaBook />, path: "/bookings" },
-      { label: "Widgets", icon: <FaBook />, path: "/bookings" },
-      { label: "Create Menu", icon: <FaBook />, path: "/bookings" },
-      { label: "Plugin Managers", icon: <FaBook />, path: "/bookings" },
-    ],
-  },
-  {
-    section: "Support",
-    items: [
-      { label: "Contact Messages", icon: <FaBook />, path: "/bookings" },
-      { label: "Abuse Reports", icon: <FaBook />, path: "/bookings" },
-      { label: "Announcements", icon: <FaBook />, path: "/bookings" },
-    ],
-  },
+  // {
+  //   section: "Management",
+  //   items: [
+  //     { label: "Cache System", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Email Templates", icon: <FaBook />, path: "/bookings" },
+  //     { label: "SMS Templates", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Menu Management", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Widgets", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Create Menu", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Plugin Managers", icon: <FaBook />, path: "/bookings" },
+  //   ],
+  // },
+  // {
+  //   section: "Support",
+  //   items: [
+  //     { label: "Contact Messages", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Abuse Reports", icon: <FaBook />, path: "/bookings" },
+  //     { label: "Announcements", icon: <FaBook />, path: "/bookings" },
+  //   ],
+  // },
   {
     section: "Settings",
     items: [
-      { label: "Settings", icon: <FaBook />, path: "/bookings" },
-      { label: "Logout", icon: <FaBook />, path: "/bookings" },
+      // { label: "Settings", icon: <FaBook />, path: "/bookings" },
+      { label: "Logout", icon: <FaBook />, path: "/" },
     ],
   },
 ];

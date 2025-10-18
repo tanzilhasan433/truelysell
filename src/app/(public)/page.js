@@ -15,8 +15,8 @@ export default function HomePage() {
       <HomeHeroSection />
       <ExploreCategoriesSection />
       <OurFeaturedServiceSection />
-      <HowWorksSection />
       <OurPopularServiceSection />
+      <HowWorksSection />
       <MostPreferredServiceSection />
       <PopularProviderSection />
       <BrowseHighSection />

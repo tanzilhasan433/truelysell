@@ -3,15 +3,55 @@
 import AddUserModal from "@/components/admin/users/AddUserModal";
 import { userData } from "@/data/json/users";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaPlus, FaStar } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
 const UsersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddTestimonial = (data) => {
+  const handleAddUser = async (data) => {
     console.log("Form Submitted:", data);
-    setIsModalOpen(false);
+    const payload = {
+      FirstName: data.FirstName,
+      LastName: data.LastName,
+      Email: data.Email,
+      MobileNo: data.MobileNo,
+      Password: data.Password,
+      IsActive: Boolean(data.IsActive),
+      UserRoles: [
+        {
+          RoleId: Number(data.RoleId),
+        },
+      ],
+    };
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        if (result.error) {
+          toast.error(result.error);
+        } else {
+          toast.success(result.message);
+          setIsModalOpen(false);
+        }
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   return (
     <div>
@@ -90,7 +130,7 @@ const UsersPage = () => {
       <AddUserModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddTestimonial}
+        onSubmit={handleAddUser}
         role=""
       />
     </div>

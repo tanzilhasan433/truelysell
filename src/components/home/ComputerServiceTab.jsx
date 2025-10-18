@@ -1,31 +1,50 @@
+import Image from "next/image";
 import React, { useRef } from "react";
-import { FaArrowLeft, FaArrowRight, FaRegHeart, FaStar } from "react-icons/fa";
+import { FaRegHeart, FaStar } from "react-icons/fa";
+import { GoArrowLeft, GoArrowRight } from "react-icons/go";
+import p1 from "@/assets/provider/provider1.jpg";
+import p2 from "@/assets/provider/provider2.jpg";
+import p3 from "@/assets/provider/provider3.jpg";
+import p4 from "@/assets/provider/provider4.jpg";
+import p5 from "@/assets/provider/provider5.jpg";
 
 const services = [
   {
+    title: "Backup & Recovery",
+    image: p1,
+    providerImg: "https://i.pravatar.cc/150?img=6",
+    rating: 4.5,
+    reviews: 250,
+    price: 130,
+  },
+  {
     title: "Repairs & Upgrades",
-    image: "https://images.unsplash.com/photo-1581090700227-1e37b190418e",
+    image: p2,
+    providerImg: "https://i.pravatar.cc/150?img=1",
     rating: 4.2,
     reviews: 120,
     price: 150,
   },
   {
     title: "Setup & Configuration",
-    image: "https://images.unsplash.com/photo-1581090700227-1e37b190418e?2",
+    image: p3,
+    providerImg: "https://i.pravatar.cc/150?img=2",
     rating: 4.4,
     reviews: 300,
     price: 200,
   },
   {
     title: "Troubleshooting & Diagnostics",
-    image: "https://images.unsplash.com/photo-1581091215367-59ab6c3f4c14",
+    image: p4,
+    providerImg: "https://i.pravatar.cc/150?img=3",
     rating: 4.7,
     reviews: 280,
     price: 250,
   },
   {
     title: "Server Management",
-    image: "https://images.unsplash.com/photo-1581092334434-c4c71b4f15b3",
+    image: p5,
+    providerImg: "https://i.pravatar.cc/150?img=4",
     rating: 4.5,
     reviews: 260,
     price: 350,
@@ -49,39 +68,46 @@ export default function ComputerServiceTab() {
       {/* Arrows */}
       <button
         onClick={() => scroll("left")}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+        className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-white text-gray-800 rounded-full shadow-lg hover:bg-gray-100"
       >
-        <FaArrowLeft />
+        <GoArrowLeft size={20} />
       </button>
       <button
         onClick={() => scroll("right")}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+        className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-white text-gray-800 rounded-full shadow-lg hover:bg-gray-100"
       >
-        <FaArrowRight />
+        <GoArrowRight size={20} />
       </button>
 
       {/* Cards Slider */}
       <div
         ref={sliderRef}
-        className="flex overflow-x-auto no-scrollbar scroll-smooth space-x-4 px-10"
+        className="flex overflow-x-auto no-scrollbar scroll-smooth space-x-4 "
       >
         {services.map((s, i) => (
           <div
             key={i}
-            className="min-w-[270px] bg-white rounded-lg shadow hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
+            className="min-w-[280px] bg-white rounded-lg shadow hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
           >
             <div className="relative">
-              <img
+              <Image
                 src={s.image}
                 alt={s.title}
                 className="w-full h-48 object-cover transform transition-transform duration-500 ease-in-out hover:scale-110"
               />
-              <span className="absolute top-2 left-2 bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                p
-              </span>
-              <div className="absolute top-2 right-2 bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded flex items-center gap-1">
-                <FaRegHeart className="text-yellow-400 text-sm" />
+              <div className="w-7 h-7  absolute top-2 left-2">
+                <Image
+                  src={s.providerImg}
+                  alt={""}
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full rounded-full"
+                />
               </div>
+
+              <button className="absolute top-2 right-2 hover:bg-[var(--primary)] hover:text-white text-gray-600 bg-white  p-1 w-7 h-7 rounded-full flex items-center justify-center gap-1">
+                <FaRegHeart className=" text-sm" />
+              </button>
             </div>
 
             <div className="px-3 py-4">
