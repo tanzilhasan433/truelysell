@@ -1,17 +1,17 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import toast from "react-hot-toast";
 import Editor from "@/components/shared/Editor";
 import { useAppContext } from "@/context/AppContext";
-import { FaSave, FaTrash } from "react-icons/fa";
+import { FaSave } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { IoCloudUploadOutline } from "react-icons/io5";
 
 const ServiceAddForm = () => {
   const router = useRouter();
-
   const fileInputRef = useRef(null);
   const { user, userId, loading, setLoading } = useAppContext();
 
@@ -35,7 +35,19 @@ const ServiceAddForm = () => {
     control,
     name: "services", // must match defaultValues
   });
+  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
 
+  const handleUploadClick = () => {
+    fileInputRef.current.click(); // Open file browser
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file)); // Show preview
+      setValue("image", file); // Save to form
+    }
+  };
   const onSubmit = async (data) => {
     console.log("Form Data Submitted: ", data);
     // try {
@@ -71,23 +83,37 @@ const ServiceAddForm = () => {
     // }
   };
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-36">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-  //     </div>
-  //   );
-  // }
-
   return (
-    <div className="bg-[#FBFBFB]  pt-5">
+    <div className="bg-[#FBFBFB] ">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className=" rounded-md p-4 mt-8 bg-white ">
           <h6>Service Information</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
+          <div>
+            <label
+              htmlFor="serviceTitle"
+              className="block text-sm  text-gray-800"
+            >
+              Title
+            </label>
+            <input
+              id="serviceTitle"
+              {...register("serviceTitle", {
+                required: "Service title is required",
+              })}
+              className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                errors.serviceTitle ? "border-red-500" : "border-gray-300"
+              } px-4 py-2 `}
+            />
+            {errors.serviceTitle && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.serviceTitle.message}
+              </p>
+            )}
+          </div>
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {/* Provider */}
-            <div>
+            {/* <div>
               <label
                 htmlFor="provider"
                 className="block text-sm  text-gray-800"
@@ -104,30 +130,8 @@ const ServiceAddForm = () => {
                 </option>
                 <option value="Arzena">Arzena</option>
               </select>
-            </div>
+            </div> */}
             {/* sevice Title */}
-            <div>
-              <label
-                htmlFor="serviceTitle"
-                className="block text-sm  text-gray-800"
-              >
-                Title
-              </label>
-              <input
-                id="serviceTitle"
-                {...register("serviceTitle", {
-                  required: "Service title is required",
-                })}
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.serviceTitle ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.serviceTitle && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.serviceTitle.message}
-                </p>
-              )}
-            </div>
           </div>
           {/*  */}
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
@@ -447,6 +451,229 @@ const ServiceAddForm = () => {
                 required: "Video Link is required",
               })}
               placeholder="https://example.com"
+              className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
+                errors.videoLink ? "border-red-500" : "border-gray-300"
+              } px-4 py-2 `}
+            />
+            {errors.videoLink && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.videoLink.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className=" rounded-md p-4 mt-8 bg-white ">
+          <h6>Location</h6>
+          <div className="border-b border-gray-200/80 my-6"></div>
+
+          <div className="grid lg:grid-cols-2 gap-6 mb-6">
+            {/* serviceArea */}
+            <div>
+              <label htmlFor="price" className="block text-sm  text-gray-800">
+                Service Area
+              </label>
+              <input
+                id="serviceArea"
+                {...register("serviceArea", {
+                  required: "serviceArea is required",
+                })}
+                placeholder="Enter your service area"
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.serviceArea ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.serviceArea && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.serviceArea.message}
+                </p>
+              )}
+            </div>
+            {/* Division */}
+            <div>
+              <label
+                htmlFor="division"
+                className="block text-sm  text-gray-800"
+              >
+                Division
+              </label>
+              <input
+                id="division"
+                {...register("division", {
+                  required: "division is required",
+                })}
+                placeholder="Enter your division"
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.division ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.division && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.division.message}
+                </p>
+              )}
+            </div>
+            {/* Division */}
+            <div>
+              <label htmlFor="distict" className="block text-sm  text-gray-800">
+                Distict
+              </label>
+              <input
+                id="distict"
+                {...register("distict", {
+                  required: "distict is required",
+                })}
+                placeholder="Enter your district"
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.distict ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.distict && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.distict.message}
+                </p>
+              )}
+            </div>
+            {/* thana */}
+            <div>
+              <label htmlFor="thana" className="block text-sm  text-gray-800">
+                Thana / Upozila/ Area
+              </label>
+              <input
+                id="thana"
+                {...register("thana", {
+                  required: "thana is required",
+                })}
+                placeholder="Enter your Thana / Upozila/ Area"
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.thana ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.division && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.division.message}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Gallery */}
+
+        <div className=" rounded-md p-4 mt-8 bg-white ">
+          <h6>Gallery</h6>
+          <div className="border-b border-gray-200/80 my-6"></div>
+          {/* Upload */}
+          <div className="">
+            <button
+              type="button"
+              onClick={handleUploadClick}
+              className="px-3 py-5 bg-gray-50 block w-full border-gray-300 border border-dashed rounded-md text-sm flex justify-center"
+            >
+              <IoCloudUploadOutline
+                size={50}
+                className="block w-full text-gray-600"
+              />
+            </button>
+          </div>
+          <div className="relative my-5 inline-block">
+            <img
+              src={preview}
+              alt="preview"
+              className="w-20 h-20  object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => setPreview("https://i.pravatar.cc/80")}
+              className=" text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
+            >
+              <FaRegTrashCan />
+            </button>
+          </div>
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <div>
+            <label
+              htmlFor="youtubeVideoLink"
+              className="block text-sm  text-gray-800"
+            >
+              Youtube Video
+            </label>
+            <input
+              id="youtubeVideoLink"
+              {...register("youtubeVideoLink", {
+                required: "youtubeVideoLink Link is required",
+              })}
+              placeholder="https://example.com"
+              className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
+                errors.youtubeVideoLink ? "border-red-500" : "border-gray-300"
+              } px-4 py-2 `}
+            />
+            {errors.youtubeVideoLink && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.youtubeVideoLink.message}
+              </p>
+            )}
+          </div>{" "}
+        </div>
+        {/*  */}
+        <div className=" rounded-md p-4 mt-8 bg-white ">
+          <h6>SEO</h6>
+          <div className="border-b border-gray-200/80 my-6"></div> {/* Seo */}
+          <div className="mb-6">
+            <label htmlFor="videoLink" className="block text-sm  text-gray-800">
+              Meta Title (English)
+            </label>
+            <input
+              id="videoLink"
+              {...register("videoLink", {
+                required: "Video Link is required",
+              })}
+              placeholder="Enter meta title"
+              className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
+                errors.videoLink ? "border-red-500" : "border-gray-300"
+              } px-4 py-2 `}
+            />
+            {errors.videoLink && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.videoLink.message}
+              </p>
+            )}
+          </div>
+          <div className="mb-6">
+            <label htmlFor="videoLink" className="block text-sm  text-gray-800">
+              Meta Keywords (English)
+            </label>
+            <input
+              id="videoLink"
+              {...register("videoLink", {
+                required: "Video Link is required",
+              })}
+              placeholder="Enter  meta Keywords"
+              className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
+                errors.videoLink ? "border-red-500" : "border-gray-300"
+              } px-4 py-2 `}
+            />
+            {errors.videoLink && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.videoLink.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="videoLink" className="block text-sm  text-gray-800">
+              Meta Description (English)
+            </label>
+            <input
+              id="videoLink"
+              {...register("videoLink", {
+                required: "Video Link is required",
+              })}
+              placeholder="Enter description"
               className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
                 errors.videoLink ? "border-red-500" : "border-gray-300"
               } px-4 py-2 `}

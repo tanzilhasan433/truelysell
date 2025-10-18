@@ -5,7 +5,7 @@ const AddServicePage = () => {
   return (
     <div className="">
       <h4 className="mb-5">Add Service - Service Information</h4>
-      <ServiceSteps />
+      {/* <ServiceSteps /> */}
       <ServiceAddForm />
     </div>
   );
