@@ -10,7 +10,7 @@ import { FiEdit } from "react-icons/fi";
 const ProviderCustomersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddTestimonial = (data) => {
+  const handleAddCustomer = (data) => {
     console.log("Form Submitted:", data);
     setIsModalOpen(false);
   };
@@ -49,12 +49,12 @@ const ProviderCustomersPage = () => {
                 className="border-t border-gray-200/80 hover:bg-gray-100 transition"
               >
                 <td className="py-4 px-3">{item.customerId}</td>
-                <td className="py-4 px-3 flex items-center gap-2">
-                  <img
+                <td className="py-4 px-3 flex items-center gap-2 lg:flex-row flex-col">
+                  {/* <img
                     src={item.img}
                     alt={item.name}
                     className="w-8 h-8 rounded-full object-cover"
-                  />
+                  /> */}
                   <div>
                     <p className="font-medium text-gray-900">{item.name}</p>
                     <p>{item.email}</p>
@@ -97,7 +97,7 @@ const ProviderCustomersPage = () => {
       <AddCustomerModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddTestimonial}
+        onSubmit={handleAddCustomer}
         role=""
       />
     </div>

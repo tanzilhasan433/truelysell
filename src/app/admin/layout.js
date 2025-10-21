@@ -143,11 +143,7 @@ const navLinks = [
       {
         label: "Users",
         icon: <FaBook />,
-        children: [
-          { label: "Users", path: "/admin/users" },
-          { label: "Customers", path: "/admin/users/customers" },
-          { label: "Providers", path: "/admin/users/providers" },
-        ],
+        path: "/admin/users",
       },
       {
         label: "Roles & Permissions",

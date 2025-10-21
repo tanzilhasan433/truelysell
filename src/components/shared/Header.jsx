@@ -139,17 +139,10 @@ export default function Header() {
         {isMenuOpen && (
           <div className="xl:hidden mt-4 py-4 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-100 animate-fadeIn">
             <nav className="flex flex-col space-y-2">
-              <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
-                Home
-              </MobileNavLink>
-              <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
-                Services
-              </MobileNavLink>
-              <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
-                Pages
-              </MobileNavLink>
+              <MobileNavLink href="/">Home</MobileNavLink>
+              <MobileNavLink href="/">Services</MobileNavLink>
+              <MobileNavLink href="/">Pages</MobileNavLink>
               <MobileNavLink
-                onClick={() => setIsMenuOpen(false)}
                 href={
                   userRole === "Admin"
                     ? "/admin"
@@ -178,7 +171,6 @@ export default function Header() {
                     <button
                       onClick={() => {
                         setIsLoginOpen(true);
-                        setIsMenuOpen(false);
                       }}
                       className="flex items-center gap-1 px-4 py-2 rounded font-medium text-sm bg-gray-200/80 text-gray-800"
                     >
@@ -195,7 +187,6 @@ export default function Header() {
                     <button
                       onClick={() => {
                         setIsRegistrationOpen(true);
-                        setIsMenuOpen(false);
                       }}
                       className="flex items-center gap-1 px-4 py-2 rounded text-white font-medium text-sm 
                   bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] 
@@ -209,7 +200,6 @@ export default function Header() {
                       onClose={() => setIsRegistrationOpen(false)}
                       onSuccess={() => {
                         setIsRegistrationOpen(false);
-                        setIsLoginOpen(true);
                       }}
                       isRegistrationOpen={isRegistrationOpen}
                       setIsRegistrationOpen={setIsRegistrationOpen}
@@ -263,14 +253,13 @@ function DropdownLink({ href, children }) {
   );
 }
 
-function MobileNavLink({ href, children, isHighlighted = false, onClick }) {
+function MobileNavLink({ href, children, isHighlighted = false }) {
   return (
     <Link
       href={href}
       className={`px-4 py-2.5 block transition-all duration-200  ${
         isHighlighted ? "" : ""
       }`}
-      onClick={onClick}
     >
       {children}
     </Link>

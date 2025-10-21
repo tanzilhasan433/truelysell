@@ -15,15 +15,8 @@ const AdminHeader = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const menuRef = useRef(null);
   const notificationRef = useRef(null);
-  const { user, loading } = useAppContext();
-  const userNm = "Arzena";
-  const router = useRouter();
+  const { user, loading, logout, userName } = useAppContext();
 
-  // useEffect(() => {
-  //   if (!user && !loading) router.push("/login");
-  // }, [user, router, loading]);
-
-  // Close menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -199,7 +192,7 @@ const AdminHeader = () => {
               <div className="bg-gray-400 h-7 w-7 rounded-full animate-ping"></div>
 
               <span className="border absolute w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 m-1">
-                {userNm?.charAt(0)}
+                {userName?.charAt(0)}
               </span>
             </button>
             {showMenu && (
@@ -223,7 +216,7 @@ const AdminHeader = () => {
                 <button
                   onClick={() => {
                     handleMenuItemClick();
-                    // logoutUser();
+                    logout();
                   }}
                   className="flex gap-2 items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded text-sm touch-manipulation"
                 >

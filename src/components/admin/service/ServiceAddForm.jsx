@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ const ServiceAddForm = () => {
   const router = useRouter();
   const fileInputRef = useRef(null);
   const { user, userId, loading, setLoading } = useAppContext();
+  const [providers, setProviders] = useState([]);
 
   const {
     register,
@@ -44,10 +45,37 @@ const ServiceAddForm = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
+      setPreview(URL.createObjectURL(file));
+      setValue("image", file);
     }
   };
+
+  const getProviders = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/getall?PageNumber=0&SearchText=&SortBy=FirstName&SortDirection=asc&PageSize=100`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        const providerData = result.data.filter(
+          (item) => item.role === "Provider"
+        );
+        setProviders(providerData);
+      } else {
+        const errorData = await response.json();
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getProviders();
+  }, []);
   const onSubmit = async (data) => {
     console.log("Form Data Submitted: ", data);
     // try {
@@ -89,6 +117,42 @@ const ServiceAddForm = () => {
         <div className=" rounded-md p-4 mt-8 bg-white ">
           <h6>Service Information</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
+          <div className="mb-6 grid lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-9">
+              <label className="text-sm font-medium text-gray-600">
+                Provider
+              </label>
+              <select
+                id="RoleId"
+                {...register("RoleId")}
+                className="w-full border border-gray-300 rounded-md px-3 py-2  focus:outline-none "
+                required
+              >
+                <option value="" disabled className="text-gray-400">
+                  Select a provider
+                </option>
+                {providers?.map((item) => (
+                  <option
+                    key={item.id}
+                    value={item.id}
+                    className="text-gray-700"
+                  >
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-2 lg:col-span-3">
+              <input
+                type="checkbox"
+                {...register("IsActive")}
+                className="toggle toggle-success "
+              />
+              <label className="text-sm font-medium text-gray-600">
+                is Default
+              </label>
+            </div>
+          </div>
           <div>
             <label
               htmlFor="serviceTitle"

@@ -1,5 +1,6 @@
 "use client"; // required for Next.js app router
 
+import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -16,6 +17,8 @@ export const AppProvider = ({ children }) => {
   const [userName, setUserName] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [token, setToken] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
@@ -51,6 +54,7 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("userName");
     localStorage.removeItem("userRole");
     localStorage.removeItem("user");
+    router.push("/");
   }, []);
   const valueItems = {
     loading,
