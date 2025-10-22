@@ -28,7 +28,6 @@ export default function RegistrationFormModal({
       LastName: "",
       Email: "",
       MobileNo: "",
-      IsActive: true,
       Password: "",
     },
   });
@@ -57,8 +56,12 @@ export default function RegistrationFormModal({
   }, []);
 
   const handleLogin = async (data) => {
+    const selectedRole = roles?.find((r) => r.id === Number(data.RoleId));
+
+    const isActive = selectedRole?.name === "Customer" ? true : false;
     const payload = {
       ...data,
+      isActive: isActive,
       UserRoles: [
         {
           RoleId: Number(data.RoleId),

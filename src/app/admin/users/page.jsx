@@ -17,6 +17,33 @@ const UsersPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { loading, setLoading } = useAppContext();
+  const [roles, setRoles] = useState();
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
+  const getRoles = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getroles`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+
+        setRoles(result.data);
+      } else {
+        const errorData = await response.json();
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getRoles();
+  }, []);
 
   const getUsers = async (page = 1) => {
     try {
@@ -71,33 +98,49 @@ const UsersPage = () => {
         },
       ],
     };
+
+    const isEditing = !!selectedUserId;
+    const endpoint = isEditing
+      ? `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/update/${selectedUserId}`
+      : `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/create`;
+
+    const method = isEditing ? "PUT" : "POST";
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("user")}`,
+        },
+        body: JSON.stringify(payload),
+      });
       if (response.ok) {
         const result = await response.json();
+        console.log("Add/Edit User Result:", result);
         if (result.error) {
-          toast.error(result.message || "Failed to create user");
+          toast.error(
+            result.error ||
+              (isEditing ? "Failed to update user" : "Failed to create user")
+          );
         } else {
-          toast.success(result.message || "User created successfully");
+          toast.success(
+            result.message ||
+              (isEditing
+                ? "User updated successfully"
+                : "User created successfully")
+          );
           setIsModalOpen(false);
+          setSelectedUserId(null);
           getUsers(currentPage);
         }
       } else {
         const errorData = await response.json();
         toast.error(errorData.message);
+        console.log("errorData", errorData);
       }
     } catch (error) {
       toast.error(error.message);
+      console.log("error", error);
     }
   };
 
@@ -148,18 +191,12 @@ const UsersPage = () => {
 
                       <td className="py-4 px-3 ">
                         <div className="flex items-center gap-2 lg:flex-row flex-col">
-                          {/* <img
-                      src={item.img}
-                      alt={item.name}
-                      className="w-8 h-8 rounded-full object-cover"
-                    /> */}
                           {item.name}
                         </div>
                       </td>
                       <td className="py-4 px-3">{item.mobileNo}</td>
                       <td className="py-4 px-3">{item.email}</td>
                       <td className="py-4 px-3">{item.role}</td>
-                      {/* <td className="py-4 px-3">{item.lastActivity}</td> */}
 
                       <td className="py-4 px-3 font-medium">
                         {item.createdDate}
@@ -175,13 +212,16 @@ const UsersPage = () => {
                       </td>
                       <td className="py-4 px-2 font-medium">
                         <div className=" flex items-center gap-2">
-                          {" "}
-                          <button className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedUserId(item.id);
+                              setIsModalOpen(true);
+                            }}
+                            className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
+                          >
                             <FiEdit size={25} />
                           </button>
-                          {/* <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-[var(--primary-blue)] hover:text-white  rounded-full flex items-center  justify-center  gap-2">
-                      <FaRegTrashCan size={25} />
-                    </button> */}
+
                           <DeleteButton
                             endpoint={`users/delete/${item?.id}`}
                             type="user"
@@ -212,9 +252,13 @@ const UsersPage = () => {
 
       <AddUserModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedUserId(null);
+        }}
         onSubmit={handleAddUser}
-        role=""
+        roles={roles}
+        userId={selectedUserId}
       />
     </div>
   );

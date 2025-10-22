@@ -76,6 +76,7 @@ const ServiceAddForm = () => {
   useEffect(() => {
     getProviders();
   }, []);
+
   const onSubmit = async (data) => {
     console.log("Form Data Submitted: ", data);
     // try {
@@ -125,7 +126,7 @@ const ServiceAddForm = () => {
               <select
                 id="RoleId"
                 {...register("RoleId")}
-                className="w-full border border-gray-300 rounded-md px-3 py-2  focus:outline-none "
+                className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1  focus:outline-none "
                 required
               >
                 <option value="" disabled className="text-gray-400">
