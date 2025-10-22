@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus, FaStar } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
-import { BeatLoader } from "react-spinners";
+import { FadeLoader } from "react-spinners";
 
 const UsersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -157,7 +157,7 @@ const UsersPage = () => {
 
       {loading ? (
         <div className="flex justify-center items-center">
-          <BeatLoader color="#ff008a" />
+          <FadeLoader color="#4c40ed" />
         </div>
       ) : allData && allData.length < 0 ? (
         <div className="p-6 text-center text-gray-500">
