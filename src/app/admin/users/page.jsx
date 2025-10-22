@@ -63,7 +63,7 @@ const UsersPage = () => {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log("user list", result);
+
         setAllData(result?.data);
         setTotalRecords(result?.numberOfRecords || 0);
 
@@ -85,6 +85,7 @@ const UsersPage = () => {
   }, [currentPage]);
 
   const handleAddUser = async (data) => {
+    const isEditing = !!selectedUserId;
     const payload = {
       FirstName: data.FirstName,
       LastName: data.LastName,
@@ -97,9 +98,9 @@ const UsersPage = () => {
           RoleId: Number(data.RoleId),
         },
       ],
+      ...(isEditing && { Id: selectedUserId }),
     };
 
-    const isEditing = !!selectedUserId;
     const endpoint = isEditing
       ? `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/update/${selectedUserId}`
       : `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/create`;
@@ -116,7 +117,7 @@ const UsersPage = () => {
       });
       if (response.ok) {
         const result = await response.json();
-        console.log("Add/Edit User Result:", result);
+
         if (result.error) {
           toast.error(
             result.error ||
@@ -136,11 +137,9 @@ const UsersPage = () => {
       } else {
         const errorData = await response.json();
         toast.error(errorData.message);
-        console.log("errorData", errorData);
       }
     } catch (error) {
       toast.error(error.message);
-      console.log("error", error);
     }
   };
 
