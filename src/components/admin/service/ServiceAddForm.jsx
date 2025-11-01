@@ -36,7 +36,7 @@ const ServiceAddForm = () => {
     control,
     name: "services", // must match defaultValues
   });
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
+  const [preview, setPreview] = useState("");
 
   const handleUploadClick = () => {
     fileInputRef.current.click(); // Open file browser
@@ -79,37 +79,37 @@ const ServiceAddForm = () => {
 
   const onSubmit = async (data) => {
     console.log("Form Data Submitted: ", data);
-    // try {
-    //   setLoading(true);
+    try {
+      setLoading(true);
 
-    //   const response = await fetch(
-    //     `${process.env.NEXT_PUBLIC_API_URL}service/`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${user ? user : ""}`,
-    //       },
-    //       body: JSON.stringify({
-    //         ...data,
-    //         userId: userId ?? "",
-    //       }),
-    //     }
-    //   );
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}service/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user ? user : ""}`,
+          },
+          body: JSON.stringify({
+            ...data,
+            userId: userId ?? "",
+          }),
+        }
+      );
 
-    //   if (response.ok) {
-    //     toast.success("Service added successfully");
-    //     router.push("/admin/services");
-    //   } else {
-    //     toast.error("Failed to add service. Please try again.");
-    //   }
-    // } catch {
-    //   toast.error(
-    //     "An error occurred while adding the service. Please try again."
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
+      if (response.ok) {
+        toast.success("Service added successfully");
+        router.push("/admin/services");
+      } else {
+        toast.error("Failed to add service. Please try again.");
+      }
+    } catch {
+      toast.error(
+        "An error occurred while adding the service. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -154,53 +154,57 @@ const ServiceAddForm = () => {
               </label>
             </div>
           </div>
-          <div>
-            <label
-              htmlFor="serviceTitle"
-              className="block text-sm  text-gray-800"
-            >
-              Title
-            </label>
-            <input
-              id="serviceTitle"
-              {...register("serviceTitle", {
-                required: "Service title is required",
-              })}
-              className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                errors.serviceTitle ? "border-red-500" : "border-gray-300"
-              } px-4 py-2 `}
-            />
-            {errors.serviceTitle && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.serviceTitle.message}
-              </p>
-            )}
-          </div>
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
-            {/* Provider */}
-            {/* <div>
-              <label
-                htmlFor="provider"
-                className="block text-sm  text-gray-800"
-              >
-                Provider
-              </label>
-              <select
-                id="provider"
-                {...register("provider")}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
-              >
-                <option value="" className="">
-                  Select Provider
-                </option>
-                <option value="Arzena">Arzena</option>
-              </select>
-            </div> */}
-            {/* sevice Title */}
-          </div>
           {/*  */}
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
-            {/* Category */}
+            <div>
+              <label
+                htmlFor="serviceTitle"
+                className="block text-sm  text-gray-800"
+              >
+                Title
+              </label>
+              <input
+                id="serviceTitle"
+                {...register("serviceTitle", {
+                  required: "Service title is required",
+                })}
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.serviceTitle ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.serviceTitle && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.serviceTitle.message}
+                </p>
+              )}
+            </div>
+            {/* Duration */}
+            <div>
+              <label
+                htmlFor="duration"
+                className="block text-sm  text-gray-800"
+              >
+                Duration
+              </label>
+              <input
+                id="duration"
+                {...register("duration", {
+                  required: "Duration is required",
+                })}
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.duration ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.duration && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.duration.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Category */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-6">
             <div>
               <label
                 htmlFor="category"
@@ -239,53 +243,6 @@ const ServiceAddForm = () => {
               </select>
             </div>
           </div>
-          {/*  */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
-            {/* Price */}
-            <div>
-              <label htmlFor="price" className="block text-sm  text-gray-800">
-                Price
-              </label>
-              <input
-                id="price"
-                {...register("price", {
-                  required: "pPrice is required",
-                })}
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.price ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.price && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.price.message}
-                </p>
-              )}
-            </div>
-            {/* duration */}
-            <div>
-              <label
-                htmlFor="duration"
-                className="block text-sm  text-gray-800"
-              >
-                Duration
-              </label>
-              <input
-                id="duration"
-                {...register("duration", {
-                  required: "Duration is required",
-                })}
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.duration ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.duration && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.duration.message}
-                </p>
-              )}
-            </div>
-          </div>
-          {/*  */}
 
           {/* Description */}
           <div>
@@ -409,79 +366,7 @@ const ServiceAddForm = () => {
               )}
             </div>
           ))}
-          {/* <div className="grid lg:grid-cols-3 gap-6 mb-6">
-            <div>
-              <label
-                htmlFor="additionalService"
-                className="block text-sm  text-gray-800"
-              >
-                Additional Service
-              </label>
-              <input
-                id="additionalService"
-                {...register("additionalService", {
-                  required: "Additional Service is required",
-                })}
-                placeholder="Enter  service"
-                className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.additionalService
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.additionalService && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.additionalService.message}
-                </p>
-              )}
-            </div>{" "}
-            <div>
-              <label
-                htmlFor="servicePrice"
-                className="block text-sm  text-gray-800"
-              >
-                Price
-              </label>
-              <input
-                id="servicePrice"
-                {...register("servicePrice", {
-                  required: "Service Price is required",
-                })}
-                placeholder="Enter Price"
-                className={`mt-1 placeholder:text-sm  placeholder:text-sm block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.price ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.servicePrice && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.servicePrice.message}
-                </p>
-              )}
-            </div>{" "}
-            <div>
-              <label
-                htmlFor="serviceDuration"
-                className="block text-sm  text-gray-800"
-              >
-                Service Duration
-              </label>
-              <input
-                id="serviceDuration"
-                {...register("serviceDuration", {
-                  required: " Service Duration is required",
-                })}
-                placeholder="Enter Service Duration"
-                className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.serviceDuration ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.serviceDuration && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.serviceDuration.message}
-                </p>
-              )}
-            </div>
-          </div> */}
+
           <button
             className="flex items-center gap-1 text-sm"
             type="button"
@@ -561,63 +446,50 @@ const ServiceAddForm = () => {
               >
                 Division
               </label>
-              <input
+              <select
                 id="division"
-                {...register("division", {
-                  required: "division is required",
-                })}
-                placeholder="Enter your division"
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.division ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.division && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.division.message}
-                </p>
-              )}
+                {...register("division")}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+              >
+                <option value="" className="">
+                  Select division
+                </option>
+                <option value="Arzena">Arzena</option>
+              </select>
             </div>
-            {/* Division */}
+
+            {/*  */}
             <div>
               <label htmlFor="distict" className="block text-sm  text-gray-800">
                 Distict
               </label>
-              <input
+              <select
                 id="distict"
-                {...register("distict", {
-                  required: "distict is required",
-                })}
-                placeholder="Enter your district"
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.distict ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.distict && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.distict.message}
-                </p>
-              )}
+                {...register("distict")}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+              >
+                <option value="" className="">
+                  Select distict
+                </option>
+                <option value="Arzena">Arzena</option>
+              </select>
             </div>
+
             {/* thana */}
             <div>
               <label htmlFor="thana" className="block text-sm  text-gray-800">
                 Thana / Upozila/ Area
               </label>
-              <input
+              <select
                 id="thana"
-                {...register("thana", {
-                  required: "thana is required",
-                })}
-                placeholder="Enter your Thana / Upozila/ Area"
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.thana ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.division && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.division.message}
-                </p>
-              )}
+                {...register("thana")}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+              >
+                <option value="" className="">
+                  Select thana
+                </option>
+                <option value="Arzena">Arzena</option>
+              </select>
             </div>
           </div>
         </div>
@@ -640,20 +512,22 @@ const ServiceAddForm = () => {
               />
             </button>
           </div>
-          <div className="relative my-5 inline-block">
-            <img
-              src={preview}
-              alt="preview"
-              className="w-20 h-20  object-cover"
-            />
-            <button
-              type="button"
-              onClick={() => setPreview("https://i.pravatar.cc/80")}
-              className=" text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
-            >
-              <FaRegTrashCan />
-            </button>
-          </div>
+          {preview && (
+            <div className="relative my-5 inline-block">
+              <img
+                src={preview}
+                alt="preview"
+                className="w-20 h-20  object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => setPreview("https://i.pravatar.cc/80")}
+                className=" text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
+              >
+                <FaRegTrashCan />
+              </button>
+            </div>
+          )}
           <input
             type="file"
             accept="image/png, image/jpeg"
@@ -661,29 +535,6 @@ const ServiceAddForm = () => {
             onChange={handleFileChange}
             className="hidden"
           />
-          <div>
-            <label
-              htmlFor="youtubeVideoLink"
-              className="block text-sm  text-gray-800"
-            >
-              Youtube Video
-            </label>
-            <input
-              id="youtubeVideoLink"
-              {...register("youtubeVideoLink", {
-                required: "youtubeVideoLink Link is required",
-              })}
-              placeholder="https://example.com"
-              className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                errors.youtubeVideoLink ? "border-red-500" : "border-gray-300"
-              } px-4 py-2 `}
-            />
-            {errors.youtubeVideoLink && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.youtubeVideoLink.message}
-              </p>
-            )}
-          </div>{" "}
         </div>
         {/*  */}
         <div className=" rounded-md p-4 mt-8 bg-white ">

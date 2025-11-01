@@ -220,13 +220,6 @@ export default function RegistrationFormModal({
                 </div>
               </div>
 
-              {/* <div className="flex items-center justify-between text-sm text-gray-600">
-                  <label className="flex items-center gap-2">
-                    <input type="checkbox" className="w-4 h-4 rounded" />
-                    Remember Me
-                  </label>
-                </div> */}
-
               <button
                 type="submit"
                 className="w-full py-2 text-white font-medium rounded-md bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] hover:opacity-90"
