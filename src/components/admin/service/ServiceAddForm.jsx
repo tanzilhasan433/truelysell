@@ -128,15 +128,16 @@ const ServiceAddForm = ({ isEditMode, id }) => {
     if (!districtIds.length) return;
     try {
       setLoading(true);
-      const query = districtIds.map((id) => `districtIds=${id}`).join("&");
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getupazilabydistrict?${query}`,
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getupazilabydistrict`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
+          body: JSON.stringify(districtIds),
         }
       );
 
@@ -156,16 +157,16 @@ const ServiceAddForm = ({ isEditMode, id }) => {
     console.log(divisionIds);
     try {
       setLoading(true);
-      // const query = divisionIds.map((id) => `divisionIds=${id}`).join("&");
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdistrictbydivision`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-          body: JSON.stringify([1, 2]),
+          body: JSON.stringify(divisionIds),
         }
       );
 
