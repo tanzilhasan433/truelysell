@@ -10,11 +10,16 @@ import { FaSave } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoCloudUploadOutline } from "react-icons/io5";
 
-const ServiceAddForm = () => {
+const ServiceAddForm = ({ isEditMode, id }) => {
   const router = useRouter();
   const fileInputRef = useRef(null);
-  const { user, userId, loading, setLoading } = useAppContext();
+  const { setLoading } = useAppContext();
   const [providers, setProviders] = useState([]);
+  const [allCategoryData, setAllCategoryData] = useState([]);
+  const [allSubCategoryData, setAllSubCategoryData] = useState([]);
+  const [allUpazila, setAllUpazila] = useState([]);
+  const [allDistrict, setAllDistrict] = useState([]);
+  const [allDivision, setAllDivision] = useState([]);
 
   const {
     register,
@@ -34,26 +39,71 @@ const ServiceAddForm = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "services", // must match defaultValues
+    name: "services",
   });
   const [preview, setPreview] = useState("");
 
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
-  };
+  const getCategories = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getcategories`,
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setValue("image", file);
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setAllCategoryData(result?.data);
+        setLoading(false);
+      } else {
+        const errorData = await response.json();
+        setLoading(false);
+        setAllCategoryData([]);
+      }
+    } catch (error) {
+      setAllCategoryData([]);
+      setLoading(false);
+    }
+  };
+  const getSubCategories = async (catId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getsubcategoriesbycategory?categoryId=${catId}`,
+
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setAllSubCategoryData(result?.data);
+        setLoading(false);
+      } else {
+        const errorData = await response.json();
+        setLoading(false);
+        setAllSubCategoryData([]);
+      }
+    } catch (error) {
+      setAllSubCategoryData([]);
+      setLoading(false);
     }
   };
 
   const getProviders = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/getall?PageNumber=0&SearchText=&SortBy=FirstName&SortDirection=asc&PageSize=100`,
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/getall?PageNumber=0&SearchText=&SortBy=FirstName&SortDirection=asc&PageSize=1000`,
         {
           method: "GET",
           headers: {
@@ -73,40 +123,165 @@ const ServiceAddForm = () => {
       }
     } catch (error) {}
   };
+  // get Upazila by District
+  const getUpazilaByDistrict = async (districtIds = []) => {
+    if (!districtIds.length) return;
+    try {
+      setLoading(true);
+      const query = districtIds.map((id) => `districtIds=${id}`).join("&");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getupazilabydistrict?${query}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch upazilas");
+      const result = await response.json();
+      setAllUpazila(result?.data || []);
+    } catch (error) {
+      console.error(error);
+      setAllUpazila([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // get District by Division
+  const getDistrictByDivision = async (divisionIds = []) => {
+    if (!divisionIds.length) return;
+    console.log(divisionIds);
+    try {
+      setLoading(true);
+      // const query = divisionIds.map((id) => `divisionIds=${id}`).join("&");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdistrictbydivision`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+          body: JSON.stringify([1, 2]),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch districts");
+      const result = await response.json();
+      console.log("districts", result);
+      setAllDistrict(result?.data || []);
+    } catch (error) {
+      console.error(error);
+      setAllDistrict([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllDivision = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdivisions`,
+
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setAllDivision(result?.data);
+        setLoading(false);
+      } else {
+        const errorData = await response.json();
+        setLoading(false);
+        setAllDivision([]);
+      }
+    } catch (error) {
+      setAllDivision([]);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     getProviders();
+    getCategories();
+    getAllDivision();
   }, []);
 
   const onSubmit = async (data) => {
-    console.log("Form Data Submitted: ", data);
     try {
       setLoading(true);
 
+      const formData = new FormData();
+
+      const serviceJson = {
+        title: data.title,
+        providerId: data.providerId,
+        categoryId: Number(data.categoryId),
+        subCategoryId: Number(data.subCategoryId),
+        duration: data.duration,
+        description: data.description,
+        VideoLink: data.VideoLink,
+        isActive: true,
+        isDefault: data.isDefault || false,
+        listServiceAdditional: data.services.map((s) => ({
+          name: s.additionalService,
+          price: parseFloat(s.servicePrice),
+          duration: s.serviceDuration,
+        })),
+        serviceLocation: {
+          divisionId: data.divisionId ? [Number(data.divisionId)] : [],
+          districtId: data.districtId ? [Number(data.districtId)] : [],
+          upazilaId: data.upazilaId ? [Number(data.upazilaId)] : [],
+          serviceArea: data.serviceArea,
+        },
+        serviceSeo: {
+          metaTitle: data.metaTitle,
+          metaKeywords: data.metaKeywords,
+          metaDescription: data.metaDescription,
+        },
+      };
+
+      // append JSON and files
+      formData.append("serviceJson", JSON.stringify(serviceJson));
+
+      if (data.serviceImages && data.serviceImages.length > 0) {
+        for (const img of data.serviceImages) {
+          formData.append("serviceImages", img);
+        }
+      }
+
+      formData.append("defaultImageIndex", "1");
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}service/`,
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/create`,
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user ? user : ""}`,
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-          body: JSON.stringify({
-            ...data,
-            userId: userId ?? "",
-          }),
+          body: formData,
         }
       );
 
       if (response.ok) {
+        const result = await response.json();
+        console.log("Service created:", result);
         toast.success("Service added successfully");
         router.push("/admin/services");
       } else {
-        toast.error("Failed to add service. Please try again.");
+        toast.error("Failed to add service");
       }
-    } catch {
-      toast.error(
-        "An error occurred while adding the service. Please try again."
-      );
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -124,8 +299,10 @@ const ServiceAddForm = () => {
                 Provider
               </label>
               <select
-                id="RoleId"
-                {...register("RoleId")}
+                id="providerId"
+                {...register("providerId", {
+                  required: !isEditMode && "Provider is required",
+                })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1  focus:outline-none "
                 required
               >
@@ -142,11 +319,16 @@ const ServiceAddForm = () => {
                   </option>
                 ))}
               </select>
+              {errors.providerId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.providerId.message}
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-2 lg:col-span-3">
               <input
                 type="checkbox"
-                {...register("IsActive")}
+                {...register("isDefault")}
                 className="toggle toggle-success "
               />
               <label className="text-sm font-medium text-gray-600">
@@ -157,24 +339,21 @@ const ServiceAddForm = () => {
           {/*  */}
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             <div>
-              <label
-                htmlFor="serviceTitle"
-                className="block text-sm  text-gray-800"
-              >
+              <label htmlFor="title" className="block text-sm  text-gray-800">
                 Title
               </label>
               <input
-                id="serviceTitle"
-                {...register("serviceTitle", {
-                  required: "Service title is required",
+                id="title"
+                {...register("title", {
+                  required: !isEditMode && "Title is required",
                 })}
                 className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.serviceTitle ? "border-red-500" : "border-gray-300"
+                  errors.title ? "border-red-500" : "border-gray-300"
                 } px-4 py-2 `}
               />
-              {errors.serviceTitle && (
+              {errors.title && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.serviceTitle.message}
+                  {errors.title.message}
                 </p>
               )}
             </div>
@@ -189,7 +368,7 @@ const ServiceAddForm = () => {
               <input
                 id="duration"
                 {...register("duration", {
-                  required: "Duration is required",
+                  required: !isEditMode && "Duration is required",
                 })}
                 className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
                   errors.duration ? "border-red-500" : "border-gray-300"
@@ -207,40 +386,73 @@ const ServiceAddForm = () => {
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             <div>
               <label
-                htmlFor="category"
+                htmlFor="categoryId"
                 className="block text-sm  text-gray-800"
               >
                 Category
               </label>
               <select
-                id="category"
-                {...register("category")}
+                id="categoryId"
+                {...register("categoryId", {
+                  required: !isEditMode && "Category is required",
+                })}
+                onChange={(e) => {
+                  const selected = [Number(e.target.value)];
+                  setValue("categoryId", selected);
+                  getSubCategories(selected);
+                }}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" className="">
+                <option value="" className="" disabled>
                   Select Category
                 </option>
-                <option value="Arzena">Arzena</option>
+                {allCategoryData.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
+              {errors.categoryId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.categoryId.message}
+                </p>
+              )}
             </div>
             {/* sub category Title */}
             <div>
               <label
-                htmlFor="subCategory"
+                htmlFor="subCategoryId"
                 className="block text-sm  text-gray-800"
               >
                 Sub Category
               </label>
               <select
-                id="subCategory"
-                {...register("subCategory")}
+                id="subCategoryId"
+                {...register("subCategoryId", {
+                  required: !isEditMode && "Sub Category is required",
+                })}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" className="">
-                  Select Sub Category
-                </option>
-                <option value="Arzena">Arzena</option>
+                {allSubCategoryData?.length > 0 ? (
+                  <>
+                    <option value="">Select Sub Category</option>
+                    {allSubCategoryData.map((subCategory) => (
+                      <option key={subCategory.id} value={subCategory.id}>
+                        {subCategory.name}
+                      </option>
+                    ))}
+                  </>
+                ) : (
+                  <option value="" className="overflow-hidden">
+                    No subcategories found
+                  </option>
+                )}
               </select>
+              {errors.subCategoryId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.subCategoryId.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -263,6 +475,7 @@ const ServiceAddForm = () => {
             )}
           </div>
         </div>
+        {/* service */}
         <div className=" rounded-md p-4 mt-8 bg-white ">
           <h6>Service Information</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
@@ -271,8 +484,9 @@ const ServiceAddForm = () => {
               key={field.id}
               className="grid lg:grid-cols-3 gap-6 mb-6 relative"
             >
-              {/* Additional Service */}
+              {/* list Service Additional */}
               <div>
+                {/* name */}
                 <label
                   htmlFor={`services[${index}].additionalService`}
                   className="block text-sm text-gray-800"
@@ -392,26 +606,20 @@ const ServiceAddForm = () => {
 
           {/* video */}
           <div>
-            <label htmlFor="videoLink" className="block text-sm  text-gray-800">
+            <label htmlFor="VideoLink" className="block text-sm  text-gray-800">
               Video Link
             </label>
             <input
-              id="videoLink"
-              {...register("videoLink", {
-                required: "Video Link is required",
-              })}
+              id="VideoLink"
+              {...register("VideoLink")}
               placeholder="https://example.com"
               className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                errors.videoLink ? "border-red-500" : "border-gray-300"
+                errors.VideoLink ? "border-red-500" : "border-gray-300"
               } px-4 py-2 `}
             />
-            {errors.videoLink && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.videoLink.message}
-              </p>
-            )}
           </div>
         </div>
+        {/* location */}
         <div className=" rounded-md p-4 mt-8 bg-white ">
           <h6>Location</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
@@ -425,7 +633,7 @@ const ServiceAddForm = () => {
               <input
                 id="serviceArea"
                 {...register("serviceArea", {
-                  required: "serviceArea is required",
+                  required: !isEditMode && "Service Area is required",
                 })}
                 placeholder="Enter your service area"
                 className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
@@ -441,55 +649,103 @@ const ServiceAddForm = () => {
             {/* Division */}
             <div>
               <label
-                htmlFor="division"
+                htmlFor="divisionId"
                 className="block text-sm  text-gray-800"
               >
                 Division
               </label>
               <select
-                id="division"
-                {...register("division")}
+                id="divisionId"
+                {...register("divisionId")}
+                onChange={(e) => {
+                  const selected = [Number(e.target.value)];
+                  setValue("divisionId", selected);
+                  console.log("selected", selected);
+                  getDistrictByDivision(selected);
+                }}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" className="">
-                  Select division
-                </option>
-                <option value="Arzena">Arzena</option>
+                <option value="">Select Division</option>
+                {allDivision.map((div) => (
+                  <option key={div.id} value={div.id}>
+                    {div.name}
+                  </option>
+                ))}
               </select>
+
+              {errors.divisionId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.divisionId.message}
+                </p>
+              )}
             </div>
 
             {/*  */}
             <div>
-              <label htmlFor="distict" className="block text-sm  text-gray-800">
+              <label
+                htmlFor="districtId"
+                className="block text-sm  text-gray-800"
+              >
                 Distict
               </label>
               <select
-                id="distict"
-                {...register("distict")}
+                id="districtId"
+                {...register("districtId")}
+                onChange={(e) => {
+                  const selected = [Number(e.target.value)];
+                  setValue("districtId", selected);
+                  getUpazilaByDistrict(selected);
+                }}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" className="">
-                  Select distict
-                </option>
-                <option value="Arzena">Arzena</option>
+                <option value="">Select District</option>
+                {allDistrict.map((dist) => (
+                  <option key={dist.id} value={dist.id}>
+                    {dist.name}
+                  </option>
+                ))}
               </select>
+
+              {errors.districtId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.districtId.message}
+                </p>
+              )}
             </div>
 
             {/* thana */}
             <div>
-              <label htmlFor="thana" className="block text-sm  text-gray-800">
+              <label
+                htmlFor="upazilaId"
+                className="block text-sm  text-gray-800"
+              >
                 Thana / Upozila/ Area
               </label>
               <select
-                id="thana"
-                {...register("thana")}
+                id="upazilaId"
+                {...register("upazilaId", {
+                  required: !isEditMode && "Thana is required",
+                })}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" className="">
+                <option value="" className="" disabled>
                   Select thana
                 </option>
-                <option value="Arzena">Arzena</option>
+                {allUpazila?.map((item) => (
+                  <option
+                    key={item.id}
+                    value={item.id}
+                    className="text-gray-700"
+                  >
+                    {item.name}
+                  </option>
+                ))}
               </select>
+              {errors.upazilaId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.upazilaId.message}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -503,7 +759,7 @@ const ServiceAddForm = () => {
           <div className="">
             <button
               type="button"
-              onClick={handleUploadClick}
+              onClick={() => fileInputRef?.current?.click()}
               className="px-3 py-5 bg-gray-50 block w-full border-gray-300 border border-dashed rounded-md text-sm flex justify-center"
             >
               <IoCloudUploadOutline
@@ -521,20 +777,55 @@ const ServiceAddForm = () => {
               />
               <button
                 type="button"
-                onClick={() => setPreview("https://i.pravatar.cc/80")}
+                onClick={() => {
+                  setPreview("");
+                  setValue("serviceImages", null);
+                }}
                 className=" text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
               >
                 <FaRegTrashCan />
               </button>
             </div>
           )}
+
           <input
             type="file"
             accept="image/png, image/jpeg"
-            ref={fileInputRef}
-            onChange={handleFileChange}
+            multiple
+            ref={(el) => {
+              fileInputRef.current = el;
+              register("serviceImages");
+            }}
+            onChange={(e) => {
+              const files = Array.from(e.target.files || []);
+              setPreview(URL.createObjectURL(files[0]));
+              setValue("serviceImages", files, { shouldValidate: true });
+            }}
             className="hidden"
           />
+          {/* <input
+            type="file"
+            accept="image/png, image/jpeg"
+            ref={(el) => {
+              fileInputRef.current = el;
+              register("serviceImages", {
+                required: !isEditMode ? "Image is required" : false,
+              });
+            }}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setPreview(URL.createObjectURL(file));
+                setValue("serviceImages", file, { shouldValidate: true });
+              }
+            }}
+            className="hidden"
+          /> */}
+          {errors.serviceImages && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.serviceImages.message}
+            </p>
+          )}
         </div>
         {/*  */}
         <div className=" rounded-md p-4 mt-8 bg-white ">
@@ -545,60 +836,45 @@ const ServiceAddForm = () => {
               Meta Title (English)
             </label>
             <input
-              id="videoLink"
-              {...register("videoLink", {
-                required: "Video Link is required",
-              })}
+              id="metaTitle"
+              {...register("metaTitle")}
               placeholder="Enter meta title"
               className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                errors.videoLink ? "border-red-500" : "border-gray-300"
+                errors.metaTitle ? "border-red-500" : "border-gray-300"
               } px-4 py-2 `}
             />
-            {errors.videoLink && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.videoLink.message}
-              </p>
-            )}
           </div>
           <div className="mb-6">
-            <label htmlFor="videoLink" className="block text-sm  text-gray-800">
+            <label
+              htmlFor="metaKeywords"
+              className="block text-sm  text-gray-800"
+            >
               Meta Keywords (English)
             </label>
             <input
-              id="videoLink"
-              {...register("videoLink", {
-                required: "Video Link is required",
-              })}
+              id="metaKeywords"
+              {...register("metaKeywords")}
               placeholder="Enter  meta Keywords"
               className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                errors.videoLink ? "border-red-500" : "border-gray-300"
+                errors.metaKeywords ? "border-red-500" : "border-gray-300"
               } px-4 py-2 `}
             />
-            {errors.videoLink && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.videoLink.message}
-              </p>
-            )}
           </div>
           <div>
-            <label htmlFor="videoLink" className="block text-sm  text-gray-800">
+            <label
+              htmlFor="metaDescription"
+              className="block text-sm  text-gray-800"
+            >
               Meta Description (English)
             </label>
             <input
-              id="videoLink"
-              {...register("videoLink", {
-                required: "Video Link is required",
-              })}
+              id="metaDescription"
+              {...register("metaDescription")}
               placeholder="Enter description"
               className={`mt-1 placeholder:text-sm  block text-gray-800 w-full rounded-md border focus:outline-none ${
-                errors.videoLink ? "border-red-500" : "border-gray-300"
+                errors.metaDescription ? "border-red-500" : "border-gray-300"
               } px-4 py-2 `}
             />
-            {errors.videoLink && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.videoLink.message}
-              </p>
-            )}
           </div>
         </div>
 
