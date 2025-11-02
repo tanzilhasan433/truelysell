@@ -1,56 +1,67 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
-const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
-  const { register, handleSubmit, setValue, watch } = useForm({
+const AddUserModal = ({ isOpen, onClose, onSubmit, roles, userId }) => {
+  const { register, handleSubmit, setValue, reset } = useForm({
     defaultValues: {
-      name: "",
-      userName: "",
-      phone: 0,
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-      status: true,
+      FirstName: "",
+      LastName: "",
+      Email: "",
+      MobileNo: "",
+      IsActive: true,
+      Password: "",
+      RoleId: "",
     },
   });
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  // State for preview
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
+  const isEditMode = Boolean(userId);
 
-  // Ref for file input
-  const fileInputRef = useRef(null);
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
+  // Fetch single user for edit mode
+  const getSingleUser = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/getuserbyid/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      const result = await response.json();
+      if (response.ok && result.data) {
+        const user = result.data;
+        setValue("FirstName", user.firstName || "");
+        setValue("LastName", user.lastName || "");
+        setValue("Email", user.email || "");
+        setValue("MobileNo", user.mobileNo || "");
+        setValue("IsActive", user.isActive);
+        setValue("RoleId", user.userRoles?.[0]?.roleId || "");
+      }
+    } catch (error) {}
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
+  useEffect(() => {
+    if (userId) {
+      getSingleUser();
+    } else {
+      reset();
     }
-  };
+  }, [userId, reset]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
+    <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto">
+      <div className="bg-white w-full max-w-md max-h-min rounded-xl shadow-lg p-6 relative my-5 overflow-y-auto sidebar-scroll">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">
-            Add{" "}
-            {role === "customer"
-              ? "Customer"
-              : role === "provider"
-              ? "Provider"
-              : "User"}
+            {isEditMode ? "Edit User" : "Add User"}
           </h6>
           <button
             type="button"
@@ -63,79 +74,54 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Upload */}
-          <div className="flex items-center gap-3">
-            <img
-              src={preview}
-              alt="preview"
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleUploadClick}
-                className="px-3 py-1 bg-[var(--primary-blue)]/10 text-blue-500 border border-[var(--primary-blue)]/10 rounded-md text-sm"
-              >
-                Upload
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreview("https://i.pravatar.cc/80")}
-                className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500">
-            * Recommends a minimum size of 320 x 320 pixels. Allowed files .png
-            and .jpg.
-          </p>
-
-          {/* Hidden File Input */}
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          {/* Name */}
+          {/* First Name */}
           <input
             type="text"
-            placeholder="Name"
-            {...register("name")}
+            placeholder="First Name"
+            {...register("FirstName", {
+              required: !isEditMode && "First name is required",
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
 
-          {/* Job Title */}
+          {/* Last Name */}
           <input
             type="text"
-            placeholder="User Name"
-            {...register("userName")}
+            placeholder="Last Name"
+            {...register("LastName", {
+              required: !isEditMode && "Last name is required",
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
-          {/* phone */}
+
+          {/* Phone */}
           <input
             type="tel"
             placeholder="Phone"
-            {...register("phone")}
+            {...register("MobileNo", {
+              required: !isEditMode && "Phone number is required",
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
-          {/* phone */}
+
+          {/* Email */}
           <input
             type="email"
             placeholder="Email"
-            {...register("email")}
+            {...register("Email", {
+              required: !isEditMode && "Email is required",
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
-          {/* password */}
+
+          {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              {...register("password")}
+              {...register("Password", {
+                required: !isEditMode && "Password is required",
+              })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             />
             <span
@@ -145,41 +131,31 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
-          {/*confirm  password */}
 
-          <div className="relative">
-            <input
-              type={showConfirm ? "text" : "password"}
-              placeholder="Confirm Password"
-              {...register("confirmPassword")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-            />
-            <span
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            >
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-
+          {/* Role */}
           <select
-            {...register("role")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
+            id="RoleId"
+            {...register("RoleId", {
+              required: !isEditMode && "Role is required",
+            })}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           >
-            <option value="" className="text-sm  ">
-              Select Role
+            <option value="" disabled className="text-gray-400">
+              Select a role
             </option>
-            <option value="admin">Admin</option>
-            <option value="provider">Provider</option>
-            <option value="customer">Customer</option>
+            {roles?.map((role) => (
+              <option key={role.id} value={role.id} className="text-gray-700">
+                {role.name}
+              </option>
+            ))}
           </select>
 
           {/* Status */}
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Status</label>
+            <label className="text-sm font-medium text-gray-600">Status</label>
             <input
               type="checkbox"
-              {...register("status")}
+              {...register("IsActive")}
               className="toggle toggle-success"
             />
           </div>
@@ -197,7 +173,7 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, role }) => {
               type="submit"
               className="px-4 py-2 bg-[var(--primary-blue)] text-white rounded-md"
             >
-              Save
+              {isEditMode ? "Update" : "Save"}
             </button>
           </div>
         </form>

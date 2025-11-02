@@ -1,68 +1,71 @@
-import Link from "next/link";
-import { FaEdit, FaTrash, FaRegCircle } from "react-icons/fa";
-import { FaRegCalendarAlt } from "react-icons/fa";
+"use client";
+
+import {
+  FaStar,
+  FaMapMarkerAlt,
+  FaEdit,
+  FaClock,
+  FaRegClock,
+} from "react-icons/fa";
 
 const MyServices = ({ data }) => {
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 my-10">
-      {data.map((service) => (
+      {data.map((item) => (
         <div
-          key={service.id}
-          className="bg-white rounded-md shadow-lg border border-gray-200   flex flex-col"
+          key={item.id}
+          className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
         >
-          {/* service Image */}
-          <div className="relative overflow-hidden">
+          {/* Image Section */}
+          <div className="relative">
             <img
-              src={service.img}
-              alt={service.title}
-              className="w-full h-48 object-cover rounded-t-md transform transition-transform duration-500 ease-in-out hover:scale-110"
+              src={item.img}
+              alt={item.title}
+              className="w-full h-48 object-cover transform transition-transform duration-500 ease-in-out hover:scale-110"
             />
-            <span className="absolute top-2 left-2 bg-white text-gray-700 px-3 py-1 text-sm rounded-md shadow">
-              {service.category}
+            <span className="absolute top-2 left-2 bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+              {item.category}
             </span>
+            <div className="absolute top-2 right-2 bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded flex items-center gap-1">
+              <FaStar className="text-yellow-400 text-sm" />
+              {item.rating}
+            </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 flex flex-col flex-grow">
-            {/* Author + Date */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-              <img
-                src={service.authorImg}
-                alt={service.author}
-                className="w-8 h-8 rounded-full"
-              />
-              <span className="font-medium text-gray-700">
-                {service.author}
-              </span>
-              <FaRegCalendarAlt className="ml-4" />
-              <span>{service.date}</span>
+          <div className="p-4 space-y-2">
+            <h5 className="text-lg font-semibold text-gray-800">
+              {item.title}
+            </h5>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center text-gray-500 text-sm">
+                <FaMapMarkerAlt className="mr-2" />
+                {item.location}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-gray-800">
+                  {item.price}
+                </span>
+                <span className="text-sm text-gray-400 line-through">
+                  {item.oldPrice}
+                </span>
+              </div>
             </div>
 
-            {/* Title */}
-            <Link
-              href={`/service/${service.id}`}
-              className="font-semibold text-gray-800 mb-2 cursor-pointer hover:text-[var(--primary-blue)] transition-colors duration-300"
-            >
-              {service.title}
-            </Link>
-            {/* Description */}
-            <p className="text-gray-500 text-sm mb-4 line-clamp-2">
-              {service.description}
-            </p>
-
-            {/* Actions */}
-            <div className="mt-auto flex justify-between items-center text-gray-600 text-sm">
-              <Link
-                href={`/admin/services/edit?id=${service?.id}`}
-                className="flex items-center gap-1 hover:text-blue-500"
-              >
-                <FaEdit /> Edit
-              </Link>
-              <button className="flex items-center gap-1 hover:text-red-500">
-                <FaTrash /> Delete
-              </button>
-              <button className="flex items-center gap-1 hover:text-gray-800">
-                <FaRegCircle /> {service.status}
+            {/* Buttons */}
+            <div className="flex items-center justify-between mt-4 text-sm">
+              <div className="flex gap-3 text-gray-500">
+                <button className="flex items-center gap-1 hover:text-[var(--primary)]">
+                  <FaEdit /> Edit
+                </button>
+                <button className=" flex items-center gap-1  hover:text-[var(--primary)]">
+                  <FaRegClock /> {item.status}
+                </button>
+              </div>
+              <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1 px-3 rounded">
+                Apply Offer
               </button>
             </div>
           </div>

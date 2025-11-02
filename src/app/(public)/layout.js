@@ -1,3 +1,4 @@
+import CustomCursor from "@/components/shared/CustomCursor";
 import Header from "@/components/shared/Header";
 
 export const metadata = {
@@ -9,8 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={` antialiased`}>
+        <CustomCursor />
         <Header />
-        {children}
+        <div className="mt-20 ">{children}</div>
       </body>
     </html>
   );

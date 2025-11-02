@@ -6,11 +6,14 @@ import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 
 const tabs = [
-  { name: "All Services", component: <AllServicesTable /> },
-  { name: "Active", component: <AllServicesTable /> },
-  { name: "Pending", component: <AllServicesTable /> },
-  { name: "Inactive", component: <AllServicesTable /> },
-  { name: "Deleted", component: <AllServicesTable /> },
+  { name: "All Services", component: <AllServicesTable serviceStatus="all" /> },
+  { name: "Active", component: <AllServicesTable serviceStatus="Active" /> },
+  { name: "Pending", component: <AllServicesTable serviceStatus="Pending" /> },
+  {
+    name: "Inactive",
+    component: <AllServicesTable serviceStatus="inactive" />,
+  },
+  { name: "Deleted", component: <AllServicesTable serviceStatus="deleted" /> },
 ];
 
 export default function AllServiceComponent() {
