@@ -1,6 +1,7 @@
 import { Archivo } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
+import { Toaster } from "react-hot-toast";
 const archivo = Archivo({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"], // choose the weights you need
@@ -15,7 +16,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${archivo.className} antialiased`}>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          {children}
+          <Toaster position="top-right" reverseOrder={false} />
+        </AppProvider>
       </body>
     </html>
   );

@@ -1,0 +1,88 @@
+export const testimonialsData = [
+  {
+    id: 1,
+    img: "https://randomuser.me/api/portraits/women/12.jpg",
+    userName: "John Smith\n                    johnsmith@example.com",
+    rating: 4,
+    content: "Lorem ipsum dolor sit",
+    createAt: "28 Sep 2023 16:43PM",
+    status: "Active",
+    action: "",
+  },
+  {
+    id: 2,
+    img: "https://randomuser.me/api/portraits/men/52.jpg",
+    userName: "John Smith\n                    johnsmith@example.com",
+    rating: 5,
+    content: "Lorem ipsum dolor sit",
+    createAt: "20 Sep 2023 16:43PM",
+    status: "Inactive",
+    action: "",
+  },
+  {
+    id: 3,
+    img: "https://randomuser.me/api/portraits/women/68.jp",
+
+    userName: "Robert\n                    robert@example.com",
+    rating: 4.5,
+    content: "Lorem ipsum dolor sit",
+    createAt: "20 Sep 2023 16:43PM",
+    status: "Active",
+    action: "",
+  },
+  {
+    id: 4,
+    img: "https://randomuser.me/api/portraits/men/32.jpg",
+
+    userName: "Sharonda\n                    sharonda@example.com",
+    rating: 5,
+    content: "Lorem ipsum dolor sit",
+    createAt: "10 Sep 2023 16:43PM",
+    status: "Inactive",
+    action: "",
+  },
+  {
+    id: 5,
+    img: "https://randomuser.me/api/portraits/men/52.jpg",
+
+    userName: "Robert\n                    robert@example.com",
+    rating: 5,
+    content: "Lorem ipsum dolor sit",
+    createAt: "20 Sep 2023 16:43PM",
+    status: "Active",
+    action: "",
+  },
+  {
+    id: 6,
+    img: "https://randomuser.me/api/portraits/men/52.jpg",
+
+    userName: "Nicholas\n                    nicholas@example.com",
+    rating: 3,
+    content: "Lorem ipsum dolor sit",
+    createAt: "15 Sep 2023 16:43PM",
+    status: "Inactive",
+    action: "",
+  },
+  {
+    id: 7,
+    img: "https://randomuser.me/api/portraits/men/52.jpg",
+
+    userName: "John Smith\n                    johnsmith@example.com",
+    rating: 4,
+    content: "Lorem ipsum dolor sit",
+    createAt: "20 Sep 2023 16:43PM",
+    status: "Inactive",
+    action: "",
+  },
+  {
+    id: 8,
+    img: "https://randomuser.me/api/portraits/men/32.jpg",
+
+    userName: "Robert\n                    robert@example.com",
+    rating: 5,
+    content: "Lorem ipsum dolor sit",
+    createAt: "20 Sep 2023 16:43PM",
+    status: "Active",
+    action: "",
+  },
+];

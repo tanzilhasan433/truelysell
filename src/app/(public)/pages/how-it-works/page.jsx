@@ -1,7 +1,11 @@
-import React from "react";
+import HowItWorks from "@/components/page-component/how-it-works/HowItWorks";
 
 const HowItWorksPage = () => {
-  return <div>HowItWorksPage</div>;
+  return (
+    <div>
+      <HowItWorks />
+    </div>
+  );
 };
 
 export default HowItWorksPage;

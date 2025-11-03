@@ -27,6 +27,10 @@
   --danger-hover: #c60b0b; /* ~10% darker */
   --light-hover: #cfd1d2; /* ~10% darker */
 }
+body::selection {
+  background-color: #ff008a;
+  color: white;
+}
 
 h1,
 h2,
@@ -56,6 +60,7 @@ h5 {
 h6 {
   font-size: 16px;
 }
+
 Link {
   color: #2a313d;
   text-decoration: none;
@@ -79,4 +84,54 @@ ul {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+/* Hide scrollbar but keep scrolling */
+.sidebar-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes slowBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+.animate-slow-bounce {
+  animation: slowBounce 5s ease-in-out infinite;
+}
+@keyframes leftRightBounce {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+}
+
+.animate-leftRightBounce {
+  animation: leftRightBounce 5s ease-in-out infinite;
 }
