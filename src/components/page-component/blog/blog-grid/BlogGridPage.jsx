@@ -1,6 +1,5 @@
-import React from 'react';
-import { AiFillHome } from 'react-icons/ai'; // Using AiFillHome for the home icon
-import blogPosts from '../../data/blogPosts'; // Import your dummy data
+import React from "react";
+import { AiFillChrome, AiFillHome } from "react-icons/ai"; // Using AiFillHome for the home icon
 
 // --- Component for a single blog card ---
 // Notice it now accepts { post } as a prop
@@ -10,7 +9,11 @@ const BlogPostCard = ({ post }) => {
     <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
       <div className="relative">
         {/* These 'post.' variables will now work correctly */}
-        <img src={post.imageUrl} alt={post.title} className="w-full h-48 object-cover" />
+        <img
+          src={post.imageUrl}
+          alt={post.title}
+          className="w-full h-48 object-cover"
+        />
         <div className="absolute top-3 left-3 bg-gray-800 bg-opacity-75 text-white text-xs font-semibold px-3 py-1 rounded-full">
           {post.category}
         </div>
@@ -22,7 +25,11 @@ const BlogPostCard = ({ post }) => {
       </div>
       <div className="p-4">
         <div className="flex items-center text-sm text-gray-600 mb-3">
-          <img src={post.authorAvatar} alt={post.authorName} className="w-7 h-7 rounded-full mr-2 object-cover" />
+          <img
+            src={post.authorAvatar}
+            alt={post.authorName}
+            className="w-7 h-7 rounded-full mr-2 object-cover"
+          />
           <span>{post.authorName}</span>
           <span className="mx-2">·</span>
           <span>{post.date}</span>
@@ -30,9 +37,7 @@ const BlogPostCard = ({ post }) => {
         <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
           {post.title}
         </h3>
-        <p className="text-sm text-gray-700 line-clamp-3">
-          {post.excerpt}
-        </p>
+        <p className="text-sm text-gray-700 line-clamp-3">{post.excerpt}</p>
       </div>
     </div>
   );
@@ -45,8 +50,10 @@ export default function BlogGridPage() {
       {/* Breadcrumb Navigation */}
       <div className="bg-white shadow-sm py-4 px-6 md:px-10">
         <div className="max-w-7xl mx-auto flex items-center text-sm text-gray-600">
-          <AiFillHome className="mr-2 text-gray-500" />
-          <a href="/" className="hover:text-gray-800">Home</a>
+          <AiFillChrome className="mr-2 text-gray-500" />
+          <a href="/" className="hover:text-gray-800">
+            Home
+          </a>
           <span className="mx-2">›</span>
           <span className="text-gray-900 font-medium">Blog Grid</span>
         </div>
