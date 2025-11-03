@@ -47,54 +47,48 @@ const stats = [
 const OrderEstimation = () => {
   return (
     <div>
-      <main className=" bg-slate-50 p-6 sm:p-8">
-        
-
-        {/* Responsive Grid for Stat Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <main className="mt-5 mb-10">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 ">
           {stats.map((stat) => {
-            // Dynamically create the icon component
             const IconComponent = stat.icon;
 
             return (
               <div
                 key={stat.title}
-                className="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg"
+                className="bg-white rounded-xl shadow border border-gray-200/20 p-3 transition-all hover:shadow-md"
               >
-                {/* Top Row: Icon and Percentage Badge */}
                 <div className="flex justify-between items-start">
-                  {/* Icon */}
-                  <div className={`p-3 rounded-full ${stat.iconBg}`}>
-                    {/* react-icons are used as components directly */}
-                    <IconComponent className={`h-6 w-6 ${stat.iconColor}`} />
+                  <div className="flex items-center gap-4">
+                    <div className={`p-2 rounded-full ${stat.iconBg}`}>
+                      <IconComponent className={`h-4 w-4 ${stat.iconColor}`} />
+                    </div>
+                    <div className="">
+                      <p className="text-sm font-medium text-slate-500">
+                        {stat.title}
+                      </p>
+                      <p className="text-xl font-bold text-slate-900 mt-1">
+                        {stat.value}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Percentage Badge */}
-                  <span
-                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold
+                  <div>
+                    <span
+                      className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold
                     ${
                       stat.changeType === "increase"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
                     }`}
-                  >
-                    {stat.changeType === "increase" ? (
-                      <IoMdTrendingUp className="h-3.5 w-3.5 mr-1" />
-                    ) : (
-                      <IoMdTrendingDown className="h-3.5 w-3.5 mr-1" />
-                    )}
-                    {stat.change}
-                  </span>
-                </div>
-
-                {/* Bottom Section: Title and Value */}
-                <div className="mt-2">
-                  <p className="text-sm font-medium text-slate-500">
-                    {stat.title}
-                  </p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">
-                    {stat.value}
-                  </p>
+                    >
+                      {stat.changeType === "increase" ? (
+                        <IoMdTrendingUp className="h-3.5 w-3.5 mr-1" />
+                      ) : (
+                        <IoMdTrendingDown className="h-3.5 w-3.5 mr-1" />
+                      )}
+                      {stat.change}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
