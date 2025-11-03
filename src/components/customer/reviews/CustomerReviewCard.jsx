@@ -1,84 +1,146 @@
-import React from "react";
-import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
-const Button = ({ href, children }) => {
-  return (
-    <a href={href} className="  px-2 py-2 rounded-md">
-      {children}
-    </a>
-  );
-};
+"use client";
+import { FaStar, FaEdit, FaTrash } from "react-icons/fa";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { FiEdit } from "react-icons/fi";
+
 const reviews = [
   {
-    name: "Jeffrey Akridge",
-    date: "July 11, 2024 11:38 am",
-    service: "Building Construction Services.",
+    id: 1,
+    title: "Building Construction Services.",
     rating: 5,
+    user: "Jeffrey Akridge",
+    date: "July 11, 2024 11:38 am",
     review:
       "The construction service delivered excellent craftsmanship, completing my home renovation on time with clear communication throughout. Highly recommend for quality and professionalism!",
+    image:
+      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
-    name: "Nancy Olson",
-    date: "July 18, 2024 04:30 pm",
-    service: "Commercial Painting Services.",
+    id: 2,
+    title: "Commercial Painting Services.",
     rating: 5,
+    user: "Nancy Olson",
+    date: "July 18, 2024 04:30 pm",
     review:
       "The commercial painting service provided outstanding results, with precise attention to detail and timely completion. Their professionalism and quality of work are top-notch!",
+    image:
+      "https://images.unsplash.com/photo-1581092334394-1e7e41f7cfd3?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://randomuser.me/api/portraits/women/45.jpg",
   },
   {
-    name: "Ramona Kingsley",
-    date: "July 28, 2024 02:15 pm",
-    service: "Plumbing Services.",
+    id: 3,
+    title: "Plumbing Services.",
     rating: 5,
+    user: "Ramona Kingsley",
+    date: "July 28, 2024 02:15 pm",
     review:
       "The plumbing service was efficient and reliable, quickly resolving the issue with excellent workmanship. Highly recommend for their prompt and professional service!",
+    image:
+      "https://images.unsplash.com/photo-1581574204243-1f157c7620ca?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://randomuser.me/api/portraits/women/33.jpg",
+  },
+  {
+    id: 4,
+    title: "Electrical Installation Services.",
+    rating: 5,
+    user: "Michael Brown",
+    date: "August 05, 2024 09:45 am",
+    review:
+      "The electrical installation was done perfectly. Everything works flawlessly and safely. Great communication and attention to detail!",
+    image:
+      "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://randomuser.me/api/portraits/men/14.jpg",
+  },
+  {
+    id: 5,
+    title: "Roofing Services.",
+    rating: 5,
+    user: "Sarah Miller",
+    date: "August 10, 2024 03:20 pm",
+    review:
+      "Professional and quick roofing repair service. The team was skilled, and the price was fair. The roof looks brand new now!",
+    image:
+      "https://images.unsplash.com/photo-1597006611888-94343a63e1d7?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://randomuser.me/api/portraits/women/21.jpg",
+  },
+  {
+    id: 6,
+    title: "Interior Design Services.",
+    rating: 5,
+    user: "Daniel Clark",
+    date: "August 18, 2024 01:00 pm",
+    review:
+      "Absolutely loved the interior design transformation! The team understood my vision perfectly and turned my space into something elegant and modern.",
+    image:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://randomuser.me/api/portraits/men/65.jpg",
   },
 ];
+
 const CustomerReviewCard = () => {
   return (
-    <div className="max-w-4xl mx-auto p-4 mt-2">
-      <div className="space-y-8">
-        {reviews.map((review, index) => (
-          <div key={index} className="bg-white p-10 rounded-lg shadow-md">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-gray-200 mr-4">
-                <img src="images/your-image.jpg" alt="Image" className="w-full h-full object-cover rounded-full" />
+    <div>
+      {/*  */}
+      <div className="max-w-5xl mx-auto  space-y-4">
+        {reviews.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white shadow-sm rounded-xl p-4 border border-gray-100 hover:shadow-md transition"
+          >
+            <div className="flex gap-4 items-start">
+              {/* Service Image */}
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-20 h-20 rounded-lg object-cover"
+              />
+
+              {/* Content */}
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h6 className="font-semibold text-gray-800">
+                      {item.title}
+                    </h6>
+                    <div className="flex text-yellow-400">
+                      {Array(item.rating)
+                        .fill()
+                        .map((_, i) => (
+                          <FaStar key={i} />
+                        ))}
+                    </div>
+                  </div>
+                  <div className=" flex items-center gap-2">
+                    {" "}
+                    <button className="bg-gray-100 text-gray-500 hover:text-[var(--primary)]  p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                      <FiEdit size={25} />
+                    </button>
+                    <button className="bg-gray-100 text-gray-500 p-2 h-7 w-7 hover:text-[var(--primary)]   rounded-full flex items-center  justify-center  gap-2">
+                      <FaRegTrashCan size={25} />
+                    </button>
+                  </div>
                 </div>
-              <div className="flex items-center justify-between">
-                <h5 className="text-sm text-gray-500">{review.service} </h5>
-                    <div className="ml-auto flex items-center ">
-                {[...Array(review.rating)].map((_, i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-yellow-500"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    stroke="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 15l-3.472 2.345.84-4.902L3 8.293l4.944-.428L10 3l2.056 4.865L17 8.293l-4.368 3.15.84 4.902L10 15z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ))}
-              </div>
+
+                <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                  <img
+                    src={item.avatar}
+                    alt={item.user}
+                    className="w-7 h-7 rounded-full"
+                  />
+                  <span className="font-medium">{item.user}</span>
+                  <span className="text-gray-400">•</span>
+                  <span>{item.date}</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center mb-2">
-              
-              <p className="text-sm font-semibold">{review.name}</p>
-                <p className="text-sm text-gray-500">.  {review.date}</p>
-              <div className="ml-auto flex items-center">
-                <Button href="Edit"><FaRegEdit /></Button>
-                <Button href="Delete"><RiDeleteBin6Line /></Button>
-              </div>
-            </div>
-            <p className="text-gray-700">{review.review}</p>
+            <p className="mt-3 text-gray-700 leading-relaxed text-sm">
+              {item.review}
+            </p>
           </div>
         ))}
       </div>
+      {/*  */}
     </div>
   );
 };

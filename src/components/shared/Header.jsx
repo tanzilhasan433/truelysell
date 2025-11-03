@@ -30,7 +30,7 @@ export default function Header() {
       className={`fixed bg-white top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-white backdrop-blur-sm shadow-md py-6"
-          : "bg-transparent py-6"
+          : "bg-transparent py-6 "
       }`}
     >
       <div className="container mx-auto ">
