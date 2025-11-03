@@ -37,11 +37,7 @@ const Sidebar = ({ navLinks, role }) => {
         onClick={toggleMobileMenu}
         className="md:hidden fixed top-6 cursor-pointer left-4 z-50  0"
       >
-        {isMobileMenuOpen ? (
-          <FaTimes className="text-gray-600 text-xl" />
-        ) : (
-          <FaBars className="text-gray-600 text-xl" />
-        )}
+        {!isMobileMenuOpen && <FaBars className="text-gray-600 text-xl" />}
       </button>
 
       {/* Mobile Overlay */}
@@ -72,9 +68,18 @@ const Sidebar = ({ navLinks, role }) => {
           }
         `}
       >
+        {isMobileMenuOpen && (
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden fixed top-4 cursor-pointer right-4 z-50  h-6 w-6 rounded-full bg-gray-200 p-2 flex items-center justify-center"
+          >
+            <FaTimes className="text-gray-600 " />
+          </button>
+        )}
+
         <Link
           href={"/"}
-          className={`flex items-center ${
+          className={`flex items-center  ${
             role !== "admin" ? "" : "mb-8 mt-14 md:mt-0"
           } gap-2 `}
         >

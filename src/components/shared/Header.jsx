@@ -30,7 +30,7 @@ export default function Header() {
       className={`fixed bg-white top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-white backdrop-blur-sm shadow-md py-6"
-          : "bg-transparent py-6"
+          : "bg-transparent py-6 "
       }`}
     >
       <div className="container mx-auto ">
@@ -54,6 +54,10 @@ export default function Header() {
               <DropdownLink href="/pages/about">About</DropdownLink>
               <DropdownLink href="/pages/blog">Blog</DropdownLink>
               <DropdownLink href="/pages/contact-us">Contact Us</DropdownLink>
+              <DropdownLink href="/pages/faq">FAQ</DropdownLink>
+              <DropdownLink href="/pages/how-it-works">
+                How it works
+              </DropdownLink>
             </Dropdown>
 
             <NavLink
