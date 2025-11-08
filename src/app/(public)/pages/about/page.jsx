@@ -1,12 +1,21 @@
-import AboutComponent from "@/components/pages/about/AboutComponent";
-import AboutHeroSection from "@/components/pages/about/AboutHeroSection";
+import AboutBestSolution from "@/components/pages/about/AboutBestSolution";
+
+import AboutHowItWorks from "@/components/pages/about/AboutHowItWorks";
+import BestServices from "@/components/pages/about/BestServices";
+import Testimonials from "@/components/pages/about/Testimonials";
+import WhyChooseUs from "@/components/pages/about/WhyChooseUS";
+import HeadingSection from "@/components/shared/HeadingSection";
 import React from "react";
 
 const AboutUsPage = () => {
   return (
     <div>
-      <AboutHeroSection />
-      <AboutComponent />
+      <HeadingSection />
+      <AboutBestSolution />
+      <WhyChooseUs />
+      <AboutHowItWorks />
+      <BestServices />
+      <Testimonials />
     </div>
   );
 };

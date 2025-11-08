@@ -20,6 +20,10 @@ const ServiceAddForm = ({ isEditMode, id }) => {
   const [allUpazila, setAllUpazila] = useState([]);
   const [allDistrict, setAllDistrict] = useState([]);
   const [allDivision, setAllDivision] = useState([]);
+  const [isSubCategoryDisabled, setIsSubCategoryDisabled] = useState(true);
+  const [noSubCategoryFound, setNoSubCategoryFound] = useState(false);
+  const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
+  const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
 
   const {
     register,
@@ -87,15 +91,31 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       );
       if (response.ok) {
         const result = await response.json();
-        setAllSubCategoryData(result?.data);
+        // setAllSubCategoryData(result?.data);
+
         setLoading(false);
+
+        const data = result?.data || [];
+        setAllSubCategoryData(data);
+
+        if (data.length > 0) {
+          setIsSubCategoryDisabled(false);
+          setNoSubCategoryFound(false);
+        } else {
+          setIsSubCategoryDisabled(true);
+          setNoSubCategoryFound(true);
+        }
       } else {
         const errorData = await response.json();
         setLoading(false);
         setAllSubCategoryData([]);
+        setIsSubCategoryDisabled(true);
+        setNoSubCategoryFound(true);
       }
     } catch (error) {
       setAllSubCategoryData([]);
+      setIsSubCategoryDisabled(true);
+      setNoSubCategoryFound(true);
       setLoading(false);
     }
   };
@@ -123,9 +143,13 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       }
     } catch (error) {}
   };
-  // get Upazila by District
+
   const getUpazilaByDistrict = async (districtIds = []) => {
-    if (!districtIds.length) return;
+    setAllUpazila([]);
+    if (!districtIds.length || districtIds[0] === 0) {
+      setIsUpazilaDisabled(true);
+      return;
+    }
     try {
       setLoading(true);
 
@@ -144,17 +168,26 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       if (!response.ok) throw new Error("Failed to fetch upazilas");
       const result = await response.json();
       setAllUpazila(result?.data || []);
+      setIsUpazilaDisabled(false);
     } catch (error) {
-      console.error(error);
       setAllUpazila([]);
+      setIsUpazilaDisabled(true);
     } finally {
       setLoading(false);
     }
   };
-  // get District by Division
+
   const getDistrictByDivision = async (divisionIds = []) => {
-    if (!divisionIds.length) return;
-    console.log(divisionIds);
+    setAllDistrict([]);
+    setAllUpazila([]);
+    setValue("districtId", "");
+    setValue("upazilaId", "");
+    setIsUpazilaDisabled(true);
+
+    if (!divisionIds.length || divisionIds[0] === 0) {
+      setIsDistrictDisabled(true);
+      return;
+    }
     try {
       setLoading(true);
 
@@ -172,10 +205,10 @@ const ServiceAddForm = ({ isEditMode, id }) => {
 
       if (!response.ok) throw new Error("Failed to fetch districts");
       const result = await response.json();
-      console.log("districts", result);
       setAllDistrict(result?.data || []);
+      setIsDistrictDisabled(false);
     } catch (error) {
-      console.error(error);
+      setIsDistrictDisabled(true);
       setAllDistrict([]);
     } finally {
       setLoading(false);
@@ -230,7 +263,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         duration: data.duration,
         description: data.description,
         VideoLink: data.VideoLink,
-        isActive: true,
+        isActive: data.isActive || true,
         isDefault: data.isDefault || false,
         listServiceAdditional: data.services.map((s) => ({
           name: s.additionalService,
@@ -250,7 +283,6 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         },
       };
 
-      // append JSON and files
       formData.append("serviceJson", JSON.stringify(serviceJson));
 
       if (data.serviceImages && data.serviceImages.length > 0) {
@@ -260,6 +292,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       }
 
       formData.append("defaultImageIndex", "1");
+      console.log("formData", formData);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/create`,
@@ -281,7 +314,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         toast.error("Failed to add service");
       }
     } catch (error) {
-      console.error(error);
+      console.error("error", error);
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -295,27 +328,20 @@ const ServiceAddForm = ({ isEditMode, id }) => {
           <h6>Service Information</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
           <div className="mb-6 grid lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-9">
-              <label className="text-sm font-medium text-gray-600">
-                Provider
-              </label>
+            <div className="lg:col-span-6">
+              <label className="block text-sm  text-gray-800">Provider</label>
               <select
                 id="providerId"
                 {...register("providerId", {
                   required: !isEditMode && "Provider is required",
                 })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1  focus:outline-none "
-                required
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" disabled className="text-gray-400">
+                <option value="" className="">
                   Select a provider
                 </option>
                 {providers?.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                    className="text-gray-700"
-                  >
+                  <option key={item.id} value={item.id} className="">
                     {item.name}
                   </option>
                 ))}
@@ -333,7 +359,17 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 className="toggle toggle-success "
               />
               <label className="text-sm font-medium text-gray-600">
-                is Default
+                Is Default
+              </label>
+            </div>
+            <div className="flex items-center gap-2 lg:col-span-3">
+              <input
+                type="checkbox"
+                {...register("isActive")}
+                className="toggle toggle-success "
+              />
+              <label className="text-sm font-medium text-gray-600">
+                Is Active
               </label>
             </div>
           </div>
@@ -398,13 +434,19 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                   required: !isEditMode && "Category is required",
                 })}
                 onChange={(e) => {
-                  const selected = [Number(e.target.value)];
+                  const selected = Number(e.target.value);
                   setValue("categoryId", selected);
-                  getSubCategories(selected);
+                  if (selected) {
+                    getSubCategories(selected);
+                  } else {
+                    setAllSubCategoryData([]);
+                    setIsSubCategoryDisabled(true);
+                    setNoSubCategoryFound(false);
+                  }
                 }}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
-                <option value="" className="" disabled>
+                <option value="" className="">
                   Select Category
                 </option>
                 {allCategoryData.map((category) => (
@@ -432,22 +474,21 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 {...register("subCategoryId", {
                   required: !isEditMode && "Sub Category is required",
                 })}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+                disabled={isSubCategoryDisabled}
+                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
+                  isSubCategoryDisabled ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
               >
-                {allSubCategoryData?.length > 0 ? (
-                  <>
-                    <option value="">Select Sub Category</option>
-                    {allSubCategoryData.map((subCategory) => (
-                      <option key={subCategory.id} value={subCategory.id}>
-                        {subCategory.name}
-                      </option>
-                    ))}
-                  </>
-                ) : (
-                  <option value="" className="overflow-hidden">
-                    No subcategories found
+                <option value="">
+                  {noSubCategoryFound
+                    ? "No Sub Category Found"
+                    : "Please Select Sub Category"}
+                </option>
+                {allSubCategoryData.map((subCategory) => (
+                  <option key={subCategory.id} value={subCategory.id}>
+                    {subCategory.name}
                   </option>
-                )}
+                ))}
               </select>
               {errors.subCategoryId && (
                 <p className="mt-1 text-sm text-red-600">
@@ -659,10 +700,16 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 id="divisionId"
                 {...register("divisionId")}
                 onChange={(e) => {
-                  const selected = [Number(e.target.value)];
-                  setValue("divisionId", selected);
-                  console.log("selected", selected);
+                  const selectedValue = e.target.value;
+                  const selected = selectedValue ? [Number(selectedValue)] : [];
+                  setValue("divisionId", selectedValue);
                   getDistrictByDivision(selected);
+
+                  setValue("districtId", "");
+                  setValue("upazilaId", "");
+
+                  setIsDistrictDisabled(!selectedValue);
+                  setIsUpazilaDisabled(true);
                 }}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
               >
@@ -692,12 +739,18 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               <select
                 id="districtId"
                 {...register("districtId")}
+                disabled={isDistrictDisabled}
                 onChange={(e) => {
-                  const selected = [Number(e.target.value)];
-                  setValue("districtId", selected);
+                  const selectedValue = e.target.value;
+                  const selected = selectedValue ? [Number(selectedValue)] : [];
+                  setValue("districtId", selectedValue);
                   getUpazilaByDistrict(selected);
+                  setValue("upazilaId", "");
+                  setIsUpazilaDisabled(!selectedValue);
                 }}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
+                  isDistrictDisabled ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
               >
                 <option value="">Select District</option>
                 {allDistrict.map((dist) => (
@@ -725,12 +778,15 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               <select
                 id="upazilaId"
                 {...register("upazilaId", {
-                  required: !isEditMode && "Thana is required",
+                  required: !isEditMode && "Upazila is required",
                 })}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+                disabled={isUpazilaDisabled}
+                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
+                  isUpazilaDisabled ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
               >
-                <option value="" className="" disabled>
-                  Select thana
+                <option value="" className="">
+                  Select upazila
                 </option>
                 {allUpazila?.map((item) => (
                   <option
@@ -883,8 +939,8 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         <div className="flex justify-end mb-5">
           <button
             type="submit"
-            // disabled={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--primary-blue)] to-blue-600 text-white  rounded-md hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+            // ={loading}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--primary-blue)] to-blue-600 text-white  rounded-md hover:shadow-lg transition-all duration-200 :opacity-50"
           >
             <FaSave />
             <span>Submit</span>

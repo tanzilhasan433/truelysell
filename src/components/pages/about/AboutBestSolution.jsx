@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import Image from "next/image";
 import BGAbout from "@/assets/img/about-bg.png";
 const AboutBestSolution = () => {
-    return (
-        <div className=" bg-gray-50 ms-10 me-10 ">
+  return (
+    <div className=" bg-white ms-10 me-10  py-5">
       <div className="max-w-screen-xl mx-auto px-4 py-4">
         <div className="grid md:grid-cols-2 ">
           {/* Left Side: Image */}
@@ -27,10 +27,19 @@ const AboutBestSolution = () => {
               Best Solution For Cleaning Services
             </h2>
             <p className=" text-gray-700 mb-4">
-              Welcome to Truelysell, your premier destination for connecting with top-rated service providers and finding the perfect match for your needs. Our platform is designed to simplify the process of discovering, evaluating, and hiring trusted professionals across a wide range of services, from home improvement and IT support to personal care and more.
+              Welcome to Truelysell, your premier destination for connecting
+              with top-rated service providers and finding the perfect match for
+              your needs. Our platform is designed to simplify the process of
+              discovering, evaluating, and hiring trusted professionals across a
+              wide range of services, from home improvement and IT support to
+              personal care and more.
             </p>
             <p className=" text-gray-700 mb-4">
-              At Truelysell, our mission is to bridge the gap between service providers and customers by offering a seamless and efficient marketplace experience. We aim to empower both parties by providing a reliable platform where quality, transparency, and customer satisfaction are our top priorities.
+              At Truelysell, our mission is to bridge the gap between service
+              providers and customers by offering a seamless and efficient
+              marketplace experience. We aim to empower both parties by
+              providing a reliable platform where quality, transparency, and
+              customer satisfaction are our top priorities.
             </p>
 
             <ul className="list-disc list-inside text-gray-700">
@@ -43,7 +52,7 @@ const AboutBestSolution = () => {
         </div>
       </div>
     </div>
-    );
+  );
 };
 
 export default AboutBestSolution;
