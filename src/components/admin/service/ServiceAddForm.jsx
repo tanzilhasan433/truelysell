@@ -23,6 +23,8 @@ const ServiceAddForm = ({ isEditMode, id }) => {
   const [allDivision, setAllDivision] = useState([]);
   const [isSubCategoryDisabled, setIsSubCategoryDisabled] = useState(true);
   const [noSubCategoryFound, setNoSubCategoryFound] = useState(false);
+  const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
+  const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
 
   const {
     register,
@@ -284,6 +286,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
 
       if (!response.ok) throw new Error("Failed to fetch districts");
       const result = await response.json();
+
       setAllDistrict(result?.data || []);
       setIsDistrictDisabled(false);
     } catch (error) {
