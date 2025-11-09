@@ -9,6 +9,7 @@ import { useAppContext } from "@/context/AppContext";
 import { FaSave } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoCloudUploadOutline } from "react-icons/io5";
+import LocationSelect from "./LocationSelect";
 
 const ServiceAddForm = ({ isEditMode, id }) => {
   const router = useRouter();
@@ -22,8 +23,6 @@ const ServiceAddForm = ({ isEditMode, id }) => {
   const [allDivision, setAllDivision] = useState([]);
   const [isSubCategoryDisabled, setIsSubCategoryDisabled] = useState(true);
   const [noSubCategoryFound, setNoSubCategoryFound] = useState(false);
-  const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
-  const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
 
   const {
     register,
@@ -46,6 +45,86 @@ const ServiceAddForm = ({ isEditMode, id }) => {
     name: "services",
   });
   const [preview, setPreview] = useState("");
+
+  const getSingleService = async () => {
+    if (!isEditMode || !id) return;
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/getservicebyid/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Single Service Data:", result);
+        const serviceData = result.data;
+
+        const mappedData = {
+          title: serviceData.title,
+          providerId: serviceData.providerId,
+          categoryId: serviceData.categoryId,
+          subCategoryId: serviceData.subCategoryId,
+          duration: serviceData.duration,
+          description: serviceData.description,
+          VideoLink: serviceData.videoLink,
+          isActive: serviceData.isActive,
+          isDefault: serviceData.isDefault,
+          serviceArea: serviceData.serviceLocation?.serviceArea || "",
+
+          metaTitle: serviceData.serviceSeo?.metaTitle,
+          metaKeywords: serviceData.serviceSeo?.metaKeywords,
+          metaDescription: serviceData.serviceSeo?.metaDescription,
+
+          divisionId:
+            serviceData.serviceLocation?.divisionId?.[0]?.toString() || "",
+          districtId:
+            serviceData.serviceLocation?.districtId?.[0]?.toString() || "",
+          upazilaId:
+            serviceData.serviceLocation?.upazilaId?.[0]?.toString() || "",
+
+          services: serviceData.listServiceAdditional?.map((s) => ({
+            additionalService: s.name,
+            servicePrice: s.price.toString(),
+            serviceDuration: s.duration,
+          })) || [
+            { additionalService: "", servicePrice: "", serviceDuration: "" },
+          ],
+        };
+
+        reset(mappedData);
+
+        if (serviceData.categoryId) {
+          await getSubCategories(serviceData.categoryId);
+        }
+
+        const divisionId = serviceData.serviceLocation?.divisionId?.[0];
+        const districtId = serviceData.serviceLocation?.districtId?.[0];
+
+        if (divisionId) {
+          await getDistrictByDivision([divisionId]);
+          setIsDistrictDisabled(false);
+
+          if (districtId) {
+            await getUpazilaByDistrict([districtId]);
+            setIsUpazilaDisabled(false);
+          }
+        }
+      } else {
+        toast.error("Failed to fetch service data.");
+      }
+    } catch (error) {
+      console.error("Error fetching service:", error);
+      toast.error("An error occurred while loading service data.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getCategories = async () => {
     try {
@@ -243,11 +322,15 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     getProviders();
     getCategories();
     getAllDivision();
-  }, []);
+    if (isEditMode && id) {
+      getSingleService();
+    }
+  }, [isEditMode, id]);
 
   const onSubmit = async (data) => {
     try {
@@ -262,8 +345,9 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         subCategoryId: Number(data.subCategoryId),
         duration: data.duration,
         description: data.description,
+        price: parseFloat(data.price),
         VideoLink: data.VideoLink,
-        isActive: data.isActive || true,
+        isActive: data.isActive,
         isDefault: data.isDefault || false,
         listServiceAdditional: data.services.map((s) => ({
           name: s.additionalService,
@@ -292,7 +376,6 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       }
 
       formData.append("defaultImageIndex", "1");
-      console.log("formData", formData);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/create`,
@@ -307,14 +390,17 @@ const ServiceAddForm = ({ isEditMode, id }) => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Service created:", result);
-        toast.success("Service added successfully");
-        router.push("/admin/services");
+
+        if (result.message) {
+          toast.success(result.message);
+          router.push("/admin/services");
+        } else {
+          toast.error(result.error);
+        }
       } else {
         toast.error("Failed to add service");
       }
     } catch (error) {
-      console.error("error", error);
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -327,8 +413,8 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         <div className=" rounded-md p-4 mt-8 bg-white ">
           <h6>Service Information</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
-          <div className="mb-6 grid lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-6">
+          <div className="mb-6 grid lg:grid-cols-2 gap-6">
+            <div className="">
               <label className="block text-sm  text-gray-800">Provider</label>
               <select
                 id="providerId"
@@ -352,29 +438,6 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-2 lg:col-span-3">
-              <input
-                type="checkbox"
-                {...register("isDefault")}
-                className="toggle toggle-success "
-              />
-              <label className="text-sm font-medium text-gray-600">
-                Is Default
-              </label>
-            </div>
-            <div className="flex items-center gap-2 lg:col-span-3">
-              <input
-                type="checkbox"
-                {...register("isActive")}
-                className="toggle toggle-success "
-              />
-              <label className="text-sm font-medium text-gray-600">
-                Is Active
-              </label>
-            </div>
-          </div>
-          {/*  */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
             <div>
               <label htmlFor="title" className="block text-sm  text-gray-800">
                 Title
@@ -394,6 +457,9 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 </p>
               )}
             </div>
+          </div>
+          {/*  */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {/* Duration */}
             <div>
               <label
@@ -414,6 +480,26 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               {errors.duration && (
                 <p className="mt-1 text-sm text-red-600">
                   {errors.duration.message}
+                </p>
+              )}
+            </div>
+            {/* price */}
+            <div>
+              <label htmlFor="price" className="block text-sm  text-gray-800">
+                Price
+              </label>
+              <input
+                id="price"
+                {...register("price", {
+                  required: !isEditMode && "Price is required",
+                })}
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.price ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.price.message}
                 </p>
               )}
             </div>
@@ -634,10 +720,10 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               })
             }
           >
-            <span className="bg-[var(--primary-blue)] text-white p-1 h-5 w-5 rounded-full flex items-center justify-center ">
+            <span className="bg-(--primary-blue) text-white p-1 h-5 w-5 rounded-full flex items-center justify-center ">
               +
             </span>{" "}
-            <span className="text-[var(--primary-blue)] font-semibold">
+            <span className="text-(--primary-blue) font-semibold">
               Add Additional Service
             </span>
           </button>
@@ -688,122 +774,14 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 </p>
               )}
             </div>
-            {/* Division */}
-            <div>
-              <label
-                htmlFor="divisionId"
-                className="block text-sm  text-gray-800"
-              >
-                Division
-              </label>
-              <select
-                id="divisionId"
-                {...register("divisionId")}
-                onChange={(e) => {
-                  const selectedValue = e.target.value;
-                  const selected = selectedValue ? [Number(selectedValue)] : [];
-                  setValue("divisionId", selectedValue);
-                  getDistrictByDivision(selected);
 
-                  setValue("districtId", "");
-                  setValue("upazilaId", "");
-
-                  setIsDistrictDisabled(!selectedValue);
-                  setIsUpazilaDisabled(true);
-                }}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
-              >
-                <option value="">Select Division</option>
-                {allDivision.map((div) => (
-                  <option key={div.id} value={div.id}>
-                    {div.name}
-                  </option>
-                ))}
-              </select>
-
-              {errors.divisionId && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.divisionId.message}
-                </p>
-              )}
-            </div>
-
-            {/*  */}
-            <div>
-              <label
-                htmlFor="districtId"
-                className="block text-sm  text-gray-800"
-              >
-                Distict
-              </label>
-              <select
-                id="districtId"
-                {...register("districtId")}
-                disabled={isDistrictDisabled}
-                onChange={(e) => {
-                  const selectedValue = e.target.value;
-                  const selected = selectedValue ? [Number(selectedValue)] : [];
-                  setValue("districtId", selectedValue);
-                  getUpazilaByDistrict(selected);
-                  setValue("upazilaId", "");
-                  setIsUpazilaDisabled(!selectedValue);
-                }}
-                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
-                  isDistrictDisabled ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-              >
-                <option value="">Select District</option>
-                {allDistrict.map((dist) => (
-                  <option key={dist.id} value={dist.id}>
-                    {dist.name}
-                  </option>
-                ))}
-              </select>
-
-              {errors.districtId && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.districtId.message}
-                </p>
-              )}
-            </div>
-
-            {/* thana */}
-            <div>
-              <label
-                htmlFor="upazilaId"
-                className="block text-sm  text-gray-800"
-              >
-                Thana / Upozila/ Area
-              </label>
-              <select
-                id="upazilaId"
-                {...register("upazilaId", {
-                  required: !isEditMode && "Upazila is required",
-                })}
-                disabled={isUpazilaDisabled}
-                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
-                  isUpazilaDisabled ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-              >
-                <option value="" className="">
-                  Select upazila
-                </option>
-                {allUpazila?.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                    className="text-gray-700"
-                  >
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-              {errors.upazilaId && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.upazilaId.message}
-                </p>
-              )}
-            </div>
+            <LocationSelect
+              allDivision={allDivision}
+              allDistrict={allDistrict}
+              allUpazila={allUpazila}
+              getDistrictByDivision={getDistrictByDivision}
+              getUpazilaByDistrict={getUpazilaByDistrict}
+            />
           </div>
         </div>
 
@@ -838,7 +816,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                   setPreview("");
                   setValue("serviceImages", null);
                 }}
-                className=" text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
+                className=" text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-20"
               >
                 <FaRegTrashCan />
               </button>
@@ -860,24 +838,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
             }}
             className="hidden"
           />
-          {/* <input
-            type="file"
-            accept="image/png, image/jpeg"
-            ref={(el) => {
-              fileInputRef.current = el;
-              register("serviceImages", {
-                required: !isEditMode ? "Image is required" : false,
-              });
-            }}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                setPreview(URL.createObjectURL(file));
-                setValue("serviceImages", file, { shouldValidate: true });
-              }
-            }}
-            className="hidden"
-          /> */}
+
           {errors.serviceImages && (
             <p className="text-red-500 text-xs mt-1">
               {errors.serviceImages.message}
@@ -934,13 +895,34 @@ const ServiceAddForm = ({ isEditMode, id }) => {
             />
           </div>
         </div>
+        <div className="flex items-center gap-6 ps-4">
+          <div className="flex items-center gap-2 ">
+            <input
+              type="checkbox"
+              {...register("isDefault")}
+              className="toggle toggle-success "
+            />
+            <label className="text-sm font-medium text-gray-600">
+              Is Default
+            </label>
+          </div>
+          <div className="flex items-center gap-2 ">
+            <input
+              type="checkbox"
+              {...register("isActive")}
+              className="toggle toggle-success "
+            />
+            <label className="text-sm font-medium text-gray-600">
+              Is Active
+            </label>
+          </div>
+        </div>
 
         {/* Submit button */}
         <div className="flex justify-end mb-5">
           <button
             type="submit"
-            // ={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--primary-blue)] to-blue-600 text-white  rounded-md hover:shadow-lg transition-all duration-200 :opacity-50"
+            className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-(--primary-blue) to-blue-600 text-white  rounded-md hover:shadow-lg transition-all duration-200 :opacity-50"
           >
             <FaSave />
             <span>Submit</span>
@@ -952,3 +934,30 @@ const ServiceAddForm = ({ isEditMode, id }) => {
 };
 
 export default ServiceAddForm;
+
+{
+  /* <select
+  id="divisionId"
+  {...register("divisionId")}
+  onChange={(e) => {
+    const selectedValue = e.target.value;
+    const selected = selectedValue ? [Number(selectedValue)] : [];
+    setValue("divisionId", selectedValue);
+    getDistrictByDivision(selected);
+
+    setValue("districtId", "");
+    setValue("upazilaId", "");
+
+    setIsDistrictDisabled(!selectedValue);
+    setIsUpazilaDisabled(true);
+  }}
+  className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+>
+  <option value="">Select Division</option>
+  {allDivision.map((div) => (
+    <option key={div.id} value={div.id}>
+      {div.name}
+    </option>
+  ))}
+</select>; */
+}

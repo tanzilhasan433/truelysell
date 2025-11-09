@@ -8,20 +8,20 @@ import { FaPlus } from "react-icons/fa";
 const tabs = [
   { name: "All Services", component: <AllServicesTable serviceStatus="all" /> },
   { name: "Active", component: <AllServicesTable serviceStatus="Active" /> },
-  { name: "Pending", component: <AllServicesTable serviceStatus="Pending" /> },
   {
     name: "Inactive",
-    component: <AllServicesTable serviceStatus="inactive" />,
+    component: <AllServicesTable serviceStatus="Inactive" />,
   },
-  { name: "Deleted", component: <AllServicesTable serviceStatus="deleted" /> },
+  {
+    name: "Deleted",
+    component: <AllServicesTable serviceStatus="Deleted" />,
+  },
 ];
 
 export default function AllServiceComponent() {
   const [activeTab, setActiveTab] = useState("All Services");
 
-  // Find the current tab’s component
-  const ActiveComponent =
-    tabs.find((tab) => tab.name === activeTab)?.component || (() => null);
+  const activeTabObj = tabs.find((tab) => tab.name === activeTab);
 
   return (
     <div className="w-full">
@@ -29,7 +29,7 @@ export default function AllServiceComponent() {
         <h4>All Services</h4>
         <Link
           href={"/admin/services/add-service"}
-          className="bg-[var(--primary-blue)] text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-(--primary-blue) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <FaPlus size={15} /> Create Service
         </Link>
@@ -42,20 +42,31 @@ export default function AllServiceComponent() {
             onClick={() => setActiveTab(tab.name)}
             className={`relative py-2 text-sm font-medium transition-colors duration-200 ${
               activeTab === tab.name
-                ? "text-[var(--primary-blue)]"
-                : "text-gray-600 hover:text-[var(--primary-blue)]"
+                ? "text-(--primary-blue)"
+                : "text-gray-600 hover:text-(--primary-blue)"
             }`}
           >
             {tab.name}
             {activeTab === tab.name && (
-              <span className="absolute left-0 -bottom-[1px] w-full h-0.5 bg-[var(--primary-blue)] rounded"></span>
+              <span className="absolute left-0 -bottom-px w-full h-0.5 bg-(--primary-blue) rounded"></span>
             )}
           </button>
         ))}
       </nav>
 
       {/* Tab Content */}
-      <div className="mt-4">{ActiveComponent}</div>
+      <div className="mt-4">
+        <div className="mt-4">
+          {activeTabObj && (
+            <AllServicesTable
+              key={activeTabObj.name}
+              serviceStatus={
+                activeTabObj.name === "All Services" ? "all" : activeTabObj.name
+              }
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

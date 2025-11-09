@@ -33,7 +33,7 @@ const AllServicesTable = ({ serviceStatus }) => {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log("Service Data:", result);
+        console.log("All Services Data:", result);
         setAllData(result?.data);
         setTotalRecords(result?.numberOfRecords || 0);
         setLoading(false);
@@ -51,7 +51,7 @@ const AllServicesTable = ({ serviceStatus }) => {
   };
   useEffect(() => {
     getServices(currentPage);
-  }, [currentPage]);
+  }, [currentPage, serviceStatus]);
   return (
     <>
       {loading ? (
@@ -88,7 +88,7 @@ const AllServicesTable = ({ serviceStatus }) => {
                     <td className="py-4 px-3">{index + 1}</td>
                     <td className="py-4 px-3 flex items-center gap-2">
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/service/${item.imageUrl}`}
+                        src={`${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/services/${item?.imageUrl}`}
                         alt={item.title}
                         className="w-8 h-8 rounded object-cover"
                       />
@@ -114,14 +114,7 @@ const AllServicesTable = ({ serviceStatus }) => {
                         {item.status}
                       </button>
                     </td>
-                    {/* <td className="py-4 px-3 flex items-center gap-2">
-                      <img
-                        src={item.createdByImg}
-                        alt={item.name}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      {item.createdByName}
-                    </td> */}
+
                     <td className="py-4 px-2 font-medium">
                       <div className=" flex items-center gap-2">
                         {" "}
