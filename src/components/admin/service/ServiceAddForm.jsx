@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import toast from "react-hot-toast";
 import Editor from "@/components/shared/Editor";
 import { useAppContext } from "@/context/AppContext";
@@ -36,6 +36,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      description: "",
       services: [
         { additionalService: "", servicePrice: "", serviceDuration: "" },
       ],
@@ -64,8 +65,17 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log("Single Service Data:", result);
         const serviceData = result.data;
+        if (serviceData.categoryId) {
+          await getSubCategories(serviceData.categoryId);
+        }
+
+        if (serviceData.serviceLocation?.divisionId?.length > 0) {
+          await getDistrictByDivision(serviceData.serviceLocation.divisionId);
+        }
+        if (serviceData.serviceLocation?.districtId?.length > 0) {
+          await getUpazilaByDistrict(serviceData.serviceLocation.districtId);
+        }
 
         const mappedData = {
           title: serviceData.title,
@@ -73,22 +83,20 @@ const ServiceAddForm = ({ isEditMode, id }) => {
           categoryId: serviceData.categoryId,
           subCategoryId: serviceData.subCategoryId,
           duration: serviceData.duration,
-          description: serviceData.description,
-          VideoLink: serviceData.videoLink,
+          price: serviceData.price,
+
+          VideoLink: serviceData.videoLink || "",
           isActive: serviceData.isActive,
           isDefault: serviceData.isDefault,
           serviceArea: serviceData.serviceLocation?.serviceArea || "",
 
-          metaTitle: serviceData.serviceSeo?.metaTitle,
-          metaKeywords: serviceData.serviceSeo?.metaKeywords,
-          metaDescription: serviceData.serviceSeo?.metaDescription,
+          metaTitle: serviceData.serviceSeo?.metaTitle || "",
+          metaKeywords: serviceData.serviceSeo?.metaKeywords || "",
+          metaDescription: serviceData.serviceSeo?.metaDescription || "",
 
-          divisionId:
-            serviceData.serviceLocation?.divisionId?.[0]?.toString() || "",
-          districtId:
-            serviceData.serviceLocation?.districtId?.[0]?.toString() || "",
-          upazilaId:
-            serviceData.serviceLocation?.upazilaId?.[0]?.toString() || "",
+          divisionId: serviceData.serviceLocation?.divisionId || [],
+          districtId: serviceData.serviceLocation?.districtId || [],
+          upazilaId: serviceData.serviceLocation?.upazilaId || [],
 
           services: serviceData.listServiceAdditional?.map((s) => ({
             additionalService: s.name,
@@ -100,28 +108,32 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         };
 
         reset(mappedData);
+        setTimeout(() => {
+          const decodeHTML = (html) => {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+          };
+          setValue("description", decodeHTML(serviceData.description || ""));
+        }, 100);
 
-        if (serviceData.categoryId) {
-          await getSubCategories(serviceData.categoryId);
-        }
-
-        const divisionId = serviceData.serviceLocation?.divisionId?.[0];
-        const districtId = serviceData.serviceLocation?.districtId?.[0];
-
-        if (divisionId) {
-          await getDistrictByDivision([divisionId]);
-          setIsDistrictDisabled(false);
-
-          if (districtId) {
-            await getUpazilaByDistrict([districtId]);
-            setIsUpazilaDisabled(false);
+        if (
+          serviceData.listServiceImage &&
+          serviceData.listServiceImage.length > 0
+        ) {
+          const defaultImage =
+            serviceData.listServiceImage.find((img) => img.isDefault) ||
+            serviceData.listServiceImage[0];
+          if (defaultImage?.imageUrl) {
+            setPreview(
+              `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/services/${defaultImage?.imageUrl}`
+            );
           }
         }
       } else {
         toast.error("Failed to fetch service data.");
       }
     } catch (error) {
-      console.error("Error fetching service:", error);
       toast.error("An error occurred while loading service data.");
     } finally {
       setLoading(false);
@@ -204,7 +216,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
   const getProviders = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}users/getall?PageNumber=0&SearchText=&SortBy=FirstName&SortDirection=asc&PageSize=1000`,
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getproviders`,
         {
           method: "GET",
           headers: {
@@ -215,10 +227,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       );
       if (response.ok) {
         const result = await response.json();
-        const providerData = result.data.filter(
-          (item) => item.role === "Provider"
-        );
-        setProviders(providerData);
+        setProviders(result.data);
       } else {
         const errorData = await response.json();
       }
@@ -334,6 +343,21 @@ const ServiceAddForm = ({ isEditMode, id }) => {
       getSingleService();
     }
   }, [isEditMode, id]);
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === "categoryId" && value.categoryId && !isEditMode) {
+        const selected = Number(value.categoryId);
+        if (selected) {
+          getSubCategories(selected);
+        } else {
+          setAllSubCategoryData([]);
+          setIsSubCategoryDisabled(true);
+          setNoSubCategoryFound(false);
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, isEditMode]);
 
   const onSubmit = async (data) => {
     try {
@@ -351,16 +375,23 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         price: parseFloat(data.price),
         VideoLink: data.VideoLink,
         isActive: data.isActive,
-        isDefault: data.isDefault || false,
+        isDefault: data.isDefault,
         listServiceAdditional: data.services.map((s) => ({
           name: s.additionalService,
           price: parseFloat(s.servicePrice),
           duration: s.serviceDuration,
         })),
+
         serviceLocation: {
-          divisionId: data.divisionId ? [Number(data.divisionId)] : [],
-          districtId: data.districtId ? [Number(data.districtId)] : [],
-          upazilaId: data.upazilaId ? [Number(data.upazilaId)] : [],
+          divisionId: Array.isArray(data.divisionId)
+            ? data.divisionId.map(Number)
+            : [],
+          districtId: Array.isArray(data.districtId)
+            ? data.districtId.map(Number)
+            : [],
+          upazilaId: Array.isArray(data.upazilaId)
+            ? data.upazilaId.map(Number)
+            : [],
           serviceArea: data.serviceArea,
         },
         serviceSeo: {
@@ -369,6 +400,9 @@ const ServiceAddForm = ({ isEditMode, id }) => {
           metaDescription: data.metaDescription,
         },
       };
+      if (isEditMode) {
+        serviceJson.Id = parseFloat(id);
+      }
 
       formData.append("serviceJson", JSON.stringify(serviceJson));
 
@@ -378,18 +412,21 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         }
       }
 
-      formData.append("defaultImageIndex", "1");
+      formData.append("defaultImageIndex", isEditMode ? "0" : "1");
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/create`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-          body: formData,
-        }
-      );
+      const endpoint = isEditMode
+        ? `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/update/${id}`
+        : `${process.env.NEXT_PUBLIC_API_ADMIN_URL}service/create`;
+
+      const method = isEditMode ? "PUT" : "POST";
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user")}`,
+        },
+        body: formData,
+      });
 
       if (response.ok) {
         const result = await response.json();
@@ -525,6 +562,7 @@ const ServiceAddForm = ({ isEditMode, id }) => {
                 onChange={(e) => {
                   const selected = Number(e.target.value);
                   setValue("categoryId", selected);
+                  setValue("subCategoryId", "");
                   if (selected) {
                     getSubCategories(selected);
                   } else {
@@ -595,10 +633,14 @@ const ServiceAddForm = ({ isEditMode, id }) => {
             >
               Description
             </label>
-            <Editor
-              value={watch("description")}
-              onChange={(content) => setValue("description", content)}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Editor value={field.value} onChange={field.onChange} />
+              )}
             />
+
             {errors.description && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.description.message}
@@ -784,6 +826,10 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               allUpazila={allUpazila}
               getDistrictByDivision={getDistrictByDivision}
               getUpazilaByDistrict={getUpazilaByDistrict}
+              register={register}
+              setValue={setValue}
+              watch={watch}
+              errors={errors}
             />
           </div>
         </div>
@@ -937,30 +983,3 @@ const ServiceAddForm = ({ isEditMode, id }) => {
 };
 
 export default ServiceAddForm;
-
-{
-  /* <select
-  id="divisionId"
-  {...register("divisionId")}
-  onChange={(e) => {
-    const selectedValue = e.target.value;
-    const selected = selectedValue ? [Number(selectedValue)] : [];
-    setValue("divisionId", selectedValue);
-    getDistrictByDivision(selected);
-
-    setValue("districtId", "");
-    setValue("upazilaId", "");
-
-    setIsDistrictDisabled(!selectedValue);
-    setIsUpazilaDisabled(true);
-  }}
-  className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
->
-  <option value="">Select Division</option>
-  {allDivision.map((div) => (
-    <option key={div.id} value={div.id}>
-      {div.name}
-    </option>
-  ))}
-</select>; */
-}

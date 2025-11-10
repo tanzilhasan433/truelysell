@@ -33,7 +33,7 @@ const AllServicesTable = ({ serviceStatus }) => {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log("All Services Data:", result);
+
         setAllData(result?.data);
         setTotalRecords(result?.numberOfRecords || 0);
         setLoading(false);

@@ -30,36 +30,26 @@ const Editor = ({
   const [imageAlt, setImageAlt] = useState("");
   const [imageWidth, setImageWidth] = useState("");
   const [imageHeight, setImageHeight] = useState("");
-  const [isInitialized, setIsInitialized] = useState(false);
   const [lastValue, setLastValue] = useState(value);
   const [savedSelection, setSavedSelection] = useState(null);
 
-  // Initialize editor content and handle value changes
   useEffect(() => {
-    if (editorRef.current) {
-      if (
-        !isInitialized ||
-        (value !== lastValue && value !== editorRef.current.innerHTML)
-      ) {
-        if (value) {
-          editorRef.current.innerHTML = value;
-        } else {
-          editorRef.current.innerHTML = "<p><br></p>";
-        }
-        setIsInitialized(true);
-        setLastValue(value);
+    if (editorRef.current && value !== lastValue) {
+      if (value && value !== "<p><br></p>") {
+        editorRef.current.innerHTML = value;
+      } else {
+        editorRef.current.innerHTML = "<p><br></p>";
       }
+      setLastValue(value);
     }
-  }, [value, isInitialized, lastValue]);
+  }, [value]);
 
-  // Handle content changes
   const handleContentChange = useCallback(() => {
     if (editorRef.current && onChange) {
       onChange(editorRef.current.innerHTML);
     }
   }, [onChange]);
 
-  // Handle paste events
   const handlePaste = useCallback(
     (e) => {
       e.preventDefault();
@@ -109,7 +99,8 @@ const Editor = ({
 
         if (cleanedHtml) {
           document.execCommand("insertHTML", false, cleanedHtml);
-          handleContentChange();
+          // handleContentChange();
+          setTimeout(() => handleContentChange(), 0);
         }
       } else if (pastedText) {
         const cleanText = pastedText
@@ -127,11 +118,24 @@ const Editor = ({
         }
 
         document.execCommand("insertHTML", false, htmlContent);
-        handleContentChange();
+        // handleContentChange();
+        setTimeout(() => handleContentChange(), 0);
       }
     },
     [handleContentChange]
   );
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const handleChange = () => handleContentChange();
+    editor.addEventListener("paste", () => setTimeout(handleChange, 0));
+
+    return () => {
+      editor.removeEventListener("paste", () => setTimeout(handleChange, 0));
+    };
+  }, [handleContentChange]);
 
   // Execute formatting command
   const execCommand = useCallback(

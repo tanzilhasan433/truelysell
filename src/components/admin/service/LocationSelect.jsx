@@ -1,8 +1,7 @@
 "use client";
-
+// https://claude.ai/chat/ba94e0a8-7988-4548-a2fb-8a4d020c714a
 import Select from "react-select";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const LocationSelect = ({
   allDivision,
@@ -10,13 +9,11 @@ const LocationSelect = ({
   allUpazila,
   getDistrictByDivision,
   getUpazilaByDistrict,
+  register,
+  setValue,
+  watch,
+  errors,
 }) => {
-  const {
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
   const [selectedDivisions, setSelectedDivisions] = useState([]);
   const [selectedDistricts, setSelectedDistricts] = useState([]);
   const [selectedUpazilas, setSelectedUpazilas] = useState([]);
@@ -24,19 +21,86 @@ const LocationSelect = ({
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
   const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
 
+  // Watch form values to sync with edit mode
+  const divisionId = watch?.("divisionId");
+  const districtId = watch?.("districtId");
+  const upazilaId = watch?.("upazilaId");
+
+  // Sync selected options when form values change (for edit mode)
+  useEffect(() => {
+    if (divisionId && allDivision.length > 0) {
+      // Handle both array and single value
+      const ids = Array.isArray(divisionId) ? divisionId : [divisionId];
+      const selected = allDivision
+        .filter(
+          (div) =>
+            ids.includes(div.id) ||
+            ids.includes(div.id.toString()) ||
+            ids.includes(Number(div.id))
+        )
+        .map((div) => ({ value: div.id, label: div.name }));
+      setSelectedDivisions(selected);
+      if (selected.length > 0) {
+        setIsDistrictDisabled(false);
+      }
+    }
+  }, [divisionId, allDivision]);
+
+  useEffect(() => {
+    if (districtId && allDistrict.length > 0) {
+      // Handle both array and single value
+      const ids = Array.isArray(districtId) ? districtId : [districtId];
+      const selected = allDistrict
+        .filter(
+          (dist) =>
+            ids.includes(dist.id) ||
+            ids.includes(dist.id.toString()) ||
+            ids.includes(Number(dist.id))
+        )
+        .map((dist) => ({ value: dist.id, label: dist.name }));
+      setSelectedDistricts(selected);
+      if (selected.length > 0) {
+        setIsUpazilaDisabled(false);
+      }
+    }
+  }, [districtId, allDistrict]);
+
+  useEffect(() => {
+    if (upazilaId && allUpazila.length > 0) {
+      // Handle both array and single value
+      const ids = Array.isArray(upazilaId) ? upazilaId : [upazilaId];
+      const selected = allUpazila
+        .filter(
+          (upz) =>
+            ids.includes(upz.id) ||
+            ids.includes(upz.id.toString()) ||
+            ids.includes(Number(upz.id))
+        )
+        .map((upz) => ({ value: upz.id, label: upz.name }));
+      setSelectedUpazilas(selected);
+    }
+  }, [upazilaId, allUpazila]);
+
   // ✅ Handle Division Change
   const handleDivisionChange = (selectedOptions) => {
     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
     setSelectedDivisions(selectedOptions || []);
-    setValue("divisionId", ids);
-    getDistrictByDivision(ids);
 
-    // reset dependent selects
+    // Set array of IDs
+    setValue("divisionId", ids);
+
+    if (ids.length > 0) {
+      getDistrictByDivision(ids);
+      setIsDistrictDisabled(false);
+    } else {
+      setIsDistrictDisabled(true);
+    }
+
+    // Reset dependent selects
     setSelectedDistricts([]);
     setSelectedUpazilas([]);
     setValue("districtId", []);
     setValue("upazilaId", []);
-    setIsDistrictDisabled(ids.length === 0);
     setIsUpazilaDisabled(true);
   };
 
@@ -44,19 +108,28 @@ const LocationSelect = ({
   const handleDistrictChange = (selectedOptions) => {
     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
     setSelectedDistricts(selectedOptions || []);
-    setValue("districtId", ids);
-    getUpazilaByDistrict(ids);
 
-    // reset upazila
+    // Set array of IDs
+    setValue("districtId", ids);
+
+    if (ids.length > 0) {
+      getUpazilaByDistrict(ids);
+      setIsUpazilaDisabled(false);
+    } else {
+      setIsUpazilaDisabled(true);
+    }
+
+    // Reset upazila
     setSelectedUpazilas([]);
     setValue("upazilaId", []);
-    setIsUpazilaDisabled(ids.length === 0);
   };
 
   // ✅ Handle Upazila Change
   const handleUpazilaChange = (selectedOptions) => {
     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
     setSelectedUpazilas(selectedOptions || []);
+
+    // Set array of IDs
     setValue("upazilaId", ids);
   };
 
@@ -94,7 +167,7 @@ const LocationSelect = ({
               "mt-1 block w-full rounded-xl text-gray-600 text-sm border border-gray-300 py-0.5 focus:outline-none",
           }}
         />
-        {errors.divisionId && (
+        {errors?.divisionId && (
           <p className="mt-1 text-sm text-red-600">
             {errors.divisionId.message}
           </p>
@@ -120,7 +193,7 @@ const LocationSelect = ({
               }`,
           }}
         />
-        {errors.districtId && (
+        {errors?.districtId && (
           <p className="mt-1 text-sm text-red-600">
             {errors.districtId.message}
           </p>
@@ -148,7 +221,7 @@ const LocationSelect = ({
               }`,
           }}
         />
-        {errors.upazilaId && (
+        {errors?.upazilaId && (
           <p className="mt-1 text-sm text-red-600">
             {errors.upazilaId.message}
           </p>
