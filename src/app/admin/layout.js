@@ -211,7 +211,7 @@ export default function AdminLayout({ children }) {
           {/* Topbar */}
           <AdminHeader />
           {/* Page Content */}
-          <main className="flex-1 px-6  bg-[#ffffff] pt-20">{children}</main>
+          <main className="flex-1 px-6  bg-[#ffffff] pt-24">{children}</main>
         </div>
       </div>
     </div>

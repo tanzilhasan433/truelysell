@@ -2,38 +2,72 @@
 
 import { useForm } from "react-hook-form";
 import { FaStar } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BsPersonCircle } from "react-icons/bs";
 
-const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
-  const { register, handleSubmit, setValue, watch } = useForm({
+const TestimonialModal = ({ isOpen, onClose, onSubmit, testimonialId }) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      name: "",
-      jobTitle: "",
-      rating: 0,
-      content: "",
-      status: true,
+      Name: "",
+      JobTitle: "",
+      Ratings: 0,
+      Content: "",
+      IsActive: true,
     },
   });
 
-  const rating = watch("rating");
-
-  // State for preview
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
-
-  // Ref for file input
+  const Ratings = watch("Ratings");
+  const isEditMode = Boolean(testimonialId);
+  const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null);
 
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
+  const getTestimonial = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}testimonial/gettestimonialsbyid/${testimonialId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      const result = await response.json();
+
+      if (response.ok && result.data) {
+        const testData = result.data;
+        console.log("sing testimonial", result);
+        setValue("Name", testData.name || "");
+        setValue("Content", testData.content || "");
+        setValue("IsActive", testData.isActive);
+        setValue("JobTitle", testData.jobTitle);
+        setValue("Ratings", testData.ratings);
+        setValue("PersonImage", testData.imageUrl || "");
+        if (testData.imageUrl) {
+          setPreview(
+            `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/testimonial/${testData.imageUrl}`
+          );
+        } else {
+          setPreview("");
+        }
+      }
+    } catch (error) {}
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
+  useEffect(() => {
+    if (testimonialId) {
+      getTestimonial();
+    } else {
+      reset();
     }
-  };
+  }, [testimonialId, reset]);
 
   if (!isOpen) return null;
 
@@ -42,7 +76,9 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
-          <h6 className="text-lg font-semibold mx-auto">Add Testimonial</h6>
+          <h6 className="text-lg font-semibold mx-auto">
+            {isEditMode ? "Edit Testimonial" : "Add Testimonial"}
+          </h6>
           <button
             type="button"
             onClick={onClose}
@@ -53,29 +89,46 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(async (data) => {
+            await onSubmit(data);
+            reset();
+            setPreview("");
+          })}
+          className="space-y-4"
+        >
           {/* Upload */}
           <div className="flex items-center gap-3">
-            <img
-              src={preview}
-              alt="preview"
-              className="w-12 h-12 rounded-full object-cover"
-            />
+            {preview ? (
+              <img
+                src={preview}
+                alt="preview"
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            ) : (
+              <BsPersonCircle size={30} className="text-gray-500" />
+            )}
+
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={handleUploadClick}
-                className="px-3 py-1 bg-[var(--primary-blue)]/10 text-blue-500 border border-[var(--primary-blue)]/10 rounded-md text-sm"
+                onClick={() => fileInputRef?.current?.click()}
+                className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
               >
                 Upload
               </button>
-              <button
-                type="button"
-                onClick={() => setPreview("https://i.pravatar.cc/80")}
-                className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
-              >
-                Remove
-              </button>
+              {preview && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreview("");
+                    setValue("image", null);
+                  }}
+                  className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
+                >
+                  Remove
+                </button>
+              )}
             </div>
           </div>
           <p className="text-xs text-gray-500">
@@ -87,27 +140,55 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
           <input
             type="file"
             accept="image/png, image/jpeg"
-            ref={fileInputRef}
-            onChange={handleFileChange}
+            ref={(el) => {
+              fileInputRef.current = el;
+              register("PersonImage", {
+                required: !isEditMode ? "Image is required" : false,
+              });
+            }}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setPreview(URL.createObjectURL(file));
+                setValue("PersonImage", file, { shouldValidate: true });
+              }
+            }}
             className="hidden"
           />
+          {errors.PersonImage && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.PersonImage.message}
+            </p>
+          )}
 
           {/* Name */}
           <input
             type="text"
             placeholder="Name"
-            {...register("name")}
+            {...register("Name", {
+              required: !isEditMode ? "Name is required" : false,
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
+          {errors.Name && (
+            <p className="text-red-500 text-xs mt-1">{errors.Name.message}</p>
+          )}
 
           {/* Job Title */}
           <input
             type="text"
             placeholder="Job Title"
-            {...register("jobTitle")}
+            {...register("JobTitle", {
+              required: !isEditMode ? "Job Title is required" : false,
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
 
+          {errors.JobTitle && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.JobTitle.message}
+            </p>
+          )}
           {/* Ratings */}
           <div>
             <label className="block mb-1 text-sm font-medium">Ratings</label>
@@ -116,29 +197,41 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
                 <FaStar
                   key={i}
                   size={22}
-                  onClick={() => setValue("rating", i + 1)}
+                  onClick={() => setValue("Ratings", i + 1)}
                   className={`cursor-pointer ${
-                    i < rating ? "text-yellow-400" : "text-gray-300"
+                    i < Ratings ? "text-yellow-400" : "text-gray-300"
                   }`}
                 />
               ))}
             </div>
+            {errors.Ratings && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.Ratings.message}
+              </p>
+            )}
           </div>
 
           {/* Content */}
           <textarea
             rows={3}
             placeholder="Content"
-            {...register("content")}
+            {...register("Content", {
+              required: !isEditMode ? "Content is required" : false,
+            })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
+          {errors.Content && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.Content.message}
+            </p>
+          )}
 
           {/* Status */}
           <div className="flex items-center justify-between">
             <label className="text-sm font-medium">Status</label>
             <input
               type="checkbox"
-              {...register("status")}
+              {...register("IsActive")}
               className="toggle toggle-success"
             />
           </div>
@@ -154,9 +247,9 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[var(--primary-blue)] text-white rounded-md"
+              className="px-4 py-2 bg-(--primary-blue) text-white rounded-md"
             >
-              Save
+              {isEditMode ? "Update" : "Save"}
             </button>
           </div>
         </form>

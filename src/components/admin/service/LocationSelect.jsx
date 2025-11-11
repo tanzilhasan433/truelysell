@@ -1,5 +1,5 @@
 "use client";
-// https://claude.ai/chat/ba94e0a8-7988-4548-a2fb-8a4d020c714a
+
 import Select from "react-select";
 import { useState, useEffect } from "react";
 
@@ -21,15 +21,12 @@ const LocationSelect = ({
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
   const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
 
-  // Watch form values to sync with edit mode
   const divisionId = watch?.("divisionId");
   const districtId = watch?.("districtId");
   const upazilaId = watch?.("upazilaId");
 
-  // Sync selected options when form values change (for edit mode)
   useEffect(() => {
     if (divisionId && allDivision.length > 0) {
-      // Handle both array and single value
       const ids = Array.isArray(divisionId) ? divisionId : [divisionId];
       const selected = allDivision
         .filter(
@@ -48,7 +45,6 @@ const LocationSelect = ({
 
   useEffect(() => {
     if (districtId && allDistrict.length > 0) {
-      // Handle both array and single value
       const ids = Array.isArray(districtId) ? districtId : [districtId];
       const selected = allDistrict
         .filter(
@@ -67,7 +63,6 @@ const LocationSelect = ({
 
   useEffect(() => {
     if (upazilaId && allUpazila.length > 0) {
-      // Handle both array and single value
       const ids = Array.isArray(upazilaId) ? upazilaId : [upazilaId];
       const selected = allUpazila
         .filter(
@@ -81,12 +76,9 @@ const LocationSelect = ({
     }
   }, [upazilaId, allUpazila]);
 
-  // ✅ Handle Division Change
   const handleDivisionChange = (selectedOptions) => {
     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
     setSelectedDivisions(selectedOptions || []);
-
-    // Set array of IDs
     setValue("divisionId", ids);
 
     if (ids.length > 0) {
@@ -96,7 +88,6 @@ const LocationSelect = ({
       setIsDistrictDisabled(true);
     }
 
-    // Reset dependent selects
     setSelectedDistricts([]);
     setSelectedUpazilas([]);
     setValue("districtId", []);
@@ -104,12 +95,10 @@ const LocationSelect = ({
     setIsUpazilaDisabled(true);
   };
 
-  // ✅ Handle District Change
   const handleDistrictChange = (selectedOptions) => {
     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
     setSelectedDistricts(selectedOptions || []);
 
-    // Set array of IDs
     setValue("districtId", ids);
 
     if (ids.length > 0) {
@@ -119,21 +108,16 @@ const LocationSelect = ({
       setIsUpazilaDisabled(true);
     }
 
-    // Reset upazila
     setSelectedUpazilas([]);
     setValue("upazilaId", []);
   };
 
-  // ✅ Handle Upazila Change
   const handleUpazilaChange = (selectedOptions) => {
     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
     setSelectedUpazilas(selectedOptions || []);
-
-    // Set array of IDs
     setValue("upazilaId", ids);
   };
 
-  // Convert API data to react-select options
   const divisionOptions = allDivision.map((div) => ({
     value: div.id,
     label: div.name,

@@ -169,7 +169,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
               type="file"
               accept="image/png, image/jpeg"
               ref={(el) => {
-                fileInputRef.current = el; // manually assign ref
+                fileInputRef.current = el;
                 register("image", {
                   required: !isEditMode ? "Image is required" : false,
                 });
@@ -226,7 +226,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[var(--primary-blue)] text-white rounded-md"
+              className="px-4 py-2 bg-(--primary-blue) text-white rounded-md"
             >
               {isEditMode ? "Update" : "Save"}
             </button>
