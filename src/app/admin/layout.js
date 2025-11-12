@@ -107,9 +107,10 @@ const navLinks = [
         label: "Location",
         icon: <FaBook />,
         children: [
-          { label: "Countries", path: "/admin/location/countries" },
-          { label: "States", path: "/admin/location/states" },
-          { label: "Cities", path: "/admin/location/cities" },
+          { label: "Country", path: "/admin/location/countries" },
+          { label: "Division", path: "/admin/location/division" },
+          { label: "District", path: "/admin/location/district" },
+          { label: "Thana", path: "/admin/location/thana" },
         ],
       },
       { label: "Testimonials", icon: <FaBook />, path: "/admin/testimonials" },

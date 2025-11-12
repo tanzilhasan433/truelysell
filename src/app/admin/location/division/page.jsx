@@ -1,13 +1,13 @@
 "use client";
 
-import AddCountryModal from "@/components/admin/location/AddCountryModal";
+import AddStateModal from "@/components/admin/location/AddStateModal";
 import { countriesData } from "@/data/json/countries";
 import { useState } from "react";
-import { FaPlus, FaStar } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
 
-const LocationCountriesPage = () => {
+const LocationDivisionPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddTestimonial = (data) => {
@@ -17,12 +17,12 @@ const LocationCountriesPage = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-10">
-        <h4>Countries</h4>
+        <h4>State</h4>
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-(--primary-blue) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
-          <FaPlus size={15} /> Add Country
+          <FaPlus size={15} /> Add State
         </button>
       </div>
       {/* table */}
@@ -32,8 +32,9 @@ const LocationCountriesPage = () => {
             <tr>
               <th className="py-5 px-3">#</th>
               <th className="py-5 px-3">Country Code </th>
-              <th className="py-5 px-3">Country ID </th>
+
               <th className="py-5 px-3">Country Name </th>
+              <th className="py-5 px-3">State </th>
               <th className="py-5 px-3">Action</th>
             </tr>
           </thead>
@@ -47,14 +48,13 @@ const LocationCountriesPage = () => {
 
                 <td className="py-4 px-3 ">{item.countryCode}</td>
 
-                <td className="py-4 px-3">{item.countryId}</td>
-
                 <td className="py-4 px-3 ">
                   <div className="flex items-center gap-2">
                     <img src={item.img} alt="" className="w-6 h-3" />
                     {item.countryName}
                   </div>
                 </td>
+                <td className="py-4 px-3">{item.stateName}</td>
 
                 <td className="py-4 px-2 font-medium">
                   <div className=" flex items-center gap-2">
@@ -72,7 +72,7 @@ const LocationCountriesPage = () => {
           </tbody>
         </table>
       </div>
-      <AddCountryModal
+      <AddStateModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleAddTestimonial}
@@ -81,4 +81,4 @@ const LocationCountriesPage = () => {
   );
 };
 
-export default LocationCountriesPage;
+export default LocationDivisionPage;

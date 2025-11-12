@@ -1,24 +1,66 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-const FaqModal = ({ isOpen, onClose, onSubmit }) => {
-  const { register, handleSubmit } = useForm({
+const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      title: "",
-      category: "",
-      answer: "",
-      status: true,
+      Title: "",
+      Details: "",
+      Position: 0,
+      IsActive: true,
     },
   });
 
+  const isEditMode = Boolean(faqId);
+  const getSingleFaq = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}faq/getfaqsbyid/${faqId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+        }
+      );
+      const result = await response.json();
+      console.log("single", result);
+      if (response.ok && result.data) {
+        const testData = result.data;
+
+        setValue("Title", testData.title || "");
+        setValue("Details", testData.details || "");
+        setValue("IsActive", testData.isActive);
+        setValue("Position", testData.position);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    if (faqId) {
+      getSingleFaq();
+    } else {
+      reset();
+    }
+  }, [faqId, reset]);
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 lg:h-[400px]">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 ">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
-          <h6 className="text-lg font-semibold mx-auto">Add Currency</h6>
+          <h6 className="text-lg font-semibold mx-auto">
+            {isEditMode ? "Edit Faq" : "Add Faq"}
+          </h6>
           <button
             type="button"
             onClick={onClose}
@@ -34,28 +76,22 @@ const FaqModal = ({ isOpen, onClose, onSubmit }) => {
           <input
             type="text"
             placeholder="Title"
-            {...register("faqTitle")}
+            {...register("Title")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
-
-          <select
-            {...register("category")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
-          >
-            <option value="" className="text-sm  ">
-              Select Category
-            </option>
-            <option value="web">Web Development</option>
-            <option value="design">Design</option>
-            <option value="marketing">Marketing</option>
-            <option value="writing">Content Writing</option>
-          </select>
 
           {/* Content */}
           <textarea
             rows={3}
-            placeholder="Answer"
-            {...register("answer")}
+            placeholder="Details"
+            {...register("Details")}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+          />
+
+          <input
+            type="number"
+            placeholder="Position"
+            {...register("Postition")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
 
@@ -80,9 +116,9 @@ const FaqModal = ({ isOpen, onClose, onSubmit }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[var(--primary-blue)] text-white rounded-md"
+              className="px-4 py-2 bg-(--primary-blue) text-white rounded-md"
             >
-              Save
+              {isEditMode ? "Update" : "Save"}
             </button>
           </div>
         </form>

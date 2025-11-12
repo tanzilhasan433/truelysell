@@ -43,7 +43,7 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit, testimonialId }) => {
 
       if (response.ok && result.data) {
         const testData = result.data;
-        console.log("sing testimonial", result);
+
         setValue("Name", testData.name || "");
         setValue("Content", testData.content || "");
         setValue("IsActive", testData.isActive);

@@ -39,7 +39,7 @@ const TestimonialsPage = () => {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log("Testimonials fetched:", result);
+
         setAllData(result?.data);
         setTotalRecords(result?.numberOfRecords || 0);
         setLoading(false);
@@ -139,7 +139,7 @@ const TestimonialsPage = () => {
                   <th className="py-5 px-3">User Name </th>
                   <th className="py-5 px-3">Rating </th>
                   <th className="py-5 px-3">Content </th>
-                  <th className="py-5 px-3">Create At</th>
+                  {/* <th className="py-5 px-3">Create At</th> */}
                   <th className="py-5 px-3">Status</th>
                   <th className="py-5 px-3">Action</th>
                 </tr>
@@ -163,22 +163,22 @@ const TestimonialsPage = () => {
                       </div>
                     </td>
                     <td className="py-4 px-3">
-                      {/* <div className="flex items-center">
+                      <div className="flex items-center">
                         {Array.from({ length: 5 }, (_, index) => (
                           <FaStar
                             key={index}
                             className={`h-4 w-4 ${
-                              index < item.rating
+                              index < item.ratings
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
                           />
                         ))}
-                      </div> */}
+                      </div>
                     </td>
                     <td className="py-4 px-3">{item.content}</td>
 
-                    <td className="py-4 px-3 font-medium"></td>
+                    {/* <td className="py-4 px-3 font-medium"></td> */}
                     <td
                       className={`py-4 px-3 font-semibold ${
                         item.status == "Active"
