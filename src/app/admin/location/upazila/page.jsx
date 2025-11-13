@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
 import DistrictComponent from "@/components/admin/location/DistrictComponent";
 import { useAppContext } from "@/context/AppContext";
+import UpazilaComponent from "@/components/admin/location/UpazilaComponent";
 
 const LocationDistrictPage = () => {
   const { loading, setLoading } = useAppContext();
@@ -19,7 +20,6 @@ const LocationDistrictPage = () => {
 
   const pageSize = 10;
 
-  // ✅ Get all divisions
   const getAllDivisions = async () => {
     try {
       setLoading(true);
@@ -120,7 +120,6 @@ const LocationDistrictPage = () => {
 
         setIsModalOpen(false);
         setSelectedId(null);
-
         setActiveTab(Number(payload.DivisionId));
         getDistricts(payload.DivisionId, currentPage);
       } else {
@@ -176,7 +175,7 @@ const LocationDistrictPage = () => {
 
       {/* ✅ Tab Content */}
       <div className="mt-4">
-        <DistrictComponent
+        <UpazilaComponent
           allData={allData}
           setAllData={setAllData}
           selectedId={selectedId}
@@ -197,3 +196,4 @@ const LocationDistrictPage = () => {
 };
 
 export default LocationDistrictPage;
+AddUpazilaModal;

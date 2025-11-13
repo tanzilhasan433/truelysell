@@ -9,7 +9,7 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
     handleSubmit,
     setValue,
     reset,
-    watch,
+
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -33,10 +33,9 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
         }
       );
       const result = await response.json();
-      console.log("single", result);
+
       if (response.ok && result.data) {
         const testData = result.data;
-
         setValue("Title", testData.title || "");
         setValue("Details", testData.details || "");
         setValue("IsActive", testData.isActive);
@@ -52,6 +51,7 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
       reset();
     }
   }, [faqId, reset]);
+
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 ">
