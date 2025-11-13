@@ -54,8 +54,11 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
   }, [faqId, reset]);
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 ">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 ">
+      <div
+        className=" w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  bg-white 
+       overflow-y-auto"
+      >
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">
@@ -71,7 +74,13 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(async (data) => {
+            await onSubmit(data);
+            reset();
+          })}
+          className="space-y-4"
+        >
           {/* Name */}
           <input
             type="text"
