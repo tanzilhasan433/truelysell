@@ -196,4 +196,3 @@ const LocationDistrictPage = () => {
 };
 
 export default LocationDistrictPage;
-AddUpazilaModal;
