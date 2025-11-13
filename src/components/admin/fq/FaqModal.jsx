@@ -15,7 +15,7 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
     defaultValues: {
       Title: "",
       Details: "",
-      Position: 0,
+      Position: null,
       IsActive: true,
     },
   });
@@ -100,7 +100,7 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
           <input
             type="number"
             placeholder="Position"
-            {...register("Postition")}
+            {...register("Position")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
           />
 
@@ -109,7 +109,7 @@ const FaqModal = ({ isOpen, onClose, onSubmit, faqId }) => {
             <label className="text-sm font-medium">Status</label>
             <input
               type="checkbox"
-              {...register("status")}
+              {...register("IsActive")}
               className="toggle toggle-success"
             />
           </div>
