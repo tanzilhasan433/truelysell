@@ -3,6 +3,7 @@
 import AddDistrictModal from "@/components/admin/location/AddDistrictModal";
 import DeleteButton from "@/components/shared/DeleteButton";
 import Pagination from "@/components/shared/Pagination";
+import Link from "next/link";
 import { FiEdit } from "react-icons/fi";
 import { FadeLoader } from "react-spinners";
 
@@ -40,8 +41,8 @@ const DistrictComponent = ({
               <thead className="bg-sky-600/10 text-gray-800 text-sm uppercase">
                 <tr>
                   <th className="py-5 px-3">#</th>
-                  <th className="py-5 px-3">District Name ( English ) </th>
-                  <th className="py-5 px-3"> District Name ( Bangla ) </th>
+                  <th className="py-5 px-3">District Name </th>
+                  <th className="py-5 px-3"> Upazila / Thana </th>
                   <th className="py-5 px-3">Action</th>
                 </tr>
               </thead>
@@ -54,7 +55,14 @@ const DistrictComponent = ({
                     <td className="py-4 px-3">{index + 1}</td>
 
                     <td className="py-4 px-3 ">{item.nameEn}</td>
-                    <td className="py-4 px-3 ">{item.nameBn}</td>
+                    <td className="py-4 px-3 ">
+                      <Link
+                        href={`/admin/location/upazila?id=${item.id}`}
+                        className="underline text-blue-600 text-sm"
+                      >
+                        View Upazila
+                      </Link>
+                    </td>
 
                     <td className="py-4 px-2 font-medium">
                       <div className=" flex items-center gap-2">

@@ -106,7 +106,7 @@ const navLinks = [
         children: [
           { label: "Division", path: "/admin/location/division" },
           { label: "District", path: "/admin/location/district" },
-          { label: "Upazila", path: "/admin/location/upazila" },
+          // { label: "Upazila", path: "/admin/location/upazila" },
         ],
       },
       { label: "Testimonials", icon: <FaBook />, path: "/admin/testimonials" },

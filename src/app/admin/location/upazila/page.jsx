@@ -1,30 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
-import DistrictComponent from "@/components/admin/location/DistrictComponent";
 import { useAppContext } from "@/context/AppContext";
-import UpazilaComponent from "@/components/admin/location/UpazilaComponent";
+import AddUpazilaModal from "@/components/admin/location/AddUpazilaModal";
+import DeleteButton from "@/components/shared/DeleteButton";
+import { FiEdit } from "react-icons/fi";
+import { FadeLoader } from "react-spinners";
+import Pagination from "@/components/shared/Pagination";
 
-const LocationDistrictPage = () => {
+const LocationUpazilaPage = ({ searchParams }) => {
+  const { id } = use(searchParams);
+
   const { loading, setLoading } = useAppContext();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allData, setAllData] = useState([]);
-  const [allDivisionData, setAllDivisionData] = useState([]);
+  const [allDistrictData, setAllDistricts] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
-  const [activeTab, setActiveTab] = useState(null);
+  const [disId, setDisId] = useState(id);
+  const [zilaName, setZilaName] = useState("");
 
   const pageSize = 10;
 
-  const getAllDivisions = async () => {
+  const getAllDistricts = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdivisions`,
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdistricts`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -34,31 +39,24 @@ const LocationDistrictPage = () => {
       );
 
       const result = await response.json();
-      if (response.ok && Array.isArray(result?.data)) {
-        setAllDivisionData(result.data || []);
-
-        if (result.data.length > 0 && !activeTab) {
-          setActiveTab(result.data[0].id);
-        }
-      } else {
-        setAllDivisionData([]);
-      }
+      setAllDistricts(result.data || []);
     } catch {
-      setAllDivisionData([]);
+      setAllDistricts([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const getDistricts = async (divisionId, page = 1) => {
-    if (!divisionId) return;
-
+  const getUpazila = async (Id, page = 1) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}district/getall?PageNumber=${
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}upazila/getall?PageNumber=${
           page - 1
-        }&SearchText=&SortBy=Id&SortDirection=desc&PageSize=${pageSize}&DivisionId=${divisionId}`,
+        }&SearchText=&SortBy=Id&SortDirection=desc&PageSize=${pageSize}&DistrictId=${
+          disId ? disId : Id
+        }`,
+
         {
           headers: {
             "Content-Type": "application/json",
@@ -68,8 +66,10 @@ const LocationDistrictPage = () => {
       );
 
       const result = await response.json();
+
       if (response.ok) {
         setAllData(result?.data || []);
+        setZilaName(result?.data[0].districtNameEn);
         setTotalRecords(result?.numberOfRecords || 0);
       } else {
         setAllData([]);
@@ -83,20 +83,20 @@ const LocationDistrictPage = () => {
     }
   };
 
-  const handleDistrict = async (data) => {
+  const handleUpazila = async (data) => {
     const isEditing = !!selectedId;
 
     const payload = {
       NameEn: data.NameEn,
       NameBn: data.NameBn,
-      DivisionId: data.DivisionId,
+      DistrictId: data.DistrictId,
     };
 
     if (isEditing) payload.Id = selectedId;
 
     const endpoint = isEditing
-      ? `${process.env.NEXT_PUBLIC_API_ADMIN_URL}district/update/${selectedId}`
-      : `${process.env.NEXT_PUBLIC_API_ADMIN_URL}district/create`;
+      ? `${process.env.NEXT_PUBLIC_API_ADMIN_URL}upazila/update/${selectedId}`
+      : `${process.env.NEXT_PUBLIC_API_ADMIN_URL}upazila/create`;
 
     const method = isEditing ? "PUT" : "POST";
 
@@ -112,18 +112,14 @@ const LocationDistrictPage = () => {
 
       const result = await response.json();
       if (response.ok) {
-        toast.success(
-          isEditing
-            ? "District updated successfully"
-            : "District created successfully"
-        );
+        toast.success(result.message);
 
         setIsModalOpen(false);
         setSelectedId(null);
-        setActiveTab(Number(payload.DivisionId));
-        getDistricts(payload.DivisionId, currentPage);
+        getUpazila(payload.DistrictId, currentPage);
+        setDisId(payload.DistrictId);
       } else {
-        toast.error(result?.message || "Something went wrong");
+        toast.error(result?.error || "Something went wrong");
       }
     } catch (error) {
       toast.error(error.message);
@@ -131,68 +127,108 @@ const LocationDistrictPage = () => {
   };
 
   useEffect(() => {
-    getAllDivisions();
+    getAllDistricts();
   }, []);
 
   useEffect(() => {
-    if (activeTab) getDistricts(activeTab, currentPage);
-  }, [activeTab, currentPage]);
+    getUpazila(currentPage);
+  }, [disId, currentPage]);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-10">
-        <h4 className="text-lg font-semibold text-gray-800">District</h4>
+        <h4>Upazila of {zilaName} district</h4>
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-(--primary-blue) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
-          <FaPlus size={15} /> Add District
+          <FaPlus size={15} /> Add Upazila
         </button>
       </div>
+      {/* table */}
+      {loading ? (
+        <div className="flex justify-center items-center">
+          <FadeLoader color="#4c40ed" />
+        </div>
+      ) : allData && allData.length < 0 ? (
+        <div className="p-6 text-center text-gray-500">
+          <p className="text-lg">No data Found</p>
+        </div>
+      ) : (
+        <div className=" mb-10">
+          <div className="overflow-x-auto mb-5">
+            {" "}
+            <table className="w-full text-sm text-left text-gray-600">
+              <thead className="bg-sky-600/10 text-gray-800 text-sm uppercase">
+                <tr>
+                  <th className="py-5 px-3">#</th>
+                  <th className="py-5 px-3">Name ( English ) </th>
+                  <th className="py-5 px-3">Name ( Bangla ) </th>
+                  <th className="py-5 px-3">Action</th>
+                </tr>
+              </thead>
+              <tbody className="text-[13px]">
+                {allData.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="border-t border-gray-200/80 hover:bg-gray-100 transition"
+                  >
+                    <td className="py-4 px-3">{index + 1}</td>
 
-      {/* ✅ Dynamic Tabs */}
-      <nav className="flex space-x-6 border-b border-gray-200 overflow-x-auto">
-        {allDivisionData.map((division) => (
-          <button
-            key={division.id}
-            onClick={() => {
-              setActiveTab(Number(division.id));
-              setCurrentPage(1);
-            }}
-            className={`relative py-2 text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
-              activeTab === division.id
-                ? "text-(--primary-blue)"
-                : "text-gray-600 hover:text-(--primary-blue)"
-            }`}
-          >
-            {division.name}
-            {activeTab === division.id && (
-              <span className="absolute left-0 -bottom-px w-full h-0.5 bg-(--primary-blue) rounded"></span>
-            )}
-          </button>
-        ))}
-      </nav>
+                    <td className="py-4 px-3 ">{item.nameEn}</td>
+                    <td className="py-4 px-3 ">{item.nameBn}</td>
 
-      {/* ✅ Tab Content */}
-      <div className="mt-4">
-        <UpazilaComponent
-          allData={allData}
-          setAllData={setAllData}
-          selectedId={selectedId}
-          handleDistrict={handleDistrict}
-          setCurrentPage={setCurrentPage}
-          pageSize={pageSize}
-          totalRecords={totalRecords}
-          currentPage={currentPage}
-          setIsModalOpen={setIsModalOpen}
-          setSelectedId={setSelectedId}
-          isModalOpen={isModalOpen}
-          loading={loading}
-          allDivisionData={allDivisionData}
-        />
-      </div>
+                    <td className="py-4 px-2 font-medium">
+                      <div className=" flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedId(item.id);
+                            setIsModalOpen(true);
+                          }}
+                          className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
+                        >
+                          <FiEdit size={25} />
+                        </button>
+                        <DeleteButton
+                          endpoint={`upazila/delete/${item?.id}`}
+                          type="upazila"
+                          onComplete={(status) => {
+                            if (status) {
+                              setAllData((prev) =>
+                                prev.filter((b) => b.id !== item.id)
+                              );
+                            } else {
+                            }
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalRecords={totalRecords}
+            pageSize={pageSize}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+        </div>
+      )}
+
+      <AddUpazilaModal
+        isOpen={isModalOpen}
+        onSubmit={handleUpazila}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedId(null);
+        }}
+        Id={selectedId}
+        allDistrictData={allDistrictData}
+      />
     </div>
   );
 };
 
-export default LocationDistrictPage;
+export default LocationUpazilaPage;

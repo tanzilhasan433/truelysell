@@ -1,19 +1,20 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const AddUpazilaModal = ({
   isOpen,
   onClose,
   onSubmit,
   Id,
-  allDivisionData,
+  allDistrictData,
 }) => {
   const {
     register,
     handleSubmit,
     setValue,
     reset,
-    watch,
+
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -23,10 +24,10 @@ const AddUpazilaModal = ({
   });
 
   const isEditMode = Boolean(Id);
-  const getSingleDivision = async () => {
+  const getSingleUpazila = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}district/getdistrictsbyid/${Id}`,
+        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}upazila/getupazilasbyid/${Id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -39,14 +40,14 @@ const AddUpazilaModal = ({
         const data = result.data;
         setValue("NameEn", data.nameEn || "");
         setValue("NameBn", data.nameBn || "");
-        setValue("DivisionId", data.divisionId || "");
+        setValue("DistrictId", data.districtId || "");
       }
     } catch (error) {}
   };
 
   useEffect(() => {
     if (Id) {
-      getSingleDivision();
+      getSingleUpazila();
     } else {
       reset();
     }
@@ -61,7 +62,7 @@ const AddUpazilaModal = ({
         <div className="flex items-center justify-between mb-6">
           <h6 className="text-lg font-semibold mx-auto">
             {" "}
-            {isEditMode ? "Edit District" : "Add District"}
+            {isEditMode ? "Edit Upazila" : "Add Upazila"}
           </h6>
           <button
             type="button"
@@ -74,15 +75,15 @@ const AddUpazilaModal = ({
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <label className="text-sm font-medium text-gray-800">Division</label>
+          <label className="text-sm font-medium text-gray-800">District</label>
           <select
-            {...register("DivisionId")}
+            {...register("DistrictId")}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
           >
             <option value="" className="text-sm  ">
-              Select Division
+              Select District
             </option>
-            {allDivisionData.map((item) => (
+            {allDistrictData.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
               </option>
@@ -90,7 +91,7 @@ const AddUpazilaModal = ({
           </select>
 
           <label className="text-sm font-medium text-gray-800">
-            Division Name (English)
+            Upazila Name (English)
           </label>
           <input
             type="text"
@@ -98,7 +99,7 @@ const AddUpazilaModal = ({
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-2"
           />
           <label className="text-sm font-medium text-gray-800">
-            Division Name (Bangla)
+            Upazila Name (Bangla)
           </label>
           <input
             type="text"
