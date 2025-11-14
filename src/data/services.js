@@ -320,7 +320,7 @@ export const bookings = [
 export const reviewsData = [
   {
     id: 1,
-    reviewType: "High",
+    reviewType: "5",
     status: true,
     date: "2025-09-20",
     providerName: "John Doe",
@@ -335,7 +335,7 @@ export const reviewsData = [
   },
   {
     id: 2,
-    reviewType: "Normal",
+    reviewType: "4",
     status: false,
     date: "2025-09-19",
     providerName: "Maria Smith",
@@ -350,7 +350,7 @@ export const reviewsData = [
   },
   {
     id: 3,
-    reviewType: "Excellent",
+    reviewType: "5",
     status: true,
     date: "2025-09-18",
     providerName: "David Lee",
@@ -361,11 +361,11 @@ export const reviewsData = [
     serviceImg:
       "https://images.unsplash.com/photo-1585587064130-7c16f3dc87a3?w=400",
     rating: 5,
-    comments: "Absolutely excellent! Highly recommended.",
+    comments: "Absolutely excellent! 5ly recommended.",
   },
   {
     id: 4,
-    reviewType: "Good",
+    reviewType: "3",
     status: false,
     date: "2025-09-17",
     providerName: "Emma Wilson",

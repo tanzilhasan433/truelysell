@@ -18,7 +18,7 @@ const ReviewPage = () => {
               <th className="py-5 px-3">Provider</th>
               <th className="py-5 px-3 ">User</th>
               <th className="py-5 px-3">Service</th>
-              <th className="py-5 px-3">Type</th>
+              <th className="py-5 px-3">Start</th>
               <th className="py-5 px-3">ratings</th>
               <th className="py-5 px-3">Comments</th>
             </tr>

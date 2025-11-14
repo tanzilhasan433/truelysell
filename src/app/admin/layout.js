@@ -36,10 +36,11 @@ const navLinks = [
       {
         label: "Review",
         icon: <FaStar />,
-        children: [
-          { label: "Review Type", path: "/admin/reviews/review-type" },
-          { label: "Review", path: "/admin/reviews" },
-        ],
+        path: "/admin/reviews",
+        // children: [
+        //   { label: "Review Type", path: "/admin/reviews/review-type" },
+        //   { label: "Review", path: "/admin/reviews" },
+        // ],
       },
     ],
   },
