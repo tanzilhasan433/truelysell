@@ -18,7 +18,7 @@ const ReviewPage = () => {
               <th className="py-5 px-3">Provider</th>
               <th className="py-5 px-3 ">User</th>
               <th className="py-5 px-3">Service</th>
-              <th className="py-5 px-3">Start</th>
+
               <th className="py-5 px-3">ratings</th>
               <th className="py-5 px-3">Comments</th>
             </tr>
@@ -65,7 +65,6 @@ const ReviewPage = () => {
                   </div>
                 </td>
 
-                <td className="py-4 px-3 font-medium">{item.reviewType}</td>
                 <td className="py-4 px-3 font-medium">{item.rating}</td>
 
                 <td className="py-4 px-3 font-medium">{item.comments}</td>

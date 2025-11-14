@@ -18,6 +18,7 @@ export default function LoginFormModal({
   setIsRegistrationOpen,
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [errorsMessage, setErrorsMessage] = useState("");
 
   const { login } = useAppContext();
   const router = useRouter();
@@ -30,7 +31,6 @@ export default function LoginFormModal({
   });
 
   const handleLogin = async (data) => {
-    console.log("Login data:", data);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_AUTH_URL}login`,
@@ -45,7 +45,7 @@ export default function LoginFormModal({
       if (response.ok) {
         const result = await response.json();
         if (result.error) {
-          toast.error(result.error);
+          setErrorsMessage(result.error);
         } else {
           toast.success("Login Success");
           onClose();
@@ -75,9 +75,7 @@ export default function LoginFormModal({
     <div>
       {/* Modal */}
       {isOpen && (
-        // <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 ">
         <div className="absolute top-0 left-0 w-full h-full min-h-screen z-50 bg-black/50 flex justify-center items-start py-10">
-          {/* <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 relative my-5 max-h-[90vh] overflow-y-auto"> */}
           <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-8 relative">
             {/* Header */}
             <div className="flex justify-between mb-4">
@@ -85,7 +83,7 @@ export default function LoginFormModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-white bg-[var(--dark)] hover:bg-[var(--primary)] hover:text-white w-5 h-5 flex justify-center items-center rounded-full  absolute right-4 top-4"
+                className="text-white bg-(--dark) hover:bg-(--primary) hover:text-white w-5 h-5 flex justify-center items-center rounded-full  absolute right-4 top-4"
               >
                 <IoClose />
               </button>
@@ -123,7 +121,6 @@ export default function LoginFormModal({
                 <div className="relative mt-1">
                   <input
                     type={showPassword ? "text" : "password"}
-                    // placeholder="Enter your password"
                     {...register("Password")}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none "
                     required
@@ -135,6 +132,9 @@ export default function LoginFormModal({
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </span>
                 </div>
+                {errorsMessage && (
+                  <p className="text-red-500 text-xs mt-1">{errorsMessage}</p>
+                )}
               </div>
 
               {/* <div className="flex items-center justify-between text-sm text-gray-600">
@@ -150,7 +150,7 @@ export default function LoginFormModal({
 
               <button
                 type="submit"
-                className="w-full py-2 text-white font-medium rounded-md bg-gradient-to-r from-[var(--primary)] to-[var(--primary-blue)] hover:opacity-90"
+                className="w-full py-2 text-white font-medium rounded-md bg-linear-to-r from-(--primary) to-(--primary-blue) hover:opacity-90"
               >
                 Sign In
               </button>
@@ -164,7 +164,7 @@ export default function LoginFormModal({
                   setIsRegistrationOpen(true);
                   onClose();
                 }}
-                className="text-[var(--primary)] font-medium"
+                className="text-(--primary)] font-medium"
               >
                 Join us Today
               </button>
