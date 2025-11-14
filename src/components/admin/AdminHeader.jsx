@@ -10,7 +10,7 @@ import { GrNotification } from "react-icons/gr";
 import { IoScanSharp } from "react-icons/io5";
 import { IoMoonOutline } from "react-icons/io5";
 import { CiGlobe } from "react-icons/ci";
-const AdminHeader = () => {
+const AdminHeader = ({ role }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const menuRef = useRef(null);
@@ -65,7 +65,7 @@ const AdminHeader = () => {
           </div>{" "}
           <div className="flex items-center gap-1 sm:gap-2 md:gap-2 ml-auto">
             <button
-              className="text-gray-600   hover:text-[var(--primary-blue)] transition-all duration-200 p-2  flex gap-2 items-center justify-center    touch-manipulation"
+              className="text-gray-600   hover:text-(--primary-blue) transition-all duration-200 p-2  flex gap-2 items-center justify-center    touch-manipulation"
               // onClick={() => setShowNotifications((v) => !v)}
               type="button"
             >
@@ -73,7 +73,7 @@ const AdminHeader = () => {
               <span className="text-sm">View site</span>
             </button>
             <button
-              className="text-gray-600 hover:text-white bg-gray-100 hover:bg-[var(--primary-blue)] transition-all duration-200 p-2 rounded-full hover:min-h-[42px] hover:min-w-[42px] min-h-[42px] min-w-[42px] flex items-center justify-center    touch-manipulation"
+              className="text-gray-600 hover:text-white bg-gray-100 hover:bg-(--primary-blue) transition-all duration-200 p-2 rounded-full hover:min-h-[42px] hover:min-w-[42px] min-h-[42px] min-w-[42px] flex items-center justify-center    touch-manipulation"
               // onClick={() => setShowNotifications((v) => !v)}
               type="button"
             >
@@ -82,7 +82,7 @@ const AdminHeader = () => {
             {/* Notification - With dropdown */}
             <div className="relative" ref={notificationRef}>
               <button
-                className="text-gray-600 hover:text-white bg-gray-100 hover:bg-[var(--primary-blue)] transition-all duration-200 p-2 rounded-full hover:min-h-[42px] hover:min-w-[42px] min-h-[42px] min-w-[42px] flex items-center justify-center    touch-manipulation"
+                className="text-gray-600 hover:text-white bg-gray-100 hover:bg-(--primary-blue) transition-all duration-200 p-2 rounded-full hover:min-h-[42px] hover:min-w-[42px] min-h-[42px] min-w-[42px] flex items-center justify-center    touch-manipulation"
                 onClick={() => setShowNotifications((v) => !v)}
                 type="button"
                 //   aria-label="Notifications"
@@ -200,21 +200,14 @@ const AdminHeader = () => {
               {showMenu && (
                 <div className="absolute right-0 mt-2 w-48 sm:w-44 bg-white rounded-xl shadow-xl border border-blue-100 py-2 z-50 animate-fadeIn">
                   <Link
-                    href={`/profile`}
+                    href={`/${role}/profile`}
                     className="flex gap-2 items-center px-4 py-3 text-gray-700 hover:bg-blue-50 rounded text-sm touch-manipulation"
                     onClick={handleMenuItemClick}
                   >
                     <FaUser />
                     profile
                   </Link>
-                  <Link
-                    href={`/settings`}
-                    className="flex gap-2 items-center px-4 py-3 text-gray-700 hover:bg-blue-50 rounded text-sm touch-manipulation"
-                    onClick={handleMenuItemClick}
-                  >
-                    <FaTools />
-                    settings
-                  </Link>
+
                   <button
                     onClick={() => {
                       handleMenuItemClick();

@@ -32,7 +32,7 @@ export default function AdminLayout({ children }) {
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Topbar */}
-          <AdminHeader />
+          <AdminHeader role="customer" />
           {/* Page Content */}
           <main className="flex-1 px-6  bg-[#ffffff] pt-24">{children}</main>
         </div>

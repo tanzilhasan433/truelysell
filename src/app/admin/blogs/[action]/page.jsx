@@ -136,25 +136,6 @@ const UpdateBlogPage = ({ params, searchParams }) => {
                 htmlFor="language"
                 className="block text-sm  text-gray-800"
               >
-                Category
-              </label>
-              <select
-                id="category"
-                {...register("category")}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
-              >
-                <option value="" className="">
-                  Select category
-                </option>
-                <option value="">category 1</option>
-              </select>
-            </div>
-            {/* language */}
-            <div>
-              <label
-                htmlFor="language"
-                className="block text-sm  text-gray-800"
-              >
                 Language
               </label>
               <select
@@ -168,32 +149,41 @@ const UpdateBlogPage = ({ params, searchParams }) => {
                 <option value="english">English</option>
               </select>
             </div>
+            {/* Category */}
+            <div>
+              <label
+                htmlFor="category"
+                className="block text-sm  text-gray-800"
+              >
+                Category
+              </label>
+              <select
+                id="category"
+                {...register("category")}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+              >
+                <option value="" className="">
+                  Select category
+                </option>
+                <option value="">category 1</option>
+              </select>
+            </div>
           </div>
           {/*  */}
           <div className=" grid lg:grid-cols-2 gap-6 mb-6">
-            {/* description */}
             <div>
-              <label
-                htmlFor="description"
-                className="block text-sm  text-gray-800"
-              >
-                Meta Description
+              <label htmlFor="tags" className="block text-sm  text-gray-800">
+                Tags
               </label>
-              <textarea
-                id="description"
-                {...register("description", {
-                  required: "description is required",
-                })}
+              <input
+                id="tags"
+                {...register("tags", {})}
                 className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.description ? "border-red-500" : "border-gray-300"
+                  errors.tags ? "border-red-500" : "border-gray-300"
                 } px-4 py-2 `}
               />
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.description.message}
-                </p>
-              )}
             </div>
+
             {/* keywords */}
             <div>
               <label
@@ -220,18 +210,28 @@ const UpdateBlogPage = ({ params, searchParams }) => {
           </div>
           {/*  tags*/}
           <div className="  mb-6">
-            {/* tags */}
+            {/* description */}
             <div>
-              <label htmlFor="tags" className="block text-sm  text-gray-800">
-                Tags
+              <label
+                htmlFor="description"
+                className="block text-sm  text-gray-800"
+              >
+                Meta Description
               </label>
-              <input
-                id="tags"
-                {...register("tags", {})}
+              <textarea
+                id="description"
+                {...register("description", {
+                  required: "description is required",
+                })}
                 className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.tags ? "border-red-500" : "border-gray-300"
+                  errors.description ? "border-red-500" : "border-gray-300"
                 } px-4 py-2 `}
               />
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
           </div>
           {/*  */}
@@ -303,7 +303,7 @@ const UpdateBlogPage = ({ params, searchParams }) => {
           <button
             type="submit"
             // disabled={loading}
-            className="flex items-center gap-2 px-6 py-3  bg-[var(--primary-blue)]  text-white  rounded-md hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-3  bg-(--primary-blue)  text-white  rounded-md hover:shadow-lg transition-all duration-200 disabled:opacity-50"
           >
             <span>{isEdit ? "Update Blog" : "Add Blog"}</span>
           </button>
