@@ -120,7 +120,7 @@ const AllServicesTable = ({ serviceStatus }) => {
                         {" "}
                         <Link
                           href={`/admin/services/edit?id=${item?.id}`}
-                          className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
+                          className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
                         >
                           <FiEdit size={25} />
                         </Link>

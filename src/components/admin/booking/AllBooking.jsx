@@ -7,24 +7,29 @@ const AllBooking = ({ data }) => {
         <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
           <tr>
             <th className="py-5 px-3">#</th>
-            <th className="py-5 px-3">Date</th>
+
+            <th className="py-5 px-3">Booking Id</th>
+            <th className="py-5 px-3">Schedule Time</th>
             <th className="py-5 px-3">Booking Time</th>
             <th className="py-5 px-3">Provider</th>
             <th className="py-5 px-3 ">User</th>
             <th className="py-5 px-3">Service</th>
             <th className="py-5 px-3">Amount</th>
-            <th className="py-5 px-3">Status</th>
-            <th className="py-5 px-3">Status</th>
+            <th className="py-5 px-3">Payment Status</th>
+            <th className="py-5 px-3">payment Date</th>
+            <th className="py-5 px-3">Booking View</th>
             <th className="py-5 px-3">Action</th>
           </tr>
         </thead>
         <tbody className="text-[13px]">
-          {data.map((item) => (
+          {data.map((item, index) => (
             <tr
               key={item.id}
               className="border-t border-gray-200/80 hover:bg-gray-100 transition"
             >
+              <td className="py-4 px-3">{index + 1}</td>
               <td className="py-4 px-3">{item.id}</td>
+
               <td className="py-4 px-3">{item.date}</td>
               <td className="py-4 px-3">{item.bookingTime}</td>
               <td className="py-4 px-3">
@@ -78,13 +83,10 @@ const AllBooking = ({ data }) => {
                 </button>
               </td>
               <td className="py-4 px-3 font-medium">{item.createdAt}</td>
+              <td className="py-4 px-3 font-medium"></td>
 
               <td className="py-4 px-2 font-medium">
-                <select
-                  //   id="category"
-                  //   {...register("category")}
-                  className=" rounded-md text-gray-600 text-xs border border-gray-300 p-1  focus:outline-none "
-                >
+                <select className=" rounded-md text-gray-600 text-xs border border-gray-300 p-1  focus:outline-none ">
                   <option value="" className="">
                     Select Status
                   </option>

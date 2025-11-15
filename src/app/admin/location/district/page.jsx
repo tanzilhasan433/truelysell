@@ -19,7 +19,6 @@ const LocationDistrictPage = () => {
 
   const pageSize = 10;
 
-  // ✅ Get all divisions
   const getAllDivisions = async () => {
     try {
       setLoading(true);

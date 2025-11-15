@@ -2,9 +2,9 @@
 
 import { useAppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa";
 
-const DeleteButton = ({ endpoint, type, onComplete }) => {
+const BlogDelete = ({ endpoint, type, onComplete }) => {
   const { loading, setLoading } = useAppContext();
 
   const handleDelete = () => {
@@ -64,15 +64,18 @@ const DeleteButton = ({ endpoint, type, onComplete }) => {
   };
 
   return (
-    <button
-      onClick={handleDelete}
-      disabled={loading}
-      title="Delete"
-      className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2"
-    >
-      <FaRegTrashCan size={25} />
-    </button>
+    <>
+      {" "}
+      <button
+        onClick={handleDelete}
+        disabled={loading}
+        title="Delete"
+        className="flex items-center gap-1 hover:text-red-500"
+      >
+        <FaTrash /> Delete
+      </button>
+    </>
   );
 };
 
-export default DeleteButton;
+export default BlogDelete;

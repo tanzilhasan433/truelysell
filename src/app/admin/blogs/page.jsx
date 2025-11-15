@@ -4,22 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import AllBlogs from "@/components/admin/blog/AllBlogs";
-import { blogsData } from "@/data/json/blog_categories";
-
-const inactiveBlogs = blogsData.filter((blog) => blog.status === "Inactive");
-const activeBlogs = blogsData.filter((blog) => blog.status === "Active");
 
 const tabs = [
-  { name: "Active Blog", component: <AllBlogs data={activeBlogs} /> },
-
-  { name: "Inactive Blog", component: <AllBlogs data={inactiveBlogs} /> },
+  { name: "All", component: <AllBlogs blogStatus="All" /> },
+  { name: "Active", component: <AllBlogs blogStatus="Active" /> },
+  { name: "Inactive", component: <AllBlogs blogStatus="Inactive" /> },
 ];
 
 const AllBlogsPage = () => {
-  const [activeTab, setActiveTab] = useState("Active Blog");
-
-  const ActiveComponent =
-    tabs.find((tab) => tab.name === activeTab)?.component || (() => null);
+  const [activeTab, setActiveTab] = useState("All");
+  const activeTabObj = tabs.find((tab) => tab.name === activeTab);
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
@@ -31,7 +25,6 @@ const AllBlogsPage = () => {
           <FaPlus size={15} /> Add Blog
         </Link>
       </div>
-      {/* Tab Navigation */}
       <nav className="flex space-x-6 border-b  border-gray-200">
         {tabs.map((tab) => (
           <button
@@ -45,14 +38,23 @@ const AllBlogsPage = () => {
           >
             {tab.name}
             {activeTab === tab.name && (
-              <span className="absolute left-0 -bottom-[px] w-full h-0.5 bg-(--primary-blue) rounded"></span>
+              <span className="absolute left-0 -bottom-px w-full h-0.5 bg-(--primary-blue) rounded"></span>
             )}
           </button>
         ))}
       </nav>
 
       {/* Tab Content */}
-      <div className="mt-4">{ActiveComponent}</div>
+      <div className="mt-4">
+        <div className="mt-4">
+          {activeTabObj && (
+            <AllBlogs
+              key={activeTabObj.name}
+              blogStatus={activeTabObj.name === "All" ?? activeTabObj.name}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
