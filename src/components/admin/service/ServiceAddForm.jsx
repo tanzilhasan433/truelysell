@@ -14,7 +14,9 @@ import LocationSelect from "./LocationSelect";
 const ServiceAddForm = ({ isEditMode, id }) => {
   const router = useRouter();
   const fileInputRef = useRef(null);
-  const { setLoading } = useAppContext();
+
+  const { setLoading, userRole } = useAppContext();
+
   const [providers, setProviders] = useState([]);
   const [allCategoryData, setAllCategoryData] = useState([]);
   const [allSubCategoryData, setAllSubCategoryData] = useState([]);
@@ -453,31 +455,38 @@ const ServiceAddForm = ({ isEditMode, id }) => {
         <div className=" rounded-md p-4 mt-8 bg-white ">
           <h6>Service Information</h6>
           <div className="border-b border-gray-200/80 my-6"></div>
-          <div className="mb-6 grid lg:grid-cols-2 gap-6">
-            <div className="">
-              <label className="block text-sm  text-gray-800">Provider</label>
-              <select
-                id="providerId"
-                {...register("providerId", {
-                  required: !isEditMode && "Provider is required",
-                })}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
-              >
-                <option value="" className="">
-                  Select a provider
-                </option>
-                {providers?.map((item) => (
-                  <option key={item.id} value={item.id} className="">
-                    {item.name}
+          <div
+            className={`mb-6 grid  ${
+              userRole === "Admin" ? "lg:grid-cols-2" : ""
+            } gap-6`}
+          >
+            {userRole === "Admin" && (
+              <div className="">
+                <label className="block text-sm  text-gray-800">Provider</label>
+                <select
+                  id="providerId"
+                  {...register("providerId", {
+                    required: !isEditMode && "Provider is required",
+                  })}
+                  className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+                >
+                  <option value="" className="">
+                    Select a provider
                   </option>
-                ))}
-              </select>
-              {errors.providerId && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.providerId.message}
-                </p>
-              )}
-            </div>
+                  {providers?.map((item) => (
+                    <option key={item.id} value={item.id} className="">
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.providerId && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.providerId.message}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div>
               <label htmlFor="title" className="block text-sm  text-gray-800">
                 Title
@@ -945,16 +954,19 @@ const ServiceAddForm = ({ isEditMode, id }) => {
           </div>
         </div>
         <div className="flex items-center gap-6 ps-4">
-          <div className="flex items-center gap-2 ">
-            <input
-              type="checkbox"
-              {...register("isDefault")}
-              className="toggle toggle-success "
-            />
-            <label className="text-sm font-medium text-gray-600">
-              Is Default
-            </label>
-          </div>
+          {userRole === "Admin" && (
+            <div className="flex items-center gap-2 ">
+              <input
+                type="checkbox"
+                {...register("isDefault")}
+                className="toggle toggle-success "
+              />
+              <label className="text-sm font-medium text-gray-600">
+                Is Default
+              </label>
+            </div>
+          )}
+
           <div className="flex items-center gap-2 ">
             <input
               type="checkbox"

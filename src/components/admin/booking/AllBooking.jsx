@@ -30,8 +30,15 @@ const AllBooking = ({ data }) => {
               <td className="py-4 px-3">{index + 1}</td>
               <td className="py-4 px-3">{item.id}</td>
 
-              <td className="py-4 px-3">{item.date}</td>
-              <td className="py-4 px-3">{item.bookingTime}</td>
+              <td className="py-4 px-3">
+                <p> {item.date}</p>
+                <p> {item.bookingTime}</p>
+              </td>
+              <td className="py-4 px-3">
+                {" "}
+                <p> {item.date}</p>
+                <p> {item.bookingTime}</p>
+              </td>
               <td className="py-4 px-3">
                 <div className="flex items-center gap-2">
                   <img

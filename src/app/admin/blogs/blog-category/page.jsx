@@ -20,7 +20,7 @@ const BlogCategoriesPage = () => {
         <h4>Blog Category</h4>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-[var(--primary-blue)] text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-(--primary-blue) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <FaPlus size={15} /> Add Blog Category
         </button>
@@ -63,10 +63,10 @@ const BlogCategoriesPage = () => {
                 <td className="py-4 px-2 font-medium">
                   <div className=" flex items-center gap-2">
                     {" "}
-                    <button className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                    <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
                       <FiEdit size={25} />
                     </button>
-                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-[var(--primary-blue)] hover:text-white  rounded-full flex items-center  justify-center  gap-2">
+                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2">
                       <FaRegTrashCan size={25} />
                     </button>
                   </div>
