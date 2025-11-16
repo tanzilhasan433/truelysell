@@ -507,53 +507,6 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               )}
             </div>
           </div>
-          {/*  */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
-            {/* Duration */}
-            <div>
-              <label
-                htmlFor="duration"
-                className="block text-sm  text-gray-800"
-              >
-                Duration
-              </label>
-              <input
-                id="duration"
-                {...register("duration", {
-                  required: !isEditMode && "Duration is required",
-                })}
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.duration ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.duration && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.duration.message}
-                </p>
-              )}
-            </div>
-            {/* price */}
-            <div>
-              <label htmlFor="price" className="block text-sm  text-gray-800">
-                Price
-              </label>
-              <input
-                id="price"
-                {...register("price", {
-                  required: !isEditMode && "Price is required",
-                })}
-                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
-                  errors.price ? "border-red-500" : "border-gray-300"
-                } px-4 py-2 `}
-              />
-              {errors.price && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.price.message}
-                </p>
-              )}
-            </div>
-          </div>
-
           {/* Category */}
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             <div>
@@ -629,6 +582,72 @@ const ServiceAddForm = ({ isEditMode, id }) => {
               {errors.subCategoryId && (
                 <p className="mt-1 text-sm text-red-600">
                   {errors.subCategoryId.message}
+                </p>
+              )}
+            </div>
+          </div>
+          {/*  */}
+          <div className="grid lg:grid-cols-3 gap-6 mb-6">
+            {/* Duration */}
+            <div>
+              <label
+                htmlFor="duration"
+                className="block text-sm  text-gray-800"
+              >
+                Duration
+              </label>
+              <input
+                id="duration"
+                {...register("duration", {
+                  required: !isEditMode && "Duration is required",
+                })}
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.duration ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.duration && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.duration.message}
+                </p>
+              )}
+            </div>
+            {/* price */}
+            <div>
+              <label htmlFor="price" className="block text-sm  text-gray-800">
+                Starting Price
+              </label>
+              <input
+                id="startingPrice"
+                {...register("startingPrice", {
+                  // required: !isEditMode && "Starting Price is required",
+                })}
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.startingPrice ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.startingPrice && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.startingPrice.message}
+                </p>
+              )}
+            </div>
+            {/* price */}
+            <div>
+              <label htmlFor="price" className="block text-sm  text-gray-800">
+                Price
+              </label>
+              <input
+                id="price"
+                {...register("price", {
+                  required: !isEditMode && "Price is required",
+                })}
+                className={`mt-1 block text-gray-800 w-full rounded-md border focus:outline-none ${
+                  errors.price ? "border-red-500" : "border-gray-300"
+                } px-4 py-2 `}
+              />
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.price.message}
                 </p>
               )}
             </div>

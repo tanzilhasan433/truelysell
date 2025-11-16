@@ -323,22 +323,42 @@ const ProfileForm = ({ isEditMode, id }) => {
             )}
           </div>
           <h5 className="mt-10">Address</h5>
-          <div>
-            <label htmlFor="name" className="block text-sm  text-gray-800">
-              Address
-            </label>
-            <input
-              type="text"
-              {...register("Name", {
-                required: !isEditMode ? "Name is required" : false,
-              })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
-            />
-            {errors.Name && (
-              <p className="text-red-500 text-xs mt-1">{errors.Name.message}</p>
-            )}
-          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label htmlFor="name" className="block text-sm  text-gray-800">
+                Address
+              </label>
+              <input
+                type="text"
+                {...register("Name", {
+                  required: !isEditMode ? "Name is required" : false,
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.Name && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Name.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="name" className="block text-sm  text-gray-800">
+                Shop Name
+              </label>
+              <input
+                type="text"
+                {...register("Name", {
+                  required: !isEditMode ? "Name is required" : false,
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.Name && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Name.message}
+                </p>
+              )}
+            </div>
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm  text-gray-800">
