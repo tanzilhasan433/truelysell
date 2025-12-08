@@ -1,5 +1,4 @@
 import DeleteButton from "@/components/shared/DeleteButton";
-import NoFoundData from "@/components/shared/NoFoundData";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import { FiEdit } from "react-icons/fi";

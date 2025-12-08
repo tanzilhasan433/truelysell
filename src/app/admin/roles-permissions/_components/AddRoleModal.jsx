@@ -1,10 +1,11 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import { useAppContext } from "@/context/AppContext";
+import { useAdminRolePermission } from "@/hooks/admin/useAdminRolePermission";
 
-const AddRoleModal = ({ isOpen, onClose, onSubmit, Id }) => {
+const AddRoleModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -18,39 +19,23 @@ const AddRoleModal = ({ isOpen, onClose, onSubmit, Id }) => {
       IsActive: true,
     },
   });
-
-  const isEditMode = Boolean(Id);
-  const getSingleRoles = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}roles/getrolebyid/${Id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      const result = await response.json();
-
-      if (response.ok && result.data) {
-        const data = result.data;
-
-        setValue("Name", data.name || "");
-        setValue("IsActive", data.isActive || "");
-      }
-    } catch (error) {}
-  };
+  const { selectedId, onClose } = useAppContext();
+  const { singleRoleData } = useAdminRolePermission();
+  const isEditMode = Boolean(selectedId);
 
   useEffect(() => {
-    if (Id) {
-      getSingleRoles();
+    if (singleRoleData && selectedId) {
+      reset({
+        Name: singleRoleData.name,
+        IsActive: singleRoleData.isActive,
+      });
     } else {
-      reset();
+      reset({
+        Name: "",
+        IsActive: "",
+      });
     }
-  }, [Id, reset]);
-
-  if (!isOpen) return null;
+  }, [singleRoleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 items-center ">
