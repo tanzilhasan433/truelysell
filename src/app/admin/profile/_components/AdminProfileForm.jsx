@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { useProviderProfile } from "@/hooks/provider/useProviderProfile";
-import LocationSelect from "@/components/admin/service/LocationSelect";
+import LocationSelect from "./LocationSelect";
 
 const AdminProfileForm = ({ isEditMode, id }) => {
   const {
