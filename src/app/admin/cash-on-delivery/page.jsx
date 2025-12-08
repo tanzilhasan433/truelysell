@@ -1,16 +1,22 @@
 "use client";
 
+import Loader from "@/components/shared/Loader";
+import NoFoundData from "@/components/shared/NoFoundData";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import { useEffect, useState } from "react";
-import { FadeLoader } from "react-spinners";
 
 const CashOnDeliveryPage = () => {
   const [allData, setAllData] = useState([]);
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const { loading, setLoading } = useAppContext();
+  const {
+    loading,
+    setLoading,
+    currentPage,
+    setCurrentPage,
+    totalRecords,
+    setTotalRecords,
+  } = useAppContext();
   const pageSize = 10;
 
   const getAllData = async (page = 1) => {
@@ -58,13 +64,9 @@ const CashOnDeliveryPage = () => {
       </div>
       {/* table */}
       {loading ? (
-        <div className="flex justify-center items-center">
-          <FadeLoader color="#4c40ed" />
-        </div>
+        <Loader />
       ) : allData && allData.length < 0 ? (
-        <div className="p-6 text-center text-gray-500">
-          <p className="text-lg">No data Found</p>
-        </div>
+        <NoFoundData />
       ) : (
         <div className=" mb-10">
           <div className="overflow-x-auto mb-5">

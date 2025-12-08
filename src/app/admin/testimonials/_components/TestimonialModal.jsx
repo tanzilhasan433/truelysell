@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { FaStar } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
+import { useAppContext } from "@/context/AppContext";
+import { useAdminTestimonial } from "@/hooks/admin/useAdminTestimonial";
 
-const TestimonialModal = ({ isOpen, onClose, onSubmit, testimonialId }) => {
+const TestimonialModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -24,52 +26,39 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit, testimonialId }) => {
   });
 
   const Ratings = watch("Ratings");
-  const isEditMode = Boolean(testimonialId);
+  const { selectedId, onClose } = useAppContext();
+  const { singleData } = useAdminTestimonial();
+  const isEditMode = Boolean(selectedId);
+
   const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null);
 
-  const getTestimonial = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}testimonial/gettestimonialsbyid/${testimonialId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      const result = await response.json();
-
-      if (response.ok && result.data) {
-        const testData = result.data;
-
-        setValue("Name", testData.name || "");
-        setValue("Content", testData.content || "");
-        setValue("IsActive", testData.isActive);
-        setValue("JobTitle", testData.jobTitle);
-        setValue("Ratings", testData.ratings);
-        setValue("PersonImage", testData.imageUrl || "");
-        if (testData.imageUrl) {
-          setPreview(
-            `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/testimonial/${testData.imageUrl}`
-          );
-        } else {
-          setPreview("");
-        }
-      }
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    if (testimonialId) {
-      getTestimonial();
+    if (singleData && selectedId) {
+      reset({
+        Name: singleData.name,
+        Content: singleData.content,
+        JobTitle: singleData.jobTitle,
+        Ratings: singleData.ratings,
+        PersonImage: singleData.imageUrl,
+        IsActive: singleData.isActive,
+      });
+      if (singleData.imageUrl) {
+        setPreview(
+          `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/testimonial/${singleData.imageUrl}`
+        );
+      } else {
+        setPreview("");
+      }
     } else {
-      reset();
+      reset({
+        Title: "",
+        Details: "",
+        Position: "",
+        IsActive: true,
+      });
     }
-  }, [testimonialId, reset]);
-
-  if (!isOpen) return null;
+  }, [singleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto">

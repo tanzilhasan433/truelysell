@@ -1,15 +1,15 @@
 "use client";
 
+import { useAppContext } from "@/context/AppContext";
+import { useAdminFaq } from "@/hooks/admin/useAdminFaq";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-const FaqModal = ({ isOpen, onClose, onSubmit, Id }) => {
+const FaqModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
-
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -19,40 +19,28 @@ const FaqModal = ({ isOpen, onClose, onSubmit, Id }) => {
       IsActive: true,
     },
   });
-
-  const isEditMode = Boolean(Id);
-  const getSingleFaq = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}faq/getfaqsbyid/${Id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      const result = await response.json();
-
-      if (response.ok && result.data) {
-        const testData = result.data;
-        setValue("Title", testData.title || "");
-        setValue("Details", testData.details || "");
-        setValue("IsActive", testData.isActive);
-        setValue("Position", testData.position);
-      }
-    } catch (error) {}
-  };
+  const { selectedId, onClose } = useAppContext();
+  const { singleData } = useAdminFaq();
+  const isEditMode = Boolean(selectedId);
 
   useEffect(() => {
-    if (Id) {
-      getSingleFaq();
+    if (singleData && selectedId) {
+      reset({
+        Title: singleData.title,
+        Details: singleData.details,
+        Position: singleData.position,
+        IsActive: singleData.isActive,
+      });
     } else {
-      reset();
+      reset({
+        Title: "",
+        Details: "",
+        Position: "",
+        IsActive: true,
+      });
     }
-  }, [Id, reset]);
+  }, [singleData, selectedId]);
 
-  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 ">
       <div
