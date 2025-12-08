@@ -3,7 +3,7 @@ import AddCustomerModal from "@/components/provider/customer/AddCustomerModal";
 import { CustomersData } from "@/data/json/customer-data";
 
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaRegEye } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
 
@@ -17,13 +17,13 @@ const ProviderCustomersPage = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h4>Customers</h4>
-        <button
+        <h4>Booking Customers</h4>
+        {/* <button
           onClick={() => setIsModalOpen(true)}
           className="bg-[var(--dark)] text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <FaPlus size={15} /> Add Customer
-        </button>
+        </button> */}
       </div>
       {/* table */}
       <div className="overflow-x-auto my-10">
@@ -80,13 +80,15 @@ const ProviderCustomersPage = () => {
 
                 <td className="py-4 px-2 font-medium">
                   <div className=" flex items-center gap-2">
-                    {" "}
-                    <button className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                    <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                      <FaRegEye size={25} />
+                    </button>
+                    {/* <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
                       <FiEdit size={25} />
                     </button>
-                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-[var(--primary-blue)] hover:text-white  rounded-full flex items-center  justify-center  gap-2">
+                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2">
                       <FaRegTrashCan size={25} />
-                    </button>
+                    </button> */}
                   </div>
                 </td>
               </tr>

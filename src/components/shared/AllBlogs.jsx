@@ -120,32 +120,30 @@ const AllBlogs = ({ blogStatus, blgFrom }) => {
                     dangerouslySetInnerHTML={{ __html: blog.content }}
                   />
 
-                  {blgFrom === "Admin" && (
-                    <div className="mt-auto flex justify-between items-center text-gray-600 text-sm">
-                      <Link
-                        href={`/admin/blogs/edit?id=${blog?.id}`}
-                        className="flex items-center gap-1 hover:text-blue-500"
-                      >
-                        <FaEdit /> Edit
-                      </Link>
-                      <BlogDelete
-                        endpoint={`blog/delete/${blog?.id}`}
-                        type="blog"
-                        onComplete={(status) => {
-                          if (status) {
-                            setAllData((prev) =>
-                              prev.filter((b) => b.id !== blog.id)
-                            );
-                          } else {
-                          }
-                        }}
-                      />
+                  <div className="mt-auto flex justify-between items-center text-gray-600 text-sm">
+                    <Link
+                      href={`/admin/blogs/edit?id=${blog?.id}`}
+                      className="flex items-center gap-1 hover:text-blue-500"
+                    >
+                      <FaEdit /> Edit
+                    </Link>
+                    <BlogDelete
+                      endpoint={`blog/delete/${blog?.id}`}
+                      type="blog"
+                      onComplete={(status) => {
+                        if (status) {
+                          setAllData((prev) =>
+                            prev.filter((b) => b.id !== blog.id)
+                          );
+                        } else {
+                        }
+                      }}
+                    />
 
-                      <button className="flex items-center gap-1 hover:text-gray-800">
-                        <FaRegCircle /> {blog.status}
-                      </button>
-                    </div>
-                  )}
+                    <button className="flex items-center gap-1 hover:text-gray-800">
+                      <FaRegCircle /> {blog.status}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

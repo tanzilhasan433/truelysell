@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAdminVerificationRequest } from "@/hooks/admin/useAdminVerificationRequest";
 
 // =================== SAMPLE DATA ======================
 const initialData = [
@@ -45,7 +46,7 @@ const initialData = [
 
 const VerificationRequestsPage = () => {
   const [allData, setAllData] = useState(initialData);
-
+  const { verificationrequests } = useAdminVerificationRequest();
   return (
     <div>
       <div className="flex items-center justify-between mb-10">

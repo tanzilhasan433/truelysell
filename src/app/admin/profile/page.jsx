@@ -1,6 +1,6 @@
 "use client";
-import ProfileForm from "@/components/shared/ProfileForm";
 import { use } from "react";
+import AdminProfileForm from "./_components/AdminProfileForm";
 
 const ProfilePage = ({ params, searchParams }) => {
   const { action } = use(params);
@@ -10,7 +10,7 @@ const ProfilePage = ({ params, searchParams }) => {
 
   return (
     <div>
-      <ProfileForm isEditMode={isEditMode} id={id} />
+      <AdminProfileForm isEditMode={isEditMode} id={id} />
     </div>
   );
 };

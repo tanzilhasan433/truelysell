@@ -1,6 +1,6 @@
 "use client";
-import ProfileForm from "@/components/shared/ProfileForm";
 import { use } from "react";
+import ProfileForm from "./_components/ProfileForm";
 
 const ProfilePage = ({ params, searchParams }) => {
   const { action } = use(params);

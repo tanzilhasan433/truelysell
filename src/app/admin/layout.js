@@ -21,10 +21,10 @@ const navLinks = [
         children: [
           { label: "Add Service", path: "/admin/services/add-service" },
           { label: "Services", path: "/admin/services" },
-          {
-            label: "Service Settings",
-            path: "/admin/services/service-settings",
-          },
+          // {
+          //   label: "Service Settings",
+          //   path: "/admin/services/service-settings",
+          // },
         ],
       },
       { label: "Categories", icon: <FaList />, path: "/admin/categories" },

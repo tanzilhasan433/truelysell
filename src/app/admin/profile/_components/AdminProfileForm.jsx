@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { useProviderProfile } from "@/hooks/provider/useProviderProfile";
-import LocationSelect from "../admin/service/LocationSelect";
+import LocationSelect from "@/components/admin/service/LocationSelect";
 
-const ProfileForm = ({ isEditMode, id }) => {
+const AdminProfileForm = ({ isEditMode, id }) => {
   const {
     register,
     handleSubmit,
@@ -410,7 +410,7 @@ const ProfileForm = ({ isEditMode, id }) => {
           </div>
 
           <div className="flex items-center justify-between gap-2 ">
-            <h5 className="mt-10">Shop Address</h5>
+            <h5 className="mt-10"> Coverage Area</h5>
             <div className="flex items-center gap-2 ">
               <input
                 type="checkbox"
@@ -423,41 +423,6 @@ const ProfileForm = ({ isEditMode, id }) => {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
-                Shop Address
-              </label>
-              <input
-                type="text"
-                {...register("Name", {
-                  required: !isEditMode ? "Name is required" : false,
-                })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
-              />
-              {errors.Name && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
-                Shop Name
-              </label>
-              <input
-                type="text"
-                {...register("Name", {
-                  required: !isEditMode ? "Name is required" : false,
-                })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
-              />
-              {errors.Name && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
-                </p>
-              )}
-            </div>
-
             <LocationSelect
               allDivision={allDivision}
               allDistrict={allDistrict}
@@ -493,4 +458,4 @@ const ProfileForm = ({ isEditMode, id }) => {
   );
 };
 
-export default ProfileForm;
+export default AdminProfileForm;

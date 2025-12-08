@@ -1,18 +1,152 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useAppContext } from "@/context/AppContext";
+import { apiService } from "@/services/apiService";
+import { useForm } from "react-hook-form";
 
-export const useProviderProfile = () => {
-  useEffect(() => {
-    if (selectedId && isModalOpen) {
-      (async () => {
-        try {
-          const res = await UserService.getById(selectedId);
-          setSingleUser(res.data);
-        } catch {}
-      })();
-    } else {
-      setSingleUser(null);
+export const useProviderProfile = (pageSize = 10) => {
+  const [allData, setAllData] = useState([]);
+  const [profileInfo, setProfileInfo] = useState([]);
+  const [allUpazila, setAllUpazila] = useState([]);
+  const [allDistrict, setAllDistrict] = useState([]);
+  const [allDivision, setAllDivision] = useState([]);
+  const { reset } = useForm({});
+  const { setLoading } = useAppContext();
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await apiService.get(`provider-profile/getproviderprofile`);
+      console.log("profileInfo", res);
+      setProfileInfo(res.data);
+    } catch {
+      setProfileInfo(null);
+    } finally {
+      setLoading(false);
     }
-  }, [selectedId, isModalOpen]);
-  return {};
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const getAllDivision = async () => {
+    setLoading(true);
+    try {
+      const res = await apiService.get(`dropdown/getdivisions`);
+
+      setAllDivision(res.data);
+    } catch {
+      setAllDivision([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getAllDivision();
+  }, []);
+
+  const getUpazilaByDistrict = async (districtIds = []) => {
+    try {
+      const res = await apiService.post(
+        `dropdown/getupazilabydistrict`,
+        districtIds
+      );
+
+      setAllUpazila(res?.data || []);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+  const getDistrictByDivision = async (divisionIds = []) => {
+    try {
+      const res = await apiService.post(
+        `dropdown/getdistrictbydivision`,
+        divisionIds
+      );
+
+      setAllDistrict(res?.data || []);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  const saveUser = async (data) => {
+    // Convert all form values to proper types
+    data.permanentDivisionId = Number(data.permanentDivisionId);
+    data.permanentDistrictId = Number(data.permanentDistrictId);
+    data.permanentUpazilaId = Number(data.permanentUpazilaId);
+
+    data.shopDivisionId = Number(data.shopDivisionId);
+    data.shopDistrictId = Number(data.shopDistrictId);
+    data.shopUpazilaId = Number(data.shopUpazilaId);
+
+    data.sameAsPermanent = !!data.sameAsPermanent; // convert to true/false
+
+    // If same as permanent → copy values
+    if (data.sameAsPermanent) {
+      data.shopAddress = data.permanentAddress;
+      data.shopDivisionId = data.permanentDivisionId;
+      data.shopDistrictId = data.permanentDistrictId;
+      data.shopUpazilaId = data.permanentUpazilaId;
+      data.shopName = "Permanent";
+    }
+
+    const formData = new FormData();
+
+    // General user data
+    formData.append("Name", data.Name);
+    formData.append("Email", data.Email);
+    formData.append("MobileNumber", data.MobileNumber);
+    formData.append("Gender", Number(data.Gender));
+    formData.append("DateOfBirth", data.DateOfBirth);
+    formData.append("Bio", data.Bio);
+
+    if (data.PersonImage) {
+      formData.append("ProfileImage", data.PersonImage);
+    }
+
+    // Permanent address (always type=0)
+    formData.append("Addresses[0].AddressType", 0);
+    formData.append("Addresses[0].DivisionId", data.permanentDivisionId);
+    formData.append("Addresses[0].DistrictId", data.permanentDistrictId);
+    formData.append("Addresses[0].UpazilaId", data.permanentUpazilaId);
+    formData.append("Addresses[0].Address", data.permanentAddress);
+    formData.append("Addresses[0].ShopName", "");
+    formData.append("Addresses[0].IsSameAsPermanent", false);
+
+    // Shop address (always type=1)
+    formData.append("Addresses[1].AddressType", 1);
+    formData.append("Addresses[1].DivisionId", data.shopDivisionId);
+    formData.append("Addresses[1].DistrictId", data.shopDistrictId);
+    formData.append("Addresses[1].UpazilaId", data.shopUpazilaId);
+    formData.append("Addresses[1].Address", data.shopAddress);
+    formData.append("Addresses[1].ShopName", data.shopName || "N/A");
+    formData.append("Addresses[1].IsSameAsPermanent", data.sameAsPermanent);
+
+    try {
+      const res = await apiService.put(`provider-profile/update`, formData);
+      toast.success("Profile updated successfully");
+      fetchUsers();
+      reset();
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  return {
+    allData,
+    setAllData,
+    profileInfo,
+    allDivision,
+    setAllDivision,
+    allDistrict,
+    setAllDistrict,
+    allUpazila,
+    setAllUpazila,
+    saveUser,
+    getDistrictByDivision,
+    getUpazilaByDistrict,
+  };
 };

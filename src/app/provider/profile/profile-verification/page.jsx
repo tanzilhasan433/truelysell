@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FiPhone, FiMail, FiTrash2 } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import toast from "react-hot-toast";
+import { useProviderProfileVerification } from "@/hooks/provider/useProviderProfileVerification";
 
 const initialItems = [
   {
@@ -64,6 +65,9 @@ const initialItems = [
 
 const ProfileVerificationPage = () => {
   const [items, setItems] = useState(initialItems);
+  const { ducmentsType, ducmentStatus } = useProviderProfileVerification();
+  console.log("ducmentsType", ducmentsType);
+  console.log("ducmentStatus", ducmentStatus);
 
   const [inputs, setInputs] = useState({
     phone: "",
