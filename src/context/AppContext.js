@@ -27,18 +27,6 @@ export const AppProvider = ({ children }) => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    const storedUserName = localStorage.getItem("userName");
-    const storedUserRole = localStorage.getItem("userRole");
-    const storedToken = localStorage.getItem("user");
-
-    if (storedUserName) setUserName(storedUserName);
-    if (storedUserRole) setUserRole(storedUserRole);
-    if (storedToken) setToken(storedToken);
-
-    setLoading(false);
-  }, []);
-
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
   // ✅ Login Handler — store data in both state & localStorage
   const login = useCallback(({ userName, userRole, token }) => {
@@ -52,7 +40,6 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem("user", token);
   }, []);
 
-  // ✅ Logout Handler — clear state & localStorage
   const logout = useCallback(() => {
     setUserName(null);
     setUserRole(null);
@@ -64,11 +51,48 @@ export const AppProvider = ({ children }) => {
     router.push("/");
   }, []);
 
+  useEffect(() => {
+    if (!token) return;
+
+    if (isTokenExpired(token)) {
+      logout();
+      router.push("/");
+    }
+  }, [token]);
+
   const onClose = () => {
     reset();
     setIsModalOpen(false);
   };
 
+  const isTokenExpired = (token) => {
+    try {
+      const [, payload] = token.split(".");
+      const decoded = JSON.parse(atob(payload));
+      const exp = decoded.exp * 1000; // convert to ms
+      return Date.now() > exp;
+    } catch {
+      return true;
+    }
+  };
+
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("userName");
+    const storedUserRole = localStorage.getItem("userRole");
+    const storedToken = localStorage.getItem("user");
+
+    if (storedToken && isTokenExpired(storedToken)) {
+      logout(); // ⬅ auto logout
+      router.push("/");
+      return;
+    }
+
+    if (storedUserName) setUserName(storedUserName);
+    if (storedUserRole) setUserRole(storedUserRole);
+    if (storedToken) setToken(storedToken);
+
+    setLoading(false);
+  }, []);
   const valueItems = {
     loading,
     setLoading,
@@ -95,7 +119,6 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-// custom hook for easy usage
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {
