@@ -69,8 +69,8 @@ const ReviewPage = () => {
         </div>
       ) : (
         <div className=" mb-10">
-          <div className="overflow-x-auto mb-5">
-            <table className="min-w-screen text-sm text-left text-gray-600">
+          <div className=" mb-5">
+            <table className=" text-sm text-left text-gray-600">
               <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
                 <tr>
                   <th className="py-5 px-3">#</th>
@@ -106,7 +106,7 @@ const ReviewPage = () => {
                     <td className="py-4 px-3 font-medium">{item.rating}</td>
 
                     <td className="py-4 px-3 font-medium">
-                      <p className="">{item.comment}</p>
+                      <p className="text-wrap">{item.comment}</p>
                     </td>
                   </tr>
                 ))}
