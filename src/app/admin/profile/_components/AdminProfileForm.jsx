@@ -411,7 +411,7 @@ const AdminProfileForm = ({ isEditMode, id }) => {
 
           <div className="flex items-center justify-between gap-2 ">
             <h5 className="mt-10"> Coverage Area</h5>
-            <div className="flex items-center gap-2 ">
+            {/* <div className="flex items-center gap-2 ">
               <input
                 type="checkbox"
                 {...register("isActive")}
@@ -420,7 +420,7 @@ const AdminProfileForm = ({ isEditMode, id }) => {
               <label className="text-sm font-medium text-gray-600">
                 Same as permanent address
               </label>
-            </div>
+            </div> */}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <LocationSelect

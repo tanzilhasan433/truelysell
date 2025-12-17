@@ -71,9 +71,66 @@ export const useProviderProfile = (pageSize = 10) => {
       toast.error(err.message);
     }
   };
-
   const saveUser = async (data) => {
-    // Convert all form values to proper types
+    const formData = new FormData();
+
+    formData.append("Name", data.Name);
+    formData.append("Email", data.Email);
+    formData.append("MobileNumber", data.MobileNumber);
+    formData.append("Gender", String(data.Gender));
+    formData.append("DateOfBirth", data.DateOfBirth);
+    formData.append("Bio", data.Bio);
+
+    // formData.append("ProfileImage", data.ProfileImage);
+
+    if (data.ProfileImage instanceof File) {
+      formData.append("ProfileImage", data.ProfileImage);
+    }
+
+    // Permanent Address
+    formData.append("Addresses[0].AddressType", "0");
+    formData.append(
+      "Addresses[0].DivisionId",
+      String(data.permanentDivisionId)
+    );
+    formData.append(
+      "Addresses[0].DistrictId",
+      String(data.permanentDistrictId)
+    );
+    formData.append("Addresses[0].UpazilaId", String(data.permanentUpazilaId));
+    formData.append("Addresses[0].Address", data.permanentAddress);
+    formData.append("Addresses[0].IsSameAsPermanent", "false");
+
+    // Shop Address
+    formData.append("Addresses[1].AddressType", "1");
+    formData.append("Addresses[1].DivisionId", String(data.shopDivisionId));
+    formData.append("Addresses[1].DistrictId", String(data.shopDistrictId));
+    formData.append("Addresses[1].UpazilaId", String(data.shopUpazilaId));
+    formData.append("Addresses[1].Address", data.shopAddress);
+    formData.append(
+      "Addresses[1].ShopName",
+      data.sameAsPermanent ? "Permanent" : data.ShopName
+    );
+    formData.append(
+      "Addresses[1].IsSameAsPermanent",
+      data.sameAsPermanent ? "true" : "false"
+    );
+
+    try {
+      const res = await apiService.put("provider-profile/update", formData);
+      if (res.message && res.status === 200) {
+        toast.success(res.message);
+        fetchUsers();
+        reset();
+      } else {
+        toast.error(res.error);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  const saveUser1 = async (data) => {
     data.permanentDivisionId = Number(data.permanentDivisionId);
     data.permanentDistrictId = Number(data.permanentDistrictId);
     data.permanentUpazilaId = Number(data.permanentUpazilaId);
@@ -82,20 +139,18 @@ export const useProviderProfile = (pageSize = 10) => {
     data.shopDistrictId = Number(data.shopDistrictId);
     data.shopUpazilaId = Number(data.shopUpazilaId);
 
-    data.sameAsPermanent = !!data.sameAsPermanent; // convert to true/false
+    data.sameAsPermanent = !!data.sameAsPermanent;
 
-    // If same as permanent → copy values
     if (data.sameAsPermanent) {
-      data.shopAddress = data.permanentAddress;
+      // data.shopAddress = data.permanentAddress;
       data.shopDivisionId = data.permanentDivisionId;
       data.shopDistrictId = data.permanentDistrictId;
       data.shopUpazilaId = data.permanentUpazilaId;
-      data.shopName = "Permanent";
+      data.ShopName = "Permanent";
     }
 
     const formData = new FormData();
 
-    // General user data
     formData.append("Name", data.Name);
     formData.append("Email", data.Email);
     formData.append("MobileNumber", data.MobileNumber);
@@ -103,33 +158,45 @@ export const useProviderProfile = (pageSize = 10) => {
     formData.append("DateOfBirth", data.DateOfBirth);
     formData.append("Bio", data.Bio);
 
-    if (data.PersonImage) {
-      formData.append("ProfileImage", data.PersonImage);
+    if (data.ProfileImage) {
+      formData.append("ProfileImage", data.ProfileImage);
     }
 
-    // Permanent address (always type=0)
     formData.append("Addresses[0].AddressType", 0);
     formData.append("Addresses[0].DivisionId", data.permanentDivisionId);
     formData.append("Addresses[0].DistrictId", data.permanentDistrictId);
     formData.append("Addresses[0].UpazilaId", data.permanentUpazilaId);
-    formData.append("Addresses[0].Address", data.permanentAddress);
-    formData.append("Addresses[0].ShopName", "");
+    // formData.append("Addresses[0].Address", data.permanentAddress);
+    // formData.append("Addresses[0].ShopName", "");
     formData.append("Addresses[0].IsSameAsPermanent", false);
 
-    // Shop address (always type=1)
     formData.append("Addresses[1].AddressType", 1);
     formData.append("Addresses[1].DivisionId", data.shopDivisionId);
     formData.append("Addresses[1].DistrictId", data.shopDistrictId);
     formData.append("Addresses[1].UpazilaId", data.shopUpazilaId);
-    formData.append("Addresses[1].Address", data.shopAddress);
-    formData.append("Addresses[1].ShopName", data.shopName || "N/A");
+    // formData.append("Addresses[1].Address", data.shopAddress);
+    formData.append("Addresses[1].ShopName", data.ShopName || "N/A");
     formData.append("Addresses[1].IsSameAsPermanent", data.sameAsPermanent);
 
     try {
-      const res = await apiService.put(`provider-profile/update`, formData);
-      toast.success("Profile updated successfully");
-      fetchUsers();
-      reset();
+      // const res = await apiService.put(`provider-profile/update`, formData);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PROVIDER_URL}provider-profile/update`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user")}`,
+          },
+          body: formData,
+        }
+      );
+      if (res.message && res.status === 200) {
+        toast.success(res.message);
+        fetchUsers();
+        reset();
+      } else {
+        toast.error(res.error);
+      }
     } catch (err) {
       toast.error(err.message);
     }

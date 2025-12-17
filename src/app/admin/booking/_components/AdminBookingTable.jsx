@@ -1,6 +1,9 @@
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
-import Link from "next/link";
+// import Link from "next/link";
+import { FaEye } from "react-icons/fa";
+import BookingDetailsModal from "./BookingDetailsModal";
+import { useState } from "react";
 
 const AdminBookingTable = ({
   allData,
@@ -8,11 +11,18 @@ const AdminBookingTable = ({
   pageSize,
   allStatusData,
 }) => {
-  const { currentPage, setCurrentPage, totalRecords } = useAppContext();
+  const {
+    currentPage,
+    setCurrentPage,
+    totalRecords,
+    setIsModalOpen,
+    isModalOpen,
+  } = useAppContext();
+  const [bookingDetails, setBookingDetails] = useState();
   return (
     <div className=" mb-10">
-      <div className="overflow-x-auto mb-5">
-        <table className="min-w-screen text-sm text-left text-gray-600">
+      <div className=" mb-5">
+        <table className="text-sm text-left text-gray-600">
           <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
             <tr>
               <th className="py-5 px-3">#</th>
@@ -20,13 +30,13 @@ const AdminBookingTable = ({
               <th className="py-5 px-3">Booking Id</th>
               <th className="py-5 px-3">Schedule Time</th>
               <th className="py-5 px-3">Booking Time</th>
-              <th className="py-5 px-3">Provider</th>
+              {/* <th className="py-5 px-3">Provider</th> */}
               <th className="py-5 px-3 ">User</th>
-              <th className="py-5 px-3">Service</th>
+              {/* <th className="py-5 px-3">Service</th> */}
               <th className="py-5 px-3">Amount</th>
               <th className="py-5 px-3">Payment Status</th>
-              <th className="py-5 px-3">payment Date</th>
-              <th className="py-5 px-3">Booking View</th>
+              {/* <th className="py-5 px-3">payment Date</th> */}
+              {/* <th className="py-5 px-3">Booking View</th> */}
               <th className="py-5 px-3">Action</th>
             </tr>
           </thead>
@@ -41,15 +51,15 @@ const AdminBookingTable = ({
 
                 <td className="py-4 px-3">{item.scheduleTime}</td>
                 <td className="py-4 px-3">{item.bookingTime}</td>
-                <td className="py-4 px-3">
+                {/* <td className="py-4 px-3">
                   <div className="flex items-center gap-2">
                     {item.providerName}
                   </div>
-                </td>
+                </td> */}
 
                 <td className="py-4 px-3">{item.userName}</td>
 
-                <td className="py-4 px-3">{item.serviceName}</td>
+                {/* <td className="py-4 px-3">{item.serviceName}</td> */}
 
                 <td className="py-4 px-3 font-medium">{item.amount}</td>
 
@@ -68,38 +78,17 @@ const AdminBookingTable = ({
                     {item.paymentStatus}
                   </button>
                 </td>
-                <td className="py-4 px-3 font-medium">{item.paymentDate}</td>
+                {/* <td className="py-4 px-3 font-medium">{item.paymentDate}</td> */}
                 <td className="py-4 px-3 font-medium">
-                  <Link
-                    href={`/admin/booking/view?id=${item.id}`}
-                    className="text-sm underline text-blue-600"
+                  <button
+                    onClick={() => {
+                      setBookingDetails(item);
+                      setIsModalOpen(true);
+                    }}
+                    className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
                   >
-                    View Details
-                  </Link>
-                </td>
-
-                <td className="py-4 px-2 font-medium">
-                  <select
-                    onChange={(e) =>
-                      updateBookingStatus(item.id, Number(e.target.value))
-                    }
-                    className=" rounded-md text-gray-600 text-xs border border-gray-300 p-1  focus:outline-none "
-                  >
-                    <option value="" className="">
-                      Select Status
-                    </option>
-                    {allStatusData &&
-                      allStatusData.length > 0 &&
-                      allStatusData.map((statusItem) => (
-                        <option
-                          key={statusItem.id}
-                          value={statusItem.id}
-                          selected={statusItem.id === item.statusId}
-                        >
-                          {statusItem.name}
-                        </option>
-                      ))}
-                  </select>
+                    <FaEye size={25} />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -112,6 +101,13 @@ const AdminBookingTable = ({
         pageSize={pageSize}
         onPageChange={(page) => setCurrentPage(page)}
       />
+      {isModalOpen && (
+        <BookingDetailsModal
+          item={bookingDetails}
+          allStatusData={allStatusData}
+          updateBookingStatus={updateBookingStatus}
+        />
+      )}
     </div>
   );
 };

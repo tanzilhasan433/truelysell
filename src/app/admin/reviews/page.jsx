@@ -1,58 +1,17 @@
 "use client";
 
+import Loader from "@/components/shared/Loader";
+import NoFoundData from "@/components/shared/NoFoundData";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
-import { reviewsData } from "@/data/services";
-import { useEffect, useState } from "react";
-import { FadeLoader } from "react-spinners";
+import { useAdminReviews } from "@/hooks/admin/useAdminReviews";
 
 const ReviewPage = () => {
-  const [allData, setAllData] = useState([]);
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const { loading, setLoading } = useAppContext();
+  const { loading, currentPage, totalRecords, setCurrentPage } =
+    useAppContext();
+  const { allData } = useAdminReviews();
   const pageSize = 10;
 
-  const getAllData = async (page = 1) => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_ADMIN_URL
-        }reviews/getall?statusId=0&PageNumber=${
-          page - 1
-        }&SortBy=date&SortDirection=desc&PageSize=${pageSize}`,
-
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const result = await response.json();
-
-        setAllData(result?.data);
-        setTotalRecords(result?.numberOfRecords || 0);
-        setLoading(false);
-      } else {
-        const errorData = await response.json();
-        setLoading(false);
-        setAllData([]);
-        setTotalRecords(0);
-      }
-    } catch (error) {
-      setAllData([]);
-      setLoading(false);
-      setTotalRecords(0);
-    }
-  };
-  useEffect(() => {
-    getAllData(currentPage);
-  }, [currentPage]);
   return (
     <div>
       <div className="flex items-center justify-between mb-10">
@@ -60,13 +19,9 @@ const ReviewPage = () => {
       </div>
       {/* table */}
       {loading ? (
-        <div className="flex justify-center items-center">
-          <FadeLoader color="#4c40ed" />
-        </div>
+        <Loader />
       ) : allData && allData.length < 0 ? (
-        <div className="p-6 text-center text-gray-500">
-          <p className="text-lg">No data Found</p>
-        </div>
+        <NoFoundData />
       ) : (
         <div className=" mb-10">
           <div className=" mb-5">
@@ -91,7 +46,7 @@ const ReviewPage = () => {
                   >
                     <td className="py-4 px-3">{index + 1}</td>
 
-                    <td className="py-4 px-3">{item.date}</td>
+                    <td className="py-4 px-3 ">{item.date}</td>
 
                     <td className="py-4 px-3">
                       <div className="flex items-center gap-2">

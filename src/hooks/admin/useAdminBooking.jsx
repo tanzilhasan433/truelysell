@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export const useAdminBooking = (pageSize = 10) => {
   const [allData, setAllData] = useState([]);
+  const [singleDataData, setSingleData] = useState([]);
   const [allStatusData, setAllStatusData] = useState([]);
 
   const { setLoading, currentPage, setTotalRecords } = useAppContext();
@@ -32,6 +33,12 @@ export const useAdminBooking = (pageSize = 10) => {
       setAllStatusData(res.data);
     })();
   }, []);
+  useEffect(() => {
+    (async () => {
+      const res = await apiService.get(`dropdown/getbookingstatus`);
+      setSingleData(res.data);
+    })();
+  }, []);
 
   useEffect(() => {
     fetchData(currentPage);
@@ -39,6 +46,7 @@ export const useAdminBooking = (pageSize = 10) => {
 
   return {
     allData,
+    singleDataData,
     setAllData,
     allStatusData,
     setAllStatusData,
