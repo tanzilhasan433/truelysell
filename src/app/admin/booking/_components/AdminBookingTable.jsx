@@ -22,8 +22,8 @@ const AdminBookingTable = ({
 
   return (
     <div className=" mb-10">
-      <div className=" mb-5">
-        <table className="w-10/12 lg:w-12/12 text-sm text-left text-gray-600">
+      <div className=" mb-5 overflow-x-auto">
+        <table className="max-w-7xl w-full border-collapse text-sm text-left text-gray-600">
           <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
             <tr>
               <th className="py-5 px-3">#</th>
