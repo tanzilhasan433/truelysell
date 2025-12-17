@@ -19,10 +19,15 @@ const AdminBookingTable = ({
     isModalOpen,
   } = useAppContext();
   const [bookingDetails, setBookingDetails] = useState();
+
+  const formatBookingTime = (value) => {
+    const [date, rest] = value.split(/ (?=\d{2}:\d{2}:\d{2})/);
+    return { date, time: rest };
+  };
   return (
     <div className=" mb-10">
       <div className=" mb-5">
-        <table className="text-sm text-left text-gray-600">
+        <table className="w-full text-sm text-left text-gray-600">
           <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
             <tr>
               <th className="py-5 px-3">#</th>
@@ -30,13 +35,12 @@ const AdminBookingTable = ({
               <th className="py-5 px-3">Booking Id</th>
               <th className="py-5 px-3">Schedule Time</th>
               <th className="py-5 px-3">Booking Time</th>
-              {/* <th className="py-5 px-3">Provider</th> */}
+
               <th className="py-5 px-3 ">User</th>
-              {/* <th className="py-5 px-3">Service</th> */}
+
               <th className="py-5 px-3">Amount</th>
               <th className="py-5 px-3">Payment Status</th>
-              {/* <th className="py-5 px-3">payment Date</th> */}
-              {/* <th className="py-5 px-3">Booking View</th> */}
+
               <th className="py-5 px-3">Action</th>
             </tr>
           </thead>
@@ -49,17 +53,14 @@ const AdminBookingTable = ({
                 <td className="py-4 px-3">{index + 1}</td>
                 <td className="py-4 px-3">{item.id}</td>
 
-                <td className="py-4 px-3">{item.scheduleTime}</td>
-                <td className="py-4 px-3">{item.bookingTime}</td>
-                {/* <td className="py-4 px-3">
-                  <div className="flex items-center gap-2">
-                    {item.providerName}
-                  </div>
-                </td> */}
+                <td className="py-4 px-3 whitespace-pre-line">
+                  {item.scheduleTime}
+                </td>
+                <td className="py-4 px-3 whitespace-pre-line">
+                  {item.bookingTime}
+                </td>
 
                 <td className="py-4 px-3">{item.userName}</td>
-
-                {/* <td className="py-4 px-3">{item.serviceName}</td> */}
 
                 <td className="py-4 px-3 font-medium">{item.amount}</td>
 
@@ -78,7 +79,7 @@ const AdminBookingTable = ({
                     {item.paymentStatus}
                   </button>
                 </td>
-                {/* <td className="py-4 px-3 font-medium">{item.paymentDate}</td> */}
+
                 <td className="py-4 px-3 font-medium">
                   <button
                     onClick={() => {

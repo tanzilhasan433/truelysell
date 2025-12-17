@@ -4,69 +4,95 @@ const BookingDetailsModal = ({ item, allStatusData, updateBookingStatus }) => {
   const { onClose } = useAppContext();
   console.log("item", item);
   return (
-    <div className="fixed inset-0 z-50 flex justify-center lg:items-center bg-black/50 ">
-      <div
-        className=" w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  bg-white 
-       overflow-y-auto"
-      >
-        <div className="flex items-center justify-between mb-2">
-          <h6 className="text-lg font-semibold mx-auto">Booking Details</h6>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50  px-4">
+      <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="relative bg-linear-to-r from-(--primary-blue) to-indigo-600 px-6 py-4">
+          <h6 className="text-lg font-semibold text-white text-center">
+            Booking Details
+          </h6>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-800"
+            className="absolute right-4 top-4 text-white/80 hover:text-white text-lg"
           >
             ✕
           </button>
         </div>
-        {/* details */}
-        <p className="flex  items-center gap-3  text-(--primary-blue) font-medium text-sm mb-3">
-          <span>Booking</span> {item.bookingCode}
-        </p>
-        <div className="grid lg:grid-cols-2  justify-center gap-5">
-          {/* booking details */}
 
-          <div className="space-y-2">
-            <p className="flex flex-col   text-sm">
-              <span>Booking Time:</span> {item.bookingTime}
-            </p>
-            <p className="flex flex-col   text-sm">
-              <span>Schedule Time:</span> {item.scheduleTime}
-            </p>
-          </div>
-          {/* user details */}
-          <div>
-            <p className="flex flex-col   text-sm">
-              <span>User Name:</span> {item.userName}
-            </p>
-            <p className="flex flex-col   text-sm">
-              <span>Provider Name:</span> {item.providerName}
-            </p>
-          </div>
-          {/* payment status */}
-          <div>
-            <p>Update Payment Status</p>
-            <select
-              onChange={(e) =>
-                updateBookingStatus(item.id, Number(e.target.value))
-              }
-              className=" rounded-md text-gray-600 text-xs border border-gray-300 p-1  focus:outline-none "
-            >
-              <option value="" className="">
-                Select Status
-              </option>
-              {allStatusData &&
-                allStatusData.length > 0 &&
-                allStatusData.map((statusItem) => (
-                  <option
-                    key={statusItem.id}
-                    value={statusItem.id}
-                    selected={statusItem.id === item.statusId}
-                  >
+        {/* Body */}
+        <div className="p-6 space-y-6">
+          {/* Booking Code */}
+          <p className="flex items-center justify-center gap-2 text-sm font-medium text-(--primary-blue) bg-blue-50 rounded-lg py-2">
+            <span className="text-gray-600">Booking:</span>
+            <span className="font-semibold">{item.bookingCode}</span>
+          </p>
+
+          {/* Details Grid */}
+          <div className="grid md:grid-cols-2 gap-5">
+            {/* Time Info */}
+            <div className="rounded-xl border border-gray-200 p-4 space-y-3">
+              <h6 className="text-sm font-semibold text-gray-700">
+                Time Information
+              </h6>
+
+              <p className="flex flex-col text-sm whitespace-pre-line">
+                <span className="text-gray-500">Booking Time</span>
+                <span className="font-medium text-gray-800">
+                  {item.bookingTime}
+                </span>
+              </p>
+
+              <p className="flex flex-col text-sm whitespace-pre-line">
+                <span className="text-gray-500">Schedule Time</span>
+                <span className="font-medium text-gray-800">
+                  {item.scheduleTime}
+                </span>
+              </p>
+            </div>
+
+            {/* User Info */}
+            <div className="rounded-xl border border-gray-200 p-4 space-y-3">
+              <h6 className="text-sm font-semibold text-gray-700">
+                User Information
+              </h6>
+
+              <p className="flex flex-col text-sm">
+                <span className="text-gray-500">User Name</span>
+                <span className="font-medium text-gray-800">
+                  {item.userName}
+                </span>
+              </p>
+
+              <p className="flex flex-col text-sm">
+                <span className="text-gray-500">Provider Name</span>
+                <span className="font-medium text-gray-800">
+                  {item.providerName}
+                </span>
+              </p>
+            </div>
+
+            {/* Payment Status */}
+            <div className="md:col-span-2 rounded-xl border border-gray-200 p-4">
+              <h6 className="text-sm font-semibold text-gray-700 mb-2">
+                Update Payment Status
+              </h6>
+
+              <select
+                onChange={(e) =>
+                  updateBookingStatus(item.id, Number(e.target.value))
+                }
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                defaultValue={item.statusId}
+              >
+                <option value="">Select Status</option>
+                {allStatusData?.map((statusItem) => (
+                  <option key={statusItem.id} value={statusItem.id}>
                     {statusItem.name}
                   </option>
                 ))}
-            </select>
+              </select>
+            </div>
           </div>
         </div>
       </div>
