@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { useAppContext } from "@/context/AppContext";
+import { useSubCategory } from "@/hooks/admin/useSubCategory";
 
-const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
+const AddSubCategoryModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -17,12 +19,15 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
     defaultValues: {
       name: "",
       slug: "",
-      IsFeatured: false,
+      CategoryId: null,
     },
   });
 
-  const isEditMode = Boolean(CategoryId);
+  const { selectedId, onClose } = useAppContext();
+  const { singleData, allCategoryData } = useSubCategory();
+  const isEditMode = Boolean(selectedId);
   const [preview, setPreview] = useState("");
+
   const fileInputRef = useRef(null);
   const nameValue = watch("name");
 
@@ -37,45 +42,28 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
     }
   }, [nameValue, setValue, isEditMode]);
 
-  const getSingleCategory = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}categories/getcategoriesbyid/${CategoryId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      const result = await response.json();
-
-      if (response.ok && result.data) {
-        const user = result.data;
-        setValue("name", user.name || "");
-        setValue("slug", user.slug || "");
-        setValue("IsFeatured", user.isFeatured || false);
-        setValue("imageUrl", user.imageUrl || "");
-        if (user.imageUrl) {
-          setPreview(
-            `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/categories/${user.imageUrl}`
-          );
-        } else {
-          setPreview("");
-        }
-      }
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    if (CategoryId) {
-      getSingleCategory();
+    if (singleData && selectedId) {
+      reset({
+        name: singleData.name,
+        slug: singleData.slug,
+        imageUrl: singleData.imageUrl,
+        CategoryId: singleData.categoryId,
+      });
+      if (singleData.imageUrl) {
+        setPreview(
+          `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/subcategories/${singleData.imageUrl}`
+        );
+      }
     } else {
-      reset();
+      reset({
+        name: "",
+        slug: "",
+        imageUrl: "",
+        CategoryId: null,
+      });
     }
-  }, [CategoryId, reset]);
-
-  if (!isOpen) return null;
+  }, [singleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto">
@@ -83,7 +71,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">
-            {isEditMode ? "Edit Category" : "Add Category"}
+            {isEditMode ? "Edit Sub Category" : "Add Sub Category"}
           </h6>
           <button
             type="button"
@@ -103,9 +91,34 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
           })}
           className="space-y-4"
         >
+          <label
+            htmlFor="CategoryId"
+            className="text-sm font-medium text-gray-600"
+          >
+            Category
+          </label>
+          <select
+            id="CategoryId"
+            {...register("CategoryId", {
+              required: !isEditMode && "Category is required",
+            })}
+            value={watch("CategoryId") || ""}
+            onChange={(e) => setValue("CategoryId", e.target.value)}
+            className="mt-1 block w-full rounded-md text-gray-800 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+          >
+            <option value="" className="" disabled>
+              Select Category
+            </option>
+
+            {allCategoryData.map((category) => (
+              <option key={category.id} value={category.id} className="">
+                {category.name}
+              </option>
+            ))}
+          </select>
           {/*  Name */}
           <label className="text-sm font-medium text-gray-600  ">
-            Category Name
+            Sub Category Name
           </label>
           <input
             type="text"
@@ -121,7 +134,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
 
           {/* slug */}
           <label className="text-sm font-medium text-gray-600 ">
-            Category Slug
+            Sub Category Slug
           </label>
           <input
             type="text"
@@ -132,7 +145,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
 
           <div>
             <label className="text-sm font-medium text-gray-600">
-              Category Image
+              Sub Category Image
             </label>
             <div className="mt-2">
               <button
@@ -157,7 +170,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
                   type="button"
                   onClick={() => {
                     setPreview("");
-                    setValue("image", null);
+                    setValue("SubCategoryImage", null);
                   }}
                   className="text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
                 >
@@ -170,7 +183,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
               accept="image/png, image/jpeg"
               ref={(el) => {
                 fileInputRef.current = el;
-                register("image", {
+                register("SubCategoryImage", {
                   required: !isEditMode ? "Image is required" : false,
                 });
               }}
@@ -178,41 +191,16 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
                 const file = e.target.files?.[0];
                 if (file) {
                   setPreview(URL.createObjectURL(file));
-                  setValue("image", file, { shouldValidate: true });
+                  setValue("SubCategoryImage", file, { shouldValidate: true });
                 }
               }}
               className="hidden"
             />
-            {errors.image && (
+            {errors.SubCategoryImage && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.image.message}
+                {errors.SubCategoryImage.message}
               </p>
             )}
-          </div>
-
-          {/* Category Icon */}
-          {/* <div className="mt-4">
-            <label className="text-sm font-medium text-gray-600">
-              Category Icon
-            </label>
-            <input
-              type="file"
-              accept="image/png, image/svg+xml"
-              onChange={(e) => setValue("icon", e.target.files[0])}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-2"
-            />
-          </div> */}
-
-          {/* Status */}
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-600">
-              Featured
-            </label>
-            <input
-              type="checkbox"
-              {...register("IsFeatured")}
-              className="toggle toggle-success"
-            />
           </div>
 
           {/* Buttons */}
@@ -237,4 +225,4 @@ const AddCategoryModal = ({ isOpen, onClose, onSubmit, CategoryId }) => {
   );
 };
 
-export default AddCategoryModal;
+export default AddSubCategoryModal;

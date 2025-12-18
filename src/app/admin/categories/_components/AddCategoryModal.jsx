@@ -4,14 +4,10 @@ import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { useAppContext } from "@/context/AppContext";
+import { useCategory } from "@/hooks/admin/useCategory";
 
-const AddSubCategoryModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  subCategoryId,
-  allCategoryData,
-}) => {
+const AddCategoryModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -23,13 +19,15 @@ const AddSubCategoryModal = ({
     defaultValues: {
       name: "",
       slug: "",
-      CategoryId: null,
+      IsFeatured: false,
     },
   });
 
-  const isEditMode = Boolean(subCategoryId);
-  const [preview, setPreview] = useState("");
+  const { selectedId, onClose } = useAppContext();
+  const { singleData } = useCategory();
+  const isEditMode = Boolean(selectedId);
 
+  const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null);
   const nameValue = watch("name");
 
@@ -44,46 +42,28 @@ const AddSubCategoryModal = ({
     }
   }, [nameValue, setValue, isEditMode]);
 
-  const getSingleSubCategory = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}subcategories/getsubcategoriesbyid/${subCategoryId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      const result = await response.json();
-
-      if (response.ok && result.data) {
-        const user = result.data;
-
-        setValue("name", user.name || "");
-        setValue("slug", user.slug || "");
-        setValue("imageUrl", user.imageUrl || "");
-        setValue("CategoryId", user.categoryId || null);
-        if (user.imageUrl) {
-          setPreview(
-            `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/subcategories/${user.imageUrl}`
-          );
-        } else {
-          setPreview("");
-        }
-      }
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    if (subCategoryId) {
-      getSingleSubCategory();
+    if (singleData && selectedId) {
+      reset({
+        name: singleData.name,
+        slug: singleData.slug,
+        imageUrl: singleData.imageUrl,
+        IsFeatured: singleData.isFeatured,
+      });
+      if (singleData.imageUrl) {
+        setPreview(
+          `${process.env.NEXT_PUBLIC_API_ADMIN_URL}files/categories/${singleData.imageUrl}`
+        );
+      }
     } else {
-      reset();
+      reset({
+        name: "",
+        slug: "",
+        imageUrl: "",
+        IsFeatured: false,
+      });
     }
-  }, [subCategoryId, reset]);
-
-  if (!isOpen) return null;
+  }, [singleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto">
@@ -91,7 +71,7 @@ const AddSubCategoryModal = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">
-            {isEditMode ? "Edit Sub Category" : "Add Sub Category"}
+            {isEditMode ? "Edit Category" : "Add Category"}
           </h6>
           <button
             type="button"
@@ -111,34 +91,9 @@ const AddSubCategoryModal = ({
           })}
           className="space-y-4"
         >
-          <label
-            htmlFor="CategoryId"
-            className="text-sm font-medium text-gray-600"
-          >
-            Category
-          </label>
-          <select
-            id="CategoryId"
-            {...register("CategoryId", {
-              required: !isEditMode && "Category is required",
-            })}
-            value={watch("CategoryId") || ""}
-            onChange={(e) => setValue("CategoryId", e.target.value)}
-            className="mt-1 block w-full rounded-md text-gray-800 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
-          >
-            <option value="" className="" disabled>
-              Select Category
-            </option>
-
-            {allCategoryData.map((category) => (
-              <option key={category.id} value={category.id} className="">
-                {category.name}
-              </option>
-            ))}
-          </select>
           {/*  Name */}
           <label className="text-sm font-medium text-gray-600  ">
-            Sub Category Name
+            Category Name
           </label>
           <input
             type="text"
@@ -154,7 +109,7 @@ const AddSubCategoryModal = ({
 
           {/* slug */}
           <label className="text-sm font-medium text-gray-600 ">
-            Sub Category Slug
+            Category Slug
           </label>
           <input
             type="text"
@@ -165,7 +120,7 @@ const AddSubCategoryModal = ({
 
           <div>
             <label className="text-sm font-medium text-gray-600">
-              Sub Category Image
+              Category Image
             </label>
             <div className="mt-2">
               <button
@@ -190,7 +145,7 @@ const AddSubCategoryModal = ({
                   type="button"
                   onClick={() => {
                     setPreview("");
-                    setValue("SubCategoryImage", null);
+                    setValue("image", null);
                   }}
                   className="text-white bg-red-500 p-1 rounded m-1 absolute top-0 right-0 z-50"
                 >
@@ -202,8 +157,8 @@ const AddSubCategoryModal = ({
               type="file"
               accept="image/png, image/jpeg"
               ref={(el) => {
-                fileInputRef.current = el; // manually assign ref
-                register("SubCategoryImage", {
+                fileInputRef.current = el;
+                register("image", {
                   required: !isEditMode ? "Image is required" : false,
                 });
               }}
@@ -211,7 +166,7 @@ const AddSubCategoryModal = ({
                 const file = e.target.files?.[0];
                 if (file) {
                   setPreview(URL.createObjectURL(file));
-                  setValue("SubCategoryImage", file, { shouldValidate: true });
+                  setValue("image", file, { shouldValidate: true });
                 }
               }}
               className="hidden"
@@ -221,6 +176,18 @@ const AddSubCategoryModal = ({
                 {errors.image.message}
               </p>
             )}
+          </div>
+
+          {/* Status */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-600">
+              Featured
+            </label>
+            <input
+              type="checkbox"
+              {...register("IsFeatured")}
+              className="toggle toggle-success"
+            />
           </div>
 
           {/* Buttons */}
@@ -234,7 +201,7 @@ const AddSubCategoryModal = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[var(--primary-blue)] text-white rounded-md"
+              className="px-4 py-2 bg-(--primary-blue) text-white rounded-md"
             >
               {isEditMode ? "Update" : "Save"}
             </button>
@@ -245,4 +212,4 @@ const AddSubCategoryModal = ({
   );
 };
 
-export default AddSubCategoryModal;
+export default AddCategoryModal;

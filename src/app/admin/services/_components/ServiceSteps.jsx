@@ -17,7 +17,6 @@ const ServiceSteps = () => {
   const [activeTab, setActiveTab] = useState("Information");
   return (
     <div className="w-full bg-white">
-      {/* NOTE: overflow-visible is important so triangles are not clipped */}
       <div className="grid lg:grid-cols-5 md:grid-cols-2 border border-gray-200/80 rounded-md overflow-visible">
         {tabs.map((tab, idx) => {
           const isActive = activeTab === tab.name;
@@ -28,7 +27,7 @@ const ServiceSteps = () => {
               className={`relative border-r border-gray-200/80 flex flex-col items-center justify-center py-3 transition-all duration-200
                 ${
                   isActive
-                    ? "bg-[var(--primary-blue)] text-white"
+                    ? "bg-(--primary-blue) text-white"
                     : "bg-white text-gray-700 hover:bg-gray-100"
                 }
                 ${idx === 0 ? "rounded-l-md" : ""}
@@ -37,7 +36,7 @@ const ServiceSteps = () => {
               <div
                 className={`flex items-center justify-center w-8 h-8 rounded-full mb-2 ${
                   isActive
-                    ? "bg-white text-[var(--primary-blue)]"
+                    ? "bg-white text-(--primary-blue)"
                     : "bg-gray-100 text-gray-600"
                 }`}
               >
@@ -46,11 +45,9 @@ const ServiceSteps = () => {
 
               <span className="text-sm font-medium">{tab.name}</span>
 
-              {/* Triangle / ribbon pointer */}
               {isActive && (
                 <>
                   {idx === 0 ? (
-                    // ribbon/triangle slightly shifted to the left for the first tab
                     <span
                       className={`hidden lg:block`}
                       style={{

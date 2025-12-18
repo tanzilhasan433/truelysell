@@ -70,7 +70,7 @@ const CashOnDeliveryPage = () => {
       ) : (
         <div className=" mb-10">
           <div className="overflow-x-auto mb-5">
-            <table className="min-w-screen  text-sm text-left text-gray-600">
+            <table className="max-w-7xl w-full  text-sm text-left text-gray-600">
               <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
                 <tr>
                   <th className="py-5 px-3">#</th>

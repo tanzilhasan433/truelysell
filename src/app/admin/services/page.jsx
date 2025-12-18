@@ -1,4 +1,4 @@
-import AllServiceComponent from "@/components/admin/service/AllServiceComponent";
+import AllServiceComponent from "@/app/admin/services/_components/AllServiceComponent";
 
 const ServicesPage = () => {
   return (

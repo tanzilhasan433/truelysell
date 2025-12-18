@@ -39,7 +39,7 @@ export default function AllServiceComponent() {
         </Link>
       </div>
       {/* Tab Navigation */}
-      <nav className="flex space-x-6 border-b  border-gray-200">
+      <nav className="flex space-x-6 border-b  border-gray-200 overflow-x-auto overflow-y-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.name}

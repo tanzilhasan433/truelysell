@@ -14,14 +14,14 @@ const PageList = () => {
         <h4>Page List</h4>
         <Link
           href={"/admin/pages/add-page"}
-          className="bg-[var(--primary-blue)] text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-(--primary-blue) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <FaPlus size={15} /> Add Page
         </Link>
       </div>
       {/* table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-600">
+        <table className="max-w-7xl w-full  text-sm text-left text-gray-600">
           <thead className="bg-sky-600/10 text-gray-800 text-sm uppercase">
             <tr>
               <th className="py-5 px-3">#</th>
@@ -57,10 +57,10 @@ const PageList = () => {
                 <td className="py-4 px-2 font-medium">
                   <div className=" flex items-center gap-2">
                     {" "}
-                    <button className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                    <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
                       <FiEdit size={25} />
                     </button>
-                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-[var(--primary-blue)] hover:text-white  rounded-full flex items-center  justify-center  gap-2">
+                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2">
                       <FaRegTrashCan size={25} />
                     </button>
                   </div>

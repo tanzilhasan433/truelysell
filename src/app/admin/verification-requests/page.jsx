@@ -54,8 +54,8 @@ const VerificationRequestsPage = () => {
       </div>
 
       {/* table */}
-      <div className="overflow-x-scroll">
-        <table className="min-w-screen text-sm text-left text-gray-600">
+      <div className="overflow-x-auto">
+        <table className="max-w-7xl w-full text-sm text-left text-gray-600">
           <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
             <tr>
               <th className="py-5 px-3">#</th>

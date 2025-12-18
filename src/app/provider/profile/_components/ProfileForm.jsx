@@ -31,6 +31,8 @@ const ProfileForm = ({ isEditMode, id }) => {
   } = useProviderProfile();
 
   useEffect(() => {
+    const permanent = profileInfo.addresses?.[0]; // AddressType = 0
+    const shop = profileInfo.addresses?.[1]; // AddressType = 1
     if (profileInfo) {
       reset({
         Name: profileInfo.name,
@@ -40,6 +42,21 @@ const ProfileForm = ({ isEditMode, id }) => {
         DateOfBirth: profileInfo.dateOfBirth,
         Bio: profileInfo.bio,
         ProfileImage: profileInfo.profileImageUrl,
+
+        // -------- Permanent Address --------
+        permanentAddress: permanent?.address || "",
+        permanentDivisionId: permanent?.divisionId || null,
+        permanentDistrictId: permanent?.districtId || null,
+        permanentUpazilaId: permanent?.upazilaId || null,
+
+        // -------- Shop Address --------
+        shopAddress: shop?.address || "",
+        ShopName: shop?.shopName || "",
+        shopDivisionId: shop?.divisionId || null,
+        shopDistrictId: shop?.districtId || null,
+        shopUpazilaId: shop?.upazilaId || null,
+
+        sameAsPermanent: shop?.isSameAsPermanent ?? false,
       });
       setPreview(
         `${process.env.NEXT_PUBLIC_API_PROVIDER_URL}files/provider-profiles/${profileInfo.profileImageUrl}`
@@ -189,16 +206,9 @@ const ProfileForm = ({ isEditMode, id }) => {
               </label>
               <input
                 type="tel"
-                {...register("MobileNumber", {
-                  required: "Mobile Number is required",
-                })}
+                {...register("MobileNumber")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.MobileNumber && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.MobileNumber.message}
-                </p>
-              )}
             </div>
 
             {/* Gender */}
@@ -303,21 +313,17 @@ const ProfileForm = ({ isEditMode, id }) => {
               </label>
             </div>
           </div>
-
+          <div>
+            <label className="block text-sm text-gray-800">Shop Address</label>
+            <input
+              type="text"
+              {...register("shopAddress", {
+                required: "Shop Address is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label className="block text-sm text-gray-800">
-                Shop Address
-              </label>
-              <input
-                type="text"
-                {...register("shopAddress", {
-                  required: "Shop Address is required",
-                })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
-              />
-            </div>
-
             <div>
               <label className="block text-sm text-gray-800">Shop Name</label>
               <input

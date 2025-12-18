@@ -49,7 +49,6 @@ const DeleteButton = ({ endpoint, type, onComplete }) => {
       );
 
       const data = await res.json().catch(() => null);
-      console.log("data delete", data);
 
       if (data.error) {
         toast.error(data?.error || `Failed to delete ${type}`);

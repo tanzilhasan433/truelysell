@@ -65,7 +65,7 @@ const AllServicesTable = ({ serviceStatus }) => {
       ) : (
         <div className=" mb-10">
           <div className="overflow-x-auto mb-5">
-            <table className="w-full text-sm text-left text-gray-600">
+            <table className="w-full max-w-7xl border-collapse text-sm text-left text-gray-600">
               <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
                 <tr>
                   <th className="py-5 px-3">#</th>
