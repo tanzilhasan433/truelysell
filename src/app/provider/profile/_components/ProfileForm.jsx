@@ -58,6 +58,19 @@ const ProfileForm = ({ isEditMode, id }) => {
 
         sameAsPermanent: shop?.isSameAsPermanent ?? false,
       });
+      if (permanent?.divisionId) {
+        getDistrictByDivision([permanent.divisionId]);
+      }
+      if (shop?.divisionId) {
+        getDistrictByDivision([permanent.divisionId]);
+      }
+      if (permanent?.districtId) {
+        getUpazilaByDistrict([permanent?.districtId]);
+      }
+      if (shop?.districtId) {
+        getUpazilaByDistrict([shop?.districtId]);
+      }
+
       setPreview(
         `${process.env.NEXT_PUBLIC_API_PROVIDER_URL}files/provider-profiles/${profileInfo.profileImageUrl}`
       );
