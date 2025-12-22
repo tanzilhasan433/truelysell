@@ -3,9 +3,9 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
-import toast from "react-hot-toast";
-import { useProviderProfile } from "@/hooks/provider/useProviderProfile";
-import LocationSelect from "./LocationSelect";
+
+import { useAdminProfile } from "@/hooks/admin/useAdminProfile";
+import AdminProfileLocationSelect from "./AdminProfileLocationSelect";
 
 const AdminProfileForm = ({ isEditMode, id }) => {
   const {
@@ -15,172 +15,68 @@ const AdminProfileForm = ({ isEditMode, id }) => {
     reset,
     watch,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      Name: "",
-      JobTitle: "",
-      Ratings: 0,
-      Content: "",
-      IsActive: true,
-    },
-  });
+  } = useForm();
 
   const [preview, setPreview] = useState("");
-  const [allUpazila, setAllUpazila] = useState([]);
-  const [allDistrict, setAllDistrict] = useState([]);
-  const [allDivision, setAllDivision] = useState([]);
   const fileInputRef = useRef(null);
-  const { profileInfo } = useProviderProfile();
-  console.log("profile", profileInfo);
 
-  const getUpazilaByDistrict = async (districtIds = []) => {
-    setAllUpazila([]);
-    if (!districtIds.length || districtIds[0] === 0) {
-      setIsUpazilaDisabled(true);
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getupazilabydistrict`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-          body: JSON.stringify(districtIds),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch upazilas");
-      const result = await response.json();
-      setAllUpazila(result?.data || []);
-      setIsUpazilaDisabled(false);
-    } catch (error) {
-      setAllUpazila([]);
-      setIsUpazilaDisabled(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getDistrictByDivision = async (divisionIds = []) => {
-    setAllDistrict([]);
-    setAllUpazila([]);
-    setValue("districtId", "");
-    setValue("upazilaId", "");
-    setIsUpazilaDisabled(true);
-
-    if (!divisionIds.length || divisionIds[0] === 0) {
-      setIsDistrictDisabled(true);
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdistrictbydivision`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-          body: JSON.stringify(divisionIds),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch districts");
-      const result = await response.json();
-
-      setAllDistrict(result?.data || []);
-      setIsDistrictDisabled(false);
-    } catch (error) {
-      setIsDistrictDisabled(true);
-      setAllDistrict([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getAllDivision = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}dropdown/getdivisions`,
-
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const result = await response.json();
-        setAllDivision(result?.data);
-        setLoading(false);
-      } else {
-        const errorData = await response.json();
-        setLoading(false);
-        setAllDivision([]);
-      }
-    } catch (error) {
-      setAllDivision([]);
-      setLoading(false);
-    }
-  };
+  const {
+    allDivision,
+    allDistrict,
+    saveUser,
+    getDistrictByDivision,
+    profileInfo,
+  } = useAdminProfile();
 
   useEffect(() => {
-    getAllDivision();
-    if (id) {
-      getSingleUser();
-    } else {
-      reset();
-    }
-  }, [id, reset]);
-
-  const onSubmit = async (data) => {
-    const isEditing = !!id;
-    const formData = new FormData();
-    formData.append("Name", data.Name);
-    formData.append("Content", data.Content);
-    formData.append("Ratings", Number(data.Ratings));
-    formData.append("JobTitle", data.JobTitle);
-    formData.append("IsActive", data.IsActive ? "true" : "false");
-    if (data.PersonImage) {
-      formData.append("PersonImage", data.PersonImage);
-    }
-    const endpoint = isEditing
-      ? `${process.env.NEXT_PUBLIC_API_ADMIN_URL}testimonial/update/${id}`
-      : `${process.env.NEXT_PUBLIC_API_ADMIN_URL}testimonial/create`;
-    const method = isEditing ? "PUT" : "POST";
-    try {
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user")}`,
-        },
-        body: formData,
+    if (profileInfo) {
+      reset({
+        Name: profileInfo.name,
+        Email: profileInfo.email,
+        MobileNumber: profileInfo.mobileNumber,
+        Gender: profileInfo.gender,
+        DateOfBirth: profileInfo.dateOfBirth,
+        Bio: profileInfo.bio,
+        ProfileImage: profileInfo.profileImageUrl,
+        PermanentAddress: profileInfo.permanentAddress,
+        PermanentDivisionId: profileInfo.permanentDivisionId,
+        PermanentDistrictId: profileInfo.permanentDistrictId,
+        CoverageAreaDistrictId: profileInfo.coverageAreaDistrictId,
+        CoverageAreaDivisionId: profileInfo.coverageAreaDivisionId,
       });
-      const result = await response.json();
-      if (response.ok) {
-        toast.success(
-          isEditing ? "User updated successfully" : "User created successfully"
-        );
-        setIsModalOpen(false);
-        setid(null);
-        getSingleUsers(currentPage);
-      } else {
-        toast.error(result.message || "Something went wrong");
+      if (profileInfo.coverageAreaDivisionId) {
+        getDistrictByDivision([profileInfo.coverageAreaDivisionId]);
       }
-    } catch (error) {
-      toast.error(error.message);
+      if (profileInfo.permanentDivisionId) {
+        getDistrictByDivision([profileInfo.permanentDivisionId]);
+      }
+
+      setPreview(
+        `${process.env.NEXT_PUBLIC_API_PROVIDER_URL}files/admin-profile/${profileInfo.profileImageUrl}`
+      );
+    } else {
+      reset({
+        Name: "",
+        Email: "",
+        MobileNumber: "",
+        Gender: "",
+        DateOfBirth: "",
+        Bio: "",
+        ProfileImage: "",
+        PermanentAddress: "",
+        PermanentDivisionId: "",
+        PermanentDistrictId: "",
+        CoverageAreaDistrictId: "",
+        CoverageAreaDivisionId: "",
+      });
     }
-  };
+  }, [profileInfo]);
+
+  const gen = [
+    { value: 0, label: "Male" },
+    { value: 1, label: "Female" },
+    { value: 2, label: "Other" },
+  ];
 
   return (
     <div className="">
@@ -193,7 +89,7 @@ const AdminProfileForm = ({ isEditMode, id }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-10">
+        <form onSubmit={handleSubmit(saveUser)} className="space-y-4 mb-10">
           {/* Upload */}
           <h6>Profile Picture</h6>
           <div className="flex items-center gap-3">
@@ -231,34 +127,35 @@ const AdminProfileForm = ({ isEditMode, id }) => {
           </div>
 
           {/* Hidden File Input */}
+
           <input
             type="file"
             accept="image/png, image/jpeg"
+            {...register("ProfileImage", {
+              required: !isEditMode ? "Image is required" : false,
+            })}
             ref={(el) => {
               fileInputRef.current = el;
-              register("PersonImage", {
-                required: !isEditMode ? "Image is required" : false,
-              });
             }}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
                 setPreview(URL.createObjectURL(file));
-                setValue("PersonImage", file, { shouldValidate: true });
+                setValue("ProfileImage", file, { shouldValidate: true });
               }
             }}
             className="hidden"
           />
-          {errors.PersonImage && (
+          {errors.ProfileImage && (
             <p className="text-red-500 text-xs mt-1">
-              {errors.PersonImage.message}
+              {errors.ProfileImage.message}
             </p>
           )}
 
           <h5 className="mt-10">General Information</h5>
           {/* Name */}
           <div>
-            <label htmlFor="name" className="block text-sm  text-gray-800">
+            <label htmlFor="Name" className="block text-sm  text-gray-800">
               Name
             </label>
             <input
@@ -275,164 +172,147 @@ const AdminProfileForm = ({ isEditMode, id }) => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Email */}
             <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
+              <label htmlFor="Email" className="block text-sm  text-gray-800">
                 Email
               </label>
               <input
                 type="email"
-                {...register("Name", {
-                  required: !isEditMode ? "Name is required" : false,
+                {...register("Email", {
+                  required: !isEditMode ? "Email is required" : false,
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.Name && (
+              {errors.Email && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
+                  {errors.Email.message}
                 </p>
               )}
             </div>
             {/* Mobile */}
             <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
+              <label
+                htmlFor="MobileNumber"
+                className="block text-sm  text-gray-800"
+              >
                 Mobile Number
               </label>
               <input
                 type="tel"
-                {...register("Name", {
-                  required: !isEditMode ? "Name is required" : false,
+                {...register("MobileNumber", {
+                  required: !isEditMode ? "Mobile Number is required" : false,
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.Name && (
+              {errors.MobileNumber && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
+                  {errors.MobileNumber.message}
                 </p>
               )}
             </div>
             {/* Gender */}
             <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
-                Gender
-              </label>
+              <label className="block text-sm text-gray-800">Gender</label>
               <select
-                id="providerId"
-                {...register("providerId", {
-                  required: !isEditMode && "Provider is required",
+                {...register("Gender", {
+                  required: "Gender is required",
                 })}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
               >
-                <option value="" className="">
-                  Select a provider
-                </option>
-                <option value="male" className="">
-                  Male
-                </option>
-                <option value="female" className="">
-                  Female
-                </option>
+                <option value="">Select gender</option>
+                {gen.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
               </select>
-              {errors.Name && (
+              {errors.Gender && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
+                  {errors.Gender.message}
                 </p>
               )}
             </div>
             {/* Date of Birth */}
             <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
-                Date of birth
+              <label className="block text-sm text-gray-800">
+                Date of Birth
               </label>
               <input
                 type="date"
-                {...register("Name", {
-                  required: !isEditMode ? "Name is required" : false,
+                {...register("DateOfBirth", {
+                  required: "Date of Birth is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.Name && (
+              {errors.DateOfBirth && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
+                  {errors.DateOfBirth.message}
                 </p>
               )}
             </div>
           </div>
 
-          {/* Bio */}
+          {/* bio */}
           <div>
-            <label htmlFor="name" className="block text-sm  text-gray-800">
-              Your Bio
-            </label>
+            <label className="block text-sm text-gray-800">Your Bio</label>
             <textarea
               rows={3}
-              {...register("Content", {
-                required: !isEditMode ? "Content is required" : false,
+              {...register("Bio", {
+                required: "Bio is required",
               })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
             />
-            {errors.Content && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.Content.message}
-              </p>
+            {errors.Bio && (
+              <p className="text-red-500 text-xs mt-1">{errors.Bio.message}</p>
             )}
           </div>
           <h5 className="mt-10">Permanent Address</h5>
 
+          <div>
+            <label
+              htmlFor="PermanentAddress"
+              className="block text-sm  text-gray-800"
+            >
+              Address
+            </label>
+            <input
+              type="text"
+              {...register("PermanentAddress", {
+                required: !isEditMode ? "Address is required" : false,
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+            {errors.PermanentAddress && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.PermanentAddress.message}
+              </p>
+            )}
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="name" className="block text-sm  text-gray-800">
-                Address
-              </label>
-              <input
-                type="text"
-                {...register("Name", {
-                  required: !isEditMode ? "Name is required" : false,
-                })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
-              />
-              {errors.Name && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.Name.message}
-                </p>
-              )}
-            </div>
-
-            <LocationSelect
+            <AdminProfileLocationSelect
               allDivision={allDivision}
               allDistrict={allDistrict}
-              allUpazila={allUpazila}
               getDistrictByDivision={getDistrictByDivision}
-              getUpazilaByDistrict={getUpazilaByDistrict}
               register={register}
               setValue={setValue}
               watch={watch}
               errors={errors}
+              prefix="Permanent"
             />
           </div>
 
           <div className="flex items-center justify-between gap-2 ">
             <h5 className="mt-10"> Coverage Area</h5>
-            {/* <div className="flex items-center gap-2 ">
-              <input
-                type="checkbox"
-                {...register("isActive")}
-                className="toggle toggle-success "
-              />
-              <label className="text-sm font-medium text-gray-600">
-                Same as permanent address
-              </label>
-            </div> */}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <LocationSelect
+            <AdminProfileLocationSelect
               allDivision={allDivision}
               allDistrict={allDistrict}
-              allUpazila={allUpazila}
               getDistrictByDivision={getDistrictByDivision}
-              getUpazilaByDistrict={getUpazilaByDistrict}
               register={register}
               setValue={setValue}
               watch={watch}
               errors={errors}
+              prefix="CoverageArea"
             />
           </div>
 

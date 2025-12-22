@@ -5,10 +5,9 @@ import { useAppContext } from "@/context/AppContext";
 import { apiService } from "@/services/apiService";
 import { useForm } from "react-hook-form";
 
-export const useProviderProfile = (pageSize = 10) => {
+export const useAdminProfile = (pageSize = 10) => {
   const [allData, setAllData] = useState([]);
   const [profileInfo, setProfileInfo] = useState([]);
-  const [allUpazila, setAllUpazila] = useState([]);
   const [allDistrict, setAllDistrict] = useState([]);
   const [allDivision, setAllDivision] = useState([]);
   const { reset } = useForm({});
@@ -17,7 +16,7 @@ export const useProviderProfile = (pageSize = 10) => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await apiService.get(`provider-profile/getproviderprofile`);
+      const res = await apiService.get(`admin-profile/getAdminprofile`);
       console.log("profileInfo", res);
       setProfileInfo(res.data);
     } catch {
@@ -47,18 +46,6 @@ export const useProviderProfile = (pageSize = 10) => {
     getAllDivision();
   }, []);
 
-  const getUpazilaByDistrict = async (districtIds = []) => {
-    try {
-      const res = await apiService.post(
-        `dropdown/getupazilabydistrict`,
-        districtIds
-      );
-
-      setAllUpazila(res?.data || []);
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
   const getDistrictByDivision = async (divisionIds = []) => {
     try {
       const res = await apiService.post(
@@ -86,36 +73,20 @@ export const useProviderProfile = (pageSize = 10) => {
     }
 
     // Permanent Address
-    formData.append("Addresses[0].AddressType", "0");
+    formData.append("PermanentAddress", data.PermanentAddress);
+    formData.append("PermanentDivisionId", String(data.PermanentDivisionId));
+    formData.append("PermanentDistrictId", String(data.PermanentDistrictId));
     formData.append(
-      "Addresses[0].DivisionId",
-      String(data.permanentDivisionId)
+      "CoverageAreaDivisionId",
+      String(data.CoverageAreaDivisionId)
     );
     formData.append(
-      "Addresses[0].DistrictId",
-      String(data.permanentDistrictId)
-    );
-    formData.append("Addresses[0].UpazilaId", String(data.permanentUpazilaId));
-    formData.append("Addresses[0].Address", data.permanentAddress);
-    formData.append("Addresses[0].IsSameAsPermanent", "false");
-
-    // Shop Address
-    formData.append("Addresses[1].AddressType", "1");
-    formData.append("Addresses[1].DivisionId", String(data.shopDivisionId));
-    formData.append("Addresses[1].DistrictId", String(data.shopDistrictId));
-    formData.append("Addresses[1].UpazilaId", String(data.shopUpazilaId));
-    formData.append("Addresses[1].Address", data.shopAddress);
-    formData.append(
-      "Addresses[1].ShopName",
-      data.sameAsPermanent ? "Permanent" : data.ShopName
-    );
-    formData.append(
-      "Addresses[1].IsSameAsPermanent",
-      data.sameAsPermanent ? "true" : "false"
+      "CoverageAreaDistrictId",
+      String(data.CoverageAreaDistrictId)
     );
 
     try {
-      const res = await apiService.put("provider-profile/update", formData);
+      const res = await apiService.put("admin-profile/update", formData);
       if (res.message && res.status === 200) {
         toast.success(res.message);
         fetchUsers();
@@ -136,10 +107,7 @@ export const useProviderProfile = (pageSize = 10) => {
     setAllDivision,
     allDistrict,
     setAllDistrict,
-    allUpazila,
-    setAllUpazila,
     saveUser,
     getDistrictByDivision,
-    getUpazilaByDistrict,
   };
 };
