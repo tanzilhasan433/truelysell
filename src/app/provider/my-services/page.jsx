@@ -59,9 +59,6 @@ const MyServicesPage = () => {
               }`}
             >
               {tab.name}
-              {/* {activeTab === tab.name && (
-                <span className="absolute left-0 -bottom-[1px] w-full h-0.5 bg-[var(--primary-blue)] rounded"></span>
-              )} */}
             </button>
           ))}
         </nav>
