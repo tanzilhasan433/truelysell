@@ -28,7 +28,7 @@ const SetPayoutModal = ({ onSubmit }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 sidebar-scroll">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 overflow-y-auto ">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h6 className="text-lg font-semibold mx-auto">Set Your Payouts</h6>

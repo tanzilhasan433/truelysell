@@ -60,8 +60,8 @@ const AddCustomerModal = ({ onSubmit }) => {
   }, [singleData, selectedId]);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
+    <div className="fixed inset-0 z-50 flex justify-center  bg-black/50 overflow-y-auto  ">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto sidebar-scroll ">
         {/* Header */}
         <div className="flex items-center justify-between mb-2 ">
           <h6 className="text-lg font-semibold mx-auto">Add Customer</h6>
