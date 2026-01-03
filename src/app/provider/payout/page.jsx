@@ -1,6 +1,8 @@
 "use client";
-import SetPayoutModal from "@/components/provider/payout/SetPayoutModal";
+import SetPayoutModal from "@/app/provider/payout/_components/SetPayoutModal";
+import { useAppContext } from "@/context/AppContext";
 import { payout } from "@/data/json/payout";
+import { useProviderPayout } from "@/hooks/provider/useProviderPayout";
 import Link from "next/link";
 import React, { useState } from "react";
 import { CiSettings } from "react-icons/ci";
@@ -30,19 +32,16 @@ const payoutCards = [
 ];
 
 const ProviderPayoutPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleAddTestimonial = (data) => {
-    console.log("Form Submitted:", data);
-    setIsModalOpen(false);
-  };
+  const { loading, isModalOpen, setIsModalOpen } = useAppContext();
+  const { allData, setAllData, saveData } = useProviderPayout();
+  const pageSize = 10;
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <h4>Payout</h4>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-[var(--dark)] text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-(--dark) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <CiSettings size={15} /> Set Payout
         </button>
@@ -66,12 +65,12 @@ const ProviderPayoutPage = () => {
             <div>
               <Link
                 href={"/provider/payout/transaction"}
-                className="p-2 rounded text-white bg-[var(--dark)] text-sm block"
+                className="p-2 rounded text-white bg-(--dark) text-sm block"
               >
                 Transaction
               </Link>
               {card.withdraw && (
-                <button className="p-1 rounded text-[var(--dark)] bg-gray-200 text-xs mt-2">
+                <button className="p-1 rounded text-(--dark) bg-gray-200 text-xs mt-2">
                   {card.withdraw}
                 </button>
               )}
@@ -125,12 +124,7 @@ const ProviderPayoutPage = () => {
           </tbody>
         </table>
       </div>
-      <SetPayoutModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddTestimonial}
-        role=""
-      />
+      {isModalOpen && <SetPayoutModal onSubmit={saveData} />}
     </div>
   );
 };

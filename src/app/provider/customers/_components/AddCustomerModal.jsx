@@ -2,18 +2,12 @@
 
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
-import { useRef, useState } from "react";
-import { IoCloudUploadOutline } from "react-icons/io5";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { useEffect, useRef, useState } from "react";
+import { useBookingCustomer } from "@/hooks/provider/useBookingCustomer";
+import { useAppContext } from "@/context/AppContext";
 
-const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
+const AddCustomerModal = ({ onSubmit }) => {
+  const { register, handleSubmit, setValue, watch, reset } = useForm({
     defaultValues: {
       name: "",
       userName: "",
@@ -25,12 +19,14 @@ const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
       status: true,
     },
   });
+  const { selectedId, onClose } = useAppContext();
+  const { singleData } = useBookingCustomer();
+  const isEditMode = Boolean(selectedId);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  // State for preview
+
   const [preview, setPreview] = useState("https://i.pravatar.cc/80");
 
-  // Ref for file input
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
@@ -45,14 +41,30 @@ const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
     }
   };
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (singleData && selectedId) {
+      reset({
+        Title: singleData.title,
+        Details: singleData.details,
+        Position: singleData.position,
+        IsActive: singleData.isActive,
+      });
+    } else {
+      reset({
+        Title: "",
+        Details: "",
+        Position: "",
+        IsActive: true,
+      });
+    }
+  }, [singleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
         {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <h6 className="text-lg font-semibold mx-auto">Add Staff</h6>
+        <div className="flex items-center justify-between mb-2 ">
+          <h6 className="text-lg font-semibold mx-auto">Add Customer</h6>
           <button
             type="button"
             onClick={onClose}
@@ -63,7 +75,14 @@ const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(async (data) => {
+            await onSubmit(data);
+            reset();
+            setPreview("");
+          })}
+          className="space-y-4"
+        >
           {/* Upload */}
           <div className="flex items-center gap-3">
             <img
@@ -75,7 +94,7 @@ const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
               <button
                 type="button"
                 onClick={handleUploadClick}
-                className="px-3 py-1 bg-[var(--primary-blue)]/10 text-blue-500 border border-[var(--primary-blue)]/10 rounded-md text-sm"
+                className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
               >
                 Upload
               </button>
@@ -163,67 +182,17 @@ const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
             </span>
           </div>
 
-          <div>
-            {/* Upload */}
-            <div className="">
-              <button
-                type="button"
-                onClick={() => fileInputRef?.current?.click()}
-                className="px-3 py-5 bg-gray-50 block w-full border-gray-300 border border-dashed rounded-md text-sm flex justify-center"
-              >
-                <div>
-                  <IoCloudUploadOutline
-                    size={30}
-                    className="block w-full text-gray-600"
-                  />
-                  <p className="text-gray-600">
-                    Upload NID or Birth certificate
-                  </p>
-                </div>
-              </button>
-            </div>
-            {preview && (
-              <div className="relative my-5 inline-block">
-                <img
-                  src={preview}
-                  alt="preview"
-                  className="w-16 h-16  object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPreview("");
-                    setValue("serviceImages", null);
-                  }}
-                  className=" text-red-500  m-1 absolute top-0 right-0 z-20"
-                >
-                  <FaRegTrashCan />
-                </button>
-              </div>
-            )}
-
-            <input
-              type="file"
-              accept="image/png, image/jpeg"
-              multiple
-              ref={(el) => {
-                fileInputRef.current = el;
-                register("serviceImages");
-              }}
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                setPreview(URL.createObjectURL(files[0]));
-                setValue("serviceImages", files, { shouldValidate: true });
-              }}
-              className="hidden"
-            />
-
-            {errors.serviceImages && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.serviceImages.message}
-              </p>
-            )}
-          </div>
+          <select
+            {...register("role")}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
+          >
+            <option value="" className="text-sm  ">
+              Select Role
+            </option>
+            <option value="admin">Admin</option>
+            <option value="provider">Provider</option>
+            <option value="customer">Customer</option>
+          </select>
 
           {/* Status */}
           <div className="flex items-center justify-between">
@@ -257,4 +226,4 @@ const AddStaffModal = ({ isOpen, onClose, onSubmit, role }) => {
   );
 };
 
-export default AddStaffModal;
+export default AddCustomerModal;

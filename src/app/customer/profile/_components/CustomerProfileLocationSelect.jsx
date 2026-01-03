@@ -3,17 +3,15 @@
 import Select from "react-select";
 import { useState, useEffect } from "react";
 
-const ProfileLocationSelect = ({
+const CustomerProfileLocationSelect = ({
   prefix,
   allDivision,
   allDistrict,
   allUpazila,
   getDistrictByDivision,
   getUpazilaByDistrict,
-  register,
   setValue,
   watch,
-  errors,
 }) => {
   const divisionField = `${prefix}DivisionId`;
   const districtField = `${prefix}DistrictId`;
@@ -75,8 +73,6 @@ const ProfileLocationSelect = ({
           className="mt-1"
         />
       </div>
-
-      {/* District */}
       <div>
         <label className="block text-sm text-gray-800">District</label>
         <Select
@@ -96,8 +92,8 @@ const ProfileLocationSelect = ({
           className="mt-1"
         />
       </div>
-      {/* Upazila */}
       <div>
+        {/* Upazila */}
         <label className="block text-sm text-gray-800">Upazila</label>
         <Select
           placeholder="Select Upazila"
@@ -114,4 +110,4 @@ const ProfileLocationSelect = ({
   );
 };
 
-export default ProfileLocationSelect;
+export default CustomerProfileLocationSelect;

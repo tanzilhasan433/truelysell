@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import { useProviderProfile } from "@/hooks/provider/useProviderProfile";
-import ProfileLocationSelect from "./ProfileLocationSelect";
+import ProviderProfileLocationSelect from "./ProviderProfileLocationSelect";
 
-const ProfileForm = ({ isEditMode, id }) => {
+const ProviderProfileForm = ({ isEditMode, id }) => {
   const {
     register,
     handleSubmit,
@@ -297,7 +297,7 @@ const ProfileForm = ({ isEditMode, id }) => {
               />
             </div>
 
-            <ProfileLocationSelect
+            <ProviderProfileLocationSelect
               prefix="permanent"
               allDivision={allDivision}
               allDistrict={allDistrict}
@@ -348,7 +348,7 @@ const ProfileForm = ({ isEditMode, id }) => {
               />
             </div>
 
-            <ProfileLocationSelect
+            <ProviderProfileLocationSelect
               prefix="shop"
               allDivision={allDivision}
               allDistrict={allDistrict}
@@ -385,4 +385,4 @@ const ProfileForm = ({ isEditMode, id }) => {
   );
 };
 
-export default ProfileForm;
+export default ProviderProfileForm;

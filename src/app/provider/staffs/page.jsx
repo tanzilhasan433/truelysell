@@ -1,18 +1,17 @@
 "use client";
-import AddStaffModal from "@/components/provider/staff/AddStaffModal";
-import { StaffData } from "@/data/json/staffData";
-import React, { useState } from "react";
-import { FaPlus, FaRegEye } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { FiEdit } from "react-icons/fi";
+import AddStaffModal from "@/app/provider/staffs/_components/AddStaffModal";
+import { FaPlus } from "react-icons/fa";
+import ProviderStaffsTable from "./_components/ProviderStaffsTable";
+import Loader from "@/components/shared/Loader";
+import NoFoundData from "@/components/shared/NoFoundData";
+import { useAppContext } from "@/context/AppContext";
+import { useProviderStaff } from "@/hooks/provider/useProviderStaff";
 
 const StaffsPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loading, isModalOpen, setIsModalOpen } = useAppContext();
+  const { allData, setAllData, saveData } = useProviderStaff();
+  const pageSize = 10;
 
-  const handleAddTestimonial = (data) => {
-    console.log("Form Submitted:", data);
-    setIsModalOpen(false);
-  };
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -25,80 +24,20 @@ const StaffsPage = () => {
         </button>
       </div>
       {/* table */}
-      <div className="overflow-x-auto">
-        <table className="max-w-7xl w-full   text-sm text-left text-gray-600">
-          <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
-            <tr>
-              <th className="py-5 px-3"> Id</th>
-              <th className="py-5 px-3"> name </th>
-              <th className="py-5 px-3">Created On</th>
-              <th className="py-5 px-3">No of services</th>
-              <th className="py-5 px-3">Total Booking</th>
-              <th className="py-5 px-3">Status</th>
 
-              <th className="py-5 px-3">Action</th>
-            </tr>
-          </thead>
-          <tbody className="text-[13px]">
-            {StaffData.map((item) => (
-              <tr
-                key={item.id}
-                className="border-t border-gray-200/80 hover:bg-gray-100 transition"
-              >
-                <td className="py-4 px-3">{item.staffId}</td>
-                <td className="py-4 px-3 flex items-center gap-2">
-                  <img
-                    src={item.img}
-                    alt={item.name}
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-medium text-gray-900">{item.name}</p>
-                    <p>{item.email}</p>
-                  </div>
-                </td>
-                <td className="py-4 px-3">{item.createdOn}</td>
-                <td className="py-4 px-3">{item.noOfServices}</td>
-                <td className="py-4 px-3 font-medium">{item.totalBookings}</td>
-                <td className="py-4 px-3 font-medium">
-                  {" "}
-                  <button
-                    className={`${
-                      item.status === "Active"
-                        ? "text-green-500 bg-green-100 py-1 rounded px-2"
-                        : "text-red-500 bg-red-100 px-2 py-1 rounded"
-                    }`}
-                  >
-                    {" "}
-                    {item.status}
-                  </button>
-                </td>
+      {loading ? (
+        <Loader />
+      ) : allData && allData.length < 0 ? (
+        <NoFoundData />
+      ) : (
+        <ProviderStaffsTable
+          allData={allData}
+          setAllData={setAllData}
+          pageSize={pageSize}
+        />
+      )}
 
-                <td className="py-4 px-2 font-medium">
-                  <div className=" flex items-center gap-2">
-                    {" "}
-                    <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
-                      <FiEdit size={25} />
-                    </button>
-                    <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
-                      <FaRegEye size={25} />
-                    </button>
-                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2">
-                      <FaRegTrashCan size={25} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <AddStaffModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddTestimonial}
-        role=""
-      />
+      {isModalOpen && <AddStaffModal onSubmit={saveData} />}
     </div>
   );
 };

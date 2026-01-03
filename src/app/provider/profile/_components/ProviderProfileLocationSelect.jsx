@@ -3,7 +3,7 @@
 import Select from "react-select";
 import { useState, useEffect } from "react";
 
-const ProfileLocationSelect = ({
+const ProviderProfileLocationSelect = ({
   prefix,
   allDivision,
   allDistrict,
@@ -110,4 +110,4 @@ const ProfileLocationSelect = ({
   );
 };
 
-export default ProfileLocationSelect;
+export default ProviderProfileLocationSelect;

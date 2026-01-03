@@ -1,6 +1,6 @@
 "use client";
 import { useAppContext } from "@/context/AppContext";
-import { useAdminWallet } from "@/hooks/customer.js/useCustomerWallet";
+import { useAdminWallet } from "@/hooks/customer/useCustomerWallet";
 import Image from "next/image";
 import stripe from "@/assets/img/payment/card-05.png";
 import paypal from "@/assets/img/payment/card-06.png";

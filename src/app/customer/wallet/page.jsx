@@ -2,7 +2,7 @@
 import CustomerWalletComponent from "@/components/customer/wallet/CustomerWalletComponent";
 import WalletSummary from "@/components/customer/wallet/WalletSummary";
 import { useAppContext } from "@/context/AppContext";
-import { useAdminWallet } from "@/hooks/customer.js/useCustomerWallet";
+import { useAdminWallet } from "@/hooks/customer/useCustomerWallet";
 
 import { FaPlus } from "react-icons/fa";
 import AddCutomerWalletModal from "./_components/AddCutomerWalletModal";

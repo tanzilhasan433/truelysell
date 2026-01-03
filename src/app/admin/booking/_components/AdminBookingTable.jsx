@@ -15,8 +15,8 @@ const AdminBookingTable = ({
     currentPage,
     setCurrentPage,
     totalRecords,
-    setIsModalOpen,
-    isModalOpen,
+    isDetailsModalOpen,
+    setIsDetailsModalOpen,
   } = useAppContext();
   const [bookingDetails, setBookingDetails] = useState();
 
@@ -80,7 +80,7 @@ const AdminBookingTable = ({
                   <button
                     onClick={() => {
                       setBookingDetails(item);
-                      setIsModalOpen(true);
+                      setIsDetailsModalOpen(true);
                     }}
                     className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
                   >
@@ -98,7 +98,7 @@ const AdminBookingTable = ({
         pageSize={pageSize}
         onPageChange={(page) => setCurrentPage(page)}
       />
-      {isModalOpen && (
+      {isDetailsModalOpen && (
         <BookingDetailsModal
           item={bookingDetails}
           allStatusData={allStatusData}

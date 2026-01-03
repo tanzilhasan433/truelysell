@@ -1,12 +1,12 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
-import { useProviderProfile } from "@/hooks/provider/useProviderProfile";
-import ProfileLocationSelect from "./ProfileLocationSelect";
+import CustomerProfileLocationSelect from "./CustomerProfileLocationSelect";
+import { useCustomerProfile } from "@/hooks/customer/useCustomerProfile";
 
-const ProfileForm = ({ isEditMode, id }) => {
+const CustomerProfileForm = ({ isEditMode, id }) => {
   const {
     register,
     handleSubmit,
@@ -18,6 +18,7 @@ const ProfileForm = ({ isEditMode, id }) => {
 
   const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null);
+  const sameAsPermanent = watch("sameAsPermanent");
 
   const {
     allDivision,
@@ -26,7 +27,87 @@ const ProfileForm = ({ isEditMode, id }) => {
     saveUser,
     getDistrictByDivision,
     getUpazilaByDistrict,
-  } = useProviderProfile();
+    profileInfo,
+  } = useCustomerProfile();
+
+  useEffect(() => {
+    const permanent = profileInfo?.addresses?.[0]; // AddressType = 0
+    const shop = profileInfo?.addresses?.[1]; // AddressType = 1
+    if (profileInfo) {
+      reset({
+        Name: profileInfo.name,
+        Email: profileInfo.email,
+        MobileNumber: profileInfo.mobileNumber,
+        Gender: profileInfo.gender,
+        DateOfBirth: profileInfo.dateOfBirth,
+        Bio: profileInfo.bio,
+        ProfileImage: profileInfo.profileImageUrl,
+
+        // -------- Permanent Address --------
+        permanentAddress: permanent?.address || "",
+        permanentDivisionId: permanent?.divisionId || null,
+        permanentDistrictId: permanent?.districtId || null,
+        permanentUpazilaId: permanent?.upazilaId || null,
+
+        // -------- Shop Address --------
+        shopAddress: shop?.address || "",
+        ShopName: shop?.shopName || "",
+        shopDivisionId: shop?.divisionId || null,
+        shopDistrictId: shop?.districtId || null,
+        shopUpazilaId: shop?.upazilaId || null,
+
+        sameAsPermanent: shop?.isSameAsPermanent ?? false,
+      });
+      if (permanent?.divisionId) {
+        getDistrictByDivision([permanent.divisionId]);
+      }
+      if (shop?.divisionId) {
+        getDistrictByDivision([permanent.divisionId]);
+      }
+      if (permanent?.districtId) {
+        getUpazilaByDistrict([permanent?.districtId]);
+      }
+      if (shop?.districtId) {
+        getUpazilaByDistrict([shop?.districtId]);
+      }
+
+      setPreview(
+        `${process.env.NEXT_PUBLIC_API_PROVIDER_URL}files/customer-profile/${profileInfo.profileImageUrl}`
+      );
+    } else {
+      reset({
+        Name: "",
+        Email: "",
+        MobileNumber: "",
+        Gender: "",
+        DateOfBirth: "",
+        Bio: "",
+        ProfileImage: "",
+      });
+    }
+  }, [profileInfo]);
+
+  useEffect(() => {
+    if (sameAsPermanent) {
+      setValue("shopDivisionId", watch("permanentDivisionId"));
+      setValue("shopDistrictId", watch("permanentDistrictId"));
+      setValue("shopUpazilaId", watch("permanentUpazilaId"));
+      setValue("shopAddress", watch("permanentAddress"));
+      setValue("ShopName", "Permanent");
+    } else {
+      setValue("shopDivisionId", null);
+      setValue("shopDistrictId", null);
+      setValue("shopUpazilaId", null);
+      setValue("shopAddress", "");
+      setValue("ShopName", "");
+    }
+  }, [sameAsPermanent]);
+
+  const gen = [
+    { value: 0, label: "Male" },
+    { value: 1, label: "Female" },
+    { value: 2, label: "Other" },
+  ];
 
   return (
     <div>
@@ -65,7 +146,7 @@ const ProfileForm = ({ isEditMode, id }) => {
                   type="button"
                   onClick={() => {
                     setPreview("");
-                    setValue("PersonImage", null);
+                    setValue("ProfileImage", null);
                   }}
                   className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
                 >
@@ -79,24 +160,25 @@ const ProfileForm = ({ isEditMode, id }) => {
           <input
             type="file"
             accept="image/png, image/jpeg"
+            {...register("ProfileImage", {
+              required: !isEditMode ? "Image is required" : false,
+            })}
             ref={(el) => {
               fileInputRef.current = el;
-              register("PersonImage", {
-                required: !isEditMode ? "Image is required" : false,
-              });
             }}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
                 setPreview(URL.createObjectURL(file));
-                setValue("PersonImage", file, { shouldValidate: true });
+                setValue("ProfileImage", file, { shouldValidate: true });
               }
             }}
             className="hidden"
           />
-          {errors.PersonImage && (
+
+          {errors.ProfileImage && (
             <p className="text-red-500 text-xs mt-1">
-              {errors.PersonImage.message}
+              {errors.ProfileImage.message}
             </p>
           )}
 
@@ -124,16 +206,10 @@ const ProfileForm = ({ isEditMode, id }) => {
               <label className="block text-sm text-gray-800">Email</label>
               <input
                 type="email"
-                {...register("Email", {
-                  required: "Email is required",
-                })}
+                {...register("Email")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+                disabled={true}
               />
-              {errors.Email && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.Email.message}
-                </p>
-              )}
             </div>
 
             {/* Mobile Number */}
@@ -143,16 +219,9 @@ const ProfileForm = ({ isEditMode, id }) => {
               </label>
               <input
                 type="tel"
-                {...register("MobileNumber", {
-                  required: "Mobile Number is required",
-                })}
+                {...register("MobileNumber")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.MobileNumber && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.MobileNumber.message}
-                </p>
-              )}
             </div>
 
             {/* Gender */}
@@ -165,8 +234,11 @@ const ProfileForm = ({ isEditMode, id }) => {
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
               >
                 <option value="">Select gender</option>
-                <option value="0">Male</option>
-                <option value="1">Female</option>
+                {gen.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
               </select>
               {errors.Gender && (
                 <p className="text-red-500 text-xs mt-1">
@@ -225,7 +297,7 @@ const ProfileForm = ({ isEditMode, id }) => {
               />
             </div>
 
-            <ProfileLocationSelect
+            <CustomerProfileLocationSelect
               prefix="permanent"
               allDivision={allDivision}
               allDistrict={allDistrict}
@@ -240,8 +312,8 @@ const ProfileForm = ({ isEditMode, id }) => {
           </div>
 
           {/* --- Shop Address --- */}
-          <div className="flex items-center justify-between gap-2 mt-6">
-            <h5 className="">Shop Address</h5>
+          <div className="flex items-center justify-between gap-2">
+            <h5 className="mt-10">Shop Address</h5>
 
             <div className="flex items-center gap-2">
               <input
@@ -258,8 +330,10 @@ const ProfileForm = ({ isEditMode, id }) => {
             <label className="block text-sm text-gray-800">Shop Address</label>
             <input
               type="text"
-              {...register("shopAddress")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none  mt-1 "
+              {...register("shopAddress", {
+                required: "Shop Address is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
             />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -267,14 +341,14 @@ const ProfileForm = ({ isEditMode, id }) => {
               <label className="block text-sm text-gray-800">Shop Name</label>
               <input
                 type="text"
-                {...register("shopName", {
+                {...register("ShopName", {
                   required: "Shop Name is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
             </div>
 
-            <ProfileLocationSelect
+            <CustomerProfileLocationSelect
               prefix="shop"
               allDivision={allDivision}
               allDistrict={allDistrict}
@@ -311,4 +385,4 @@ const ProfileForm = ({ isEditMode, id }) => {
   );
 };
 
-export default ProfileForm;
+export default CustomerProfileForm;

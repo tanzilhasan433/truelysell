@@ -1,11 +1,13 @@
 "use client";
 
+import { useAppContext } from "@/context/AppContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaRegTrashCan } from "react-icons/fa6";
 
 const DeleteButton = ({ endpoint, type, onComplete }) => {
   const [loading, setLoading] = useState(false);
+  const { userRole } = useAppContext();
 
   const handleDelete = () => {
     toast.custom((t) => (
@@ -25,7 +27,9 @@ const DeleteButton = ({ endpoint, type, onComplete }) => {
               toast.dismiss(t.id);
               confirmDelete();
             }}
-            className="px-3 py-1 text-sm rounded-md bg-(--primary-blue) text-white"
+            className={`px-3 py-1 text-sm rounded-md  text-white ${
+              userRole === "Admin" ? "bg-(--primary-blue)" : "bg-(--primary)"
+            }`}
           >
             Confirm
           </button>
@@ -71,7 +75,11 @@ const DeleteButton = ({ endpoint, type, onComplete }) => {
       onClick={handleDelete}
       disabled={loading}
       title="Delete"
-      className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2"
+      className={`bg-gray-200 text-gray-500 p-2 h-7 w-7    rounded-full flex items-center  justify-center  gap-2 hover:text-white ${
+        userRole === "Admin"
+          ? "hover:bg-(--primary-blue) "
+          : "hover:bg-(--primary) "
+      }`}
     >
       <FaRegTrashCan size={25} />
     </button>

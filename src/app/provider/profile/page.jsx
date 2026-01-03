@@ -1,6 +1,6 @@
 "use client";
 import { use } from "react";
-import ProfileForm from "./_components/ProfileForm";
+import ProviderProfileForm from "./_components/ProviderProfileForm";
 
 const ProfilePage = ({ params, searchParams }) => {
   const { action } = use(params);
@@ -10,7 +10,7 @@ const ProfilePage = ({ params, searchParams }) => {
 
   return (
     <div>
-      <ProfileForm isEditMode={isEditMode} id={id} />
+      <ProviderProfileForm isEditMode={isEditMode} id={id} />
     </div>
   );
 };

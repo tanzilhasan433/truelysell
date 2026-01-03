@@ -19,6 +19,7 @@ export const AppProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(null);
   const [token, setToken] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
@@ -63,6 +64,7 @@ export const AppProvider = ({ children }) => {
   const onClose = () => {
     reset();
     setIsModalOpen(false);
+    setIsDetailsModalOpen(false);
   };
 
   const isTokenExpired = (token) => {
@@ -111,6 +113,8 @@ export const AppProvider = ({ children }) => {
     setTotalRecords,
     isModalOpen,
     setIsModalOpen,
+    isDetailsModalOpen,
+    setIsDetailsModalOpen,
     onClose,
   };
 
