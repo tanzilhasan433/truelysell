@@ -1,7 +1,6 @@
 "use client";
 import SetPayoutModal from "@/app/provider/payout/_components/SetPayoutModal";
 import { useAppContext } from "@/context/AppContext";
-
 import { useProviderPayout } from "@/hooks/provider/useProviderPayout";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -57,7 +56,7 @@ const ProviderPayoutPage = () => {
         <h4>Payout</h4>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-(--dark) text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="darkButton flex items-center gap-2"
         >
           <CiSettings size={15} /> Set Payout
         </button>
@@ -102,7 +101,7 @@ const ProviderPayoutPage = () => {
             onClick={() => setActiveTab(tab.name)}
             className={`relative py-2 text-sm font-medium transition-colors duration-200 ${
               activeTab === tab.name
-                ? "text-white  bg-(--dark) px-4 py-2 rounded"
+                ? "darkButton"
                 : "bg-gray-200 hover:text-white text-gray-700 hover:bg-(--dark) px-4 py-2 rounded "
             }`}
           >

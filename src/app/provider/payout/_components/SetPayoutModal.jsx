@@ -27,8 +27,8 @@ const SetPayoutModal = ({ onSubmit }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 overflow-y-auto ">
+    <div className="fixed inset-0 z-50 flex justify-center  bg-black/50 overflow-y-auto">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 overflow-y-auto sidebar-scroll">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h6 className="text-lg font-semibold mx-auto">Set Your Payouts</h6>
@@ -106,7 +106,7 @@ const SetPayoutModal = ({ onSubmit }) => {
                 <input
                   type="text"
                   {...register("accountHolder")}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
                 />
               </div>
 
@@ -115,7 +115,7 @@ const SetPayoutModal = ({ onSubmit }) => {
                 <input
                   type="text"
                   {...register("bankName")}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
                 />
               </div>
 
@@ -126,7 +126,17 @@ const SetPayoutModal = ({ onSubmit }) => {
                 <input
                   type="text"
                   {...register("accountNumber")}
-                  class="w-full border border-gray-300 rounded-md px-3 py-2"
+                  class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-800">
+                  Branch Name
+                </label>
+                <input
+                  type="text"
+                  {...register("branchName")}
+                  class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
                 />
               </div>
 
@@ -137,7 +147,7 @@ const SetPayoutModal = ({ onSubmit }) => {
                 <input
                   type="text"
                   {...register("routingNumber")}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
                 />
               </div>
             </>
@@ -145,17 +155,10 @@ const SetPayoutModal = ({ onSubmit }) => {
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-300 rounded-md"
-            >
+            <button type="button" onClick={onClose} className="secondaryButton">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-(--dark) text-white rounded-md"
-            >
+            <button type="submit" className="darkButton">
               Save
             </button>
           </div>

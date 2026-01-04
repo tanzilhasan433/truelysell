@@ -7,6 +7,7 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useProviderStaff } from "@/hooks/provider/useProviderStaff";
 import { useAppContext } from "@/context/AppContext";
+import StaffLocationSelect from "./StaffLocationSelect";
 
 const AddStaffModal = ({ onSubmit }) => {
   const {
@@ -29,11 +30,24 @@ const AddStaffModal = ({ onSubmit }) => {
     },
   });
   const { selectedId, onClose } = useAppContext();
-  const { singleData } = useProviderStaff();
+  const {
+    singleData,
+    allCategoryData,
+    allSubCategoryData,
+    setAllSubCategoryData,
+    allUpazila,
+    allDistrict,
+    allDivision,
+    isSubCategoryDisabled,
+    setIsSubCategoryDisabled,
+    noSubCategoryFound,
+    setNoSubCategoryFound,
+    getDistrictByDivision,
+    getUpazilaByDistrict,
+    getSubCategories,
+  } = useProviderStaff();
   const isEditMode = Boolean(selectedId);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  // State for preview
+
   const [preview, setPreview] = useState("https://i.pravatar.cc/80");
 
   // Ref for file input
@@ -69,9 +83,24 @@ const AddStaffModal = ({ onSubmit }) => {
     }
   }, [singleData, selectedId]);
 
+  const gen = [
+    { value: 0, label: "Male" },
+    { value: 1, label: "Female" },
+    { value: 2, label: "Other" },
+  ];
+  const branchLocation = [
+    { value: 0, label: "Branch 1" },
+    { value: 1, label: "Branch 2" },
+    { value: 2, label: "Branch 3" },
+  ];
+  const roles = [
+    { value: 0, label: "Admin" },
+    { value: 1, label: "Manager" },
+    { value: 2, label: "Staff" },
+  ];
   return (
     <div className="fixed inset-0 z-50 flex justify-center  bg-black/50 overflow-y-auto  ">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5    overflow-y-auto sidebar-scroll ">
+      <div className="bg-white w-full lg:max-w-3/6 rounded-xl shadow-lg p-6 relative my-5    overflow-y-auto sidebar-scroll ">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">Add Service Man</h6>
@@ -94,106 +123,317 @@ const AddStaffModal = ({ onSubmit }) => {
           className="space-y-4"
         >
           {/* Upload */}
-          <div className="flex items-center gap-3">
-            <img
-              src={preview}
-              alt="preview"
-              className="w-12 h-12 rounded-full object-cover"
+          <div>
+            <div className="flex items-center gap-3">
+              <img
+                src={preview}
+                alt="preview"
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleUploadClick}
+                  className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
+                >
+                  Upload
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreview("https://i.pravatar.cc/80")}
+                  className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
             />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleUploadClick}
-                className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 justify-center">
+            {/* user name */}
+            <div>
+              <label className="block text-sm text-gray-800">User Name</label>
+              <input
+                type="text"
+                {...register("UserName", {
+                  required: !isEditMode && "Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.UserName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.UserName.message}
+                </p>
+              )}
+            </div>
+            {/* email */}
+            <div>
+              <label className="block text-sm text-gray-800">Email</label>
+              <input
+                type="email"
+                {...register("Email", {
+                  required: !isEditMode && "Email is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.Email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Email.message}
+                </p>
+              )}
+            </div>
+            {/* Phone Number */}
+            <div>
+              <label className="block text-sm text-gray-800">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                {...register("PhoneNumber", {
+                  required: !isEditMode && "Phone Number is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.PhoneNumber && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.PhoneNumber.message}
+                </p>
+              )}
+            </div>
+            {/* Date of Birth */}
+            <div>
+              <label className="block text-sm text-gray-800">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                {...register("DateOfBirth", {
+                  required: !isEditMode && "Date of Birth is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.DateOfBirth && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.DateOfBirth.message}
+                </p>
+              )}
+            </div>
+            {/* Gender */}
+            <div>
+              <label className="block text-sm text-gray-800">Gender</label>
+              <select
+                {...register("Gender", {
+                  required: "Gender is required",
+                })}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
               >
-                Upload
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreview("https://i.pravatar.cc/80")}
-                className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
+                <option value="">Select gender</option>
+                {gen.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
+              {errors.Gender && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Gender.message}
+                </p>
+              )}
+            </div>
+            {/* Address */}
+            <div>
+              <label className="block text-sm text-gray-800">Address</label>
+              <input
+                type="text"
+                {...register("Address", {
+                  required: !isEditMode && "Address is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.Address && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Address.message}
+                </p>
+              )}
+            </div>
+            {/* locations */}
+            <StaffLocationSelect
+              allDivision={allDivision}
+              allDistrict={allDistrict}
+              allUpazila={allUpazila}
+              getDistrictByDivision={getDistrictByDivision}
+              getUpazilaByDistrict={getUpazilaByDistrict}
+              register={register}
+              setValue={setValue}
+              watch={watch}
+              errors={errors}
+            />
+            {/* postal code */}
+            <div>
+              <label className="block text-sm text-gray-800">Postal Code</label>
+              <input
+                type="text"
+                {...register("PostalCode", {
+                  required: !isEditMode && "Postal Code is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.PostalCode && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.PostalCode.message}
+                </p>
+              )}
+            </div>
+            {/* Category */}
+            <div>
+              <label
+                htmlFor="categoryId"
+                className="block text-sm text-gray-800"
               >
-                Remove
-              </button>
+                Category
+              </label>
+              <select
+                id="categoryId"
+                {...register("categoryId", {
+                  required: !isEditMode && "Category is required",
+                })}
+                onChange={(e) => {
+                  const selected = Number(e.target.value);
+                  setValue("categoryId", selected);
+                  setValue("subCategoryId", "");
+                  if (selected) {
+                    getSubCategories(selected);
+                  } else {
+                    setAllSubCategoryData([]);
+                    setIsSubCategoryDisabled(true);
+                    setNoSubCategoryFound(false);
+                  }
+                }}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
+              >
+                <option value="" className="">
+                  Select Category
+                </option>
+                {allCategoryData.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              {errors.categoryId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.categoryId.message}
+                </p>
+              )}
+            </div>
+            {/* sub category Title */}
+            <div>
+              <label
+                htmlFor="subCategoryId"
+                className="block text-sm text-gray-800"
+              >
+                Sub Category
+              </label>
+              <select
+                id="subCategoryId"
+                {...register("subCategoryId", {
+                  required: !isEditMode && "Sub Category is required",
+                })}
+                disabled={isSubCategoryDisabled}
+                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
+                  isSubCategoryDisabled ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
+              >
+                <option value="">
+                  {noSubCategoryFound
+                    ? "No Sub Category Found"
+                    : "Please Select Sub Category"}
+                </option>
+                {allSubCategoryData.map((subCategory) => (
+                  <option key={subCategory.id} value={subCategory.id}>
+                    {subCategory.name}
+                  </option>
+                ))}
+              </select>
+              {errors.subCategoryId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.subCategoryId.message}
+                </p>
+              )}
+            </div>
+            {/* branch location */}
+            <div>
+              <label className="block text-sm text-gray-800">
+                Branch Location
+              </label>
+              <select
+                {...register("branchLocation", {
+                  required: "Branch Location is required",
+                })}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
+              >
+                <option value="">Select Branch Location</option>
+                {branchLocation.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
+              {errors.branchLocation && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.branchLocation.message}
+                </p>
+              )}
+            </div>
+            {/* role */}
+            <div>
+              <label className="block text-sm text-gray-800">Role</label>
+              <select
+                {...register("role", {
+                  required: "Role is required",
+                })}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
+              >
+                <option value="">Select Role</option>
+                {roles.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
+              {errors.role && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.role.message}
+                </p>
+              )}
             </div>
           </div>
-          <p className="text-xs text-gray-500">
-            * Recommends a minimum size of 320 x 320 pixels. Allowed files .png
-            and .jpg.
-          </p>
 
-          {/* Hidden File Input */}
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          {/* Name */}
-          <input
-            type="text"
-            placeholder="Name"
-            {...register("name")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-
-          {/* Job Title */}
-          <input
-            type="text"
-            placeholder="User Name"
-            {...register("userName")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* phone */}
-          <input
-            type="tel"
-            placeholder="Phone"
-            {...register("phone")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* phone */}
-          <input
-            type="email"
-            placeholder="Email"
-            {...register("email")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* password */}
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              {...register("password")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          {/*confirm  password */}
-
-          <div className="relative">
-            <input
-              type={showConfirm ? "text" : "password"}
-              placeholder="Confirm Password"
-              {...register("confirmPassword")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-            />
-            <span
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            >
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-
+          {/* Bio */}
           <div>
-            {/* Upload */}
+            <label className="block text-sm text-gray-800">Your Bio</label>
+            <textarea
+              rows={3}
+              {...register("Bio", {
+                required: "Bio is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+            {errors.Bio && (
+              <p className="text-red-500 text-xs mt-1">{errors.Bio.message}</p>
+            )}
+          </div>
+
+          {/* nid */}
+          <div>
             <div className="">
               <button
                 type="button"
@@ -266,17 +506,10 @@ const AddStaffModal = ({ onSubmit }) => {
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 mt-4 text-sm">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md"
-            >
+            <button type="button" onClick={onClose} className="secondaryButton">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-(--primary-blue) text-white rounded-md"
-            >
+            <button type="submit" className="darkButton">
               Save
             </button>
           </div>

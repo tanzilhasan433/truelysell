@@ -103,6 +103,17 @@ ul {
   scrollbar-width: none;
 }
 
+.darkButton {
+  @apply px-4 py-2 bg-(--dark) text-white rounded-md cursor-pointer;
+}
+.secondaryButton {
+  @apply px-4 py-2 bg-gray-300 rounded-md cursor-pointer;
+}
+
+/* .inputField {
+  @apply w-full border border-gray-300 rounded-md px-3 py-2 mt-1;
+} */
+
 @keyframes slowBounce {
   0%,
   100% {
