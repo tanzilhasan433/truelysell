@@ -451,7 +451,7 @@ const AddStaffModal = ({ onSubmit }) => {
                 </div>
               </button>
             </div>
-            {preview && (
+            {/* {preview && (
               <div className="relative my-5 inline-block">
                 <img
                   src={preview}
@@ -469,7 +469,7 @@ const AddStaffModal = ({ onSubmit }) => {
                   <FaRegTrashCan />
                 </button>
               </div>
-            )}
+            )} */}
 
             <input
               type="file"

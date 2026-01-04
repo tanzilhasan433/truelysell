@@ -94,7 +94,7 @@ const ProviderPayoutPage = () => {
         ))}
       </div>
 
-      <nav className="flex space-x-6 mt-10 mb-6">
+      <nav className="flex space-x-6 mt-10 mb-5">
         {tabs.map((tab) => (
           <button
             key={tab.name}

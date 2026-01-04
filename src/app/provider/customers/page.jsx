@@ -7,11 +7,46 @@ import { useAppContext } from "@/context/AppContext";
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
 import { useBookingCustomer } from "@/hooks/provider/useBookingCustomer";
+import BookingCustomerOverview from "./_components/BookingCustomerOverview";
+import BookingCustomerReview from "./_components/BookingCustomerReview";
+import { useState } from "react";
 
 const ProviderCustomersPage = () => {
   const { loading, isModalOpen, setIsModalOpen } = useAppContext();
   const { allData, setAllData, saveData } = useBookingCustomer();
+  const [activeTab, setActiveTab] = useState("Overview");
   const pageSize = 10;
+
+  const tabs = [
+    {
+      name: "Overview",
+      component: <BookingCustomerOverview />,
+    },
+    {
+      name: "Booking",
+      component: (
+        <BookingCustomerTable
+          allData={allData}
+          setAllData={setAllData}
+          pageSize={pageSize}
+          loading={loading}
+        />
+      ),
+    },
+    {
+      name: "Reviews",
+      component: (
+        <BookingCustomerReview
+          allData={allData}
+          pageSize={pageSize}
+          loading={loading}
+        />
+      ),
+    },
+  ];
+
+  const ActiveComponent =
+    tabs.find((tab) => tab.name === activeTab)?.component || (() => null);
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -24,7 +59,7 @@ const ProviderCustomersPage = () => {
         </button>
       </div>
       {/* table */}
-      {loading ? (
+      {/* {loading ? (
         <Loader />
       ) : allData && allData.length < 0 ? (
         <NoFoundData />
@@ -34,7 +69,26 @@ const ProviderCustomersPage = () => {
           setAllData={setAllData}
           pageSize={pageSize}
         />
-      )}
+      )} */}
+
+      <nav className="flex space-x-6 mt-10 mb-5">
+        {tabs.map((tab) => (
+          <button
+            key={tab.name}
+            onClick={() => setActiveTab(tab.name)}
+            className={`relative py-2 text-sm font-medium transition-colors duration-200 ${
+              activeTab === tab.name
+                ? "darkButton"
+                : "bg-gray-200 hover:text-white text-gray-700 hover:bg-(--dark) px-4 py-2 rounded "
+            }`}
+          >
+            {tab.name}
+          </button>
+        ))}
+      </nav>
+
+      {/* Tab Content */}
+      <div className="mt-4">{ActiveComponent}</div>
 
       {isModalOpen && <AddCustomerModal onSubmit={saveData} />}
     </div>
