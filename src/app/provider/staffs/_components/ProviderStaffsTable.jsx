@@ -1,10 +1,8 @@
-import React, { useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import DeleteButton from "@/components/shared/DeleteButton";
-import StaffDetailsModal from "./StaffDetailsModal";
 import { baseProviderURL } from "@/services/apiService";
 
 const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
@@ -16,8 +14,9 @@ const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
     setIsModalOpen,
     isDetailsModalOpen,
     setIsDetailsModalOpen,
+    detailsId,
+    setDetailsId,
   } = useAppContext();
-  const [staffDetails, setStaffDetails] = useState();
 
   return (
     <>
@@ -85,7 +84,7 @@ const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
                     </button>
                     <button
                       onClick={() => {
-                        setStaffDetails(item);
+                        setDetailsId(item.id);
                         setIsDetailsModalOpen(true);
                       }}
                       className="bg-gray-200 text-gray-500 hover:bg-(--primary) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
@@ -117,7 +116,6 @@ const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
         pageSize={pageSize}
         onPageChange={(page) => setCurrentPage(page)}
       />
-      {isDetailsModalOpen && <StaffDetailsModal item={staffDetails} />}
     </>
   );
 };

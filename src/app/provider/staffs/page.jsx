@@ -6,9 +6,11 @@ import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
 import { useAppContext } from "@/context/AppContext";
 import { useProviderStaff } from "@/hooks/provider/useProviderStaff";
+import StaffDetailsModal from "./_components/StaffDetailsModal";
 
 const StaffsPage = () => {
-  const { loading, isModalOpen, setIsModalOpen } = useAppContext();
+  const { loading, isModalOpen, setIsModalOpen, isDetailsModalOpen } =
+    useAppContext();
   const { allData, setAllData, saveData } = useProviderStaff();
   const pageSize = 10;
 
@@ -38,6 +40,7 @@ const StaffsPage = () => {
       )}
 
       {isModalOpen && <AddStaffModal onSubmit={saveData} />}
+      {isDetailsModalOpen && <StaffDetailsModal />}
     </div>
   );
 };

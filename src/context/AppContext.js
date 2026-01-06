@@ -23,6 +23,7 @@ export const AppProvider = ({ children }) => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
+  const [detailsId, setDetailsId] = useState(null);
 
   const { reset } = useForm();
 
@@ -117,6 +118,8 @@ export const AppProvider = ({ children }) => {
     isDetailsModalOpen,
     setIsDetailsModalOpen,
     onClose,
+    detailsId,
+    setDetailsId,
   };
 
   return (

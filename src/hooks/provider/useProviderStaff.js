@@ -17,6 +17,7 @@ export const useProviderStaff = (pageSize = 10) => {
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
   const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
   const [singleData, setSingleData] = useState(null);
+  const [detailsData, setDetailsData] = useState({});
   const { reset, watch, setValue } = useForm({});
 
   const {
@@ -26,6 +27,10 @@ export const useProviderStaff = (pageSize = 10) => {
     selectedId,
     isModalOpen,
     setIsModalOpen,
+    detailsId,
+    setDetailsId,
+    isDetailsModalOpen,
+    setIsDetailsModalOpen,
   } = useAppContext();
 
   const getCategories = async () => {
@@ -220,6 +225,20 @@ export const useProviderStaff = (pageSize = 10) => {
   }, [selectedId, isModalOpen]);
 
   useEffect(() => {
+    if (detailsId && isDetailsModalOpen) {
+      (async () => {
+        const res = await apiService.get(
+          `provider-staff/getbookingdetailsbyproviderstaff/${detailsId}`
+        );
+
+        setDetailsData(res.data);
+      })();
+    } else {
+      setDetailsData(null);
+    }
+  }, [detailsId, isDetailsModalOpen]);
+
+  useEffect(() => {
     fetchData(currentPage);
   }, [currentPage]);
 
@@ -323,5 +342,7 @@ export const useProviderStaff = (pageSize = 10) => {
     getDistrictByDivision,
     getUpazilaByDistrict,
     getSubCategories,
+    detailsData,
+    setDetailsData,
   };
 };
