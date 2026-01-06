@@ -1,6 +1,7 @@
 "use client";
 
 import { useAppContext } from "@/context/AppContext";
+import { getBaseURL } from "@/services/apiService";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -41,16 +42,13 @@ const DeleteButton = ({ endpoint, type, onComplete }) => {
   const confirmDelete = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ADMIN_URL}${endpoint}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("user")}`,
-          },
-        }
-      );
+      const res = await fetch(`${getBaseURL()}${endpoint}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("user")}`,
+        },
+      });
 
       const data = await res.json().catch(() => null);
 

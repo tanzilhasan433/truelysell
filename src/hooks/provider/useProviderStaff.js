@@ -45,12 +45,18 @@ export const useProviderStaff = (pageSize = 10) => {
       setLoading(false);
     }
   };
-  const getSubCategories = async (catId) => {
+  const getSubCategories = async (catId = []) => {
+    setAllSubCategoryData([]);
+    if (!catId.length || catId[0] === 0) {
+      setIsSubCategoryDisabled(true);
+      return;
+    }
     try {
       setLoading(true);
 
-      const response = await apiService.get(
-        `dropdown/getsubcategoriesbycategory?categoryId=${catId}`
+      const response = await apiService.post(
+        `dropdown/getsubcategoriesbycategory`,
+        catId
       );
       if (response.status === 200) {
         setLoading(false);
@@ -180,11 +186,12 @@ export const useProviderStaff = (pageSize = 10) => {
     setLoading(true);
     try {
       const res = await apiService.get(
-        `staff/getall?PageNumber=${
+        `provider-staff/getall?SearchText=&SortBy=Id&SortDirection=desc&PageNumber=${
           page - 1
-        }&SearchText=&SortBy=Title&SortDirection=asc&PageSize=${pageSize}`
+        }&PageSize=${pageSize}`
       );
-      setAllData(res.data);
+
+      setAllData(res.data || []);
       setTotalRecords(res.numberOfRecords);
     } catch {
       setAllData([]);
@@ -202,7 +209,9 @@ export const useProviderStaff = (pageSize = 10) => {
   useEffect(() => {
     if (selectedId && isModalOpen) {
       (async () => {
-        const res = await apiService.get(`staff/getstaffbyid/${selectedId}`);
+        const res = await apiService.get(
+          `provider-staff/getroviderstaffbyid/${selectedId}`
+        );
         setSingleData(res.data);
       })();
     } else {
@@ -215,33 +224,71 @@ export const useProviderStaff = (pageSize = 10) => {
   }, [currentPage]);
 
   const saveData = async (data) => {
-    const payload = {
-      Title: data.Title,
-      Details: data.Details,
-      Position: data.Position,
-      IsActive: data.IsActive,
-      ...(selectedId && { Id: selectedId }),
-    };
+    console.log("form data to submit:", data);
+    const formData = new FormData();
+
+    formData.append("FirstName", data.FirstName);
+    formData.append("LastName", data.LastName);
+    formData.append("Email", data.Email);
+    formData.append("MobileNumber", data.MobileNumber);
+    formData.append("Password", data.Password);
+    formData.append("DateOfBirth", data.DateOfBirth);
+    formData.append("Gender", data.Gender);
+    formData.append("Address", data.Address);
+    formData.append("Bio", data.Bio);
+
+    // Location
+    formData.append("DivisionId", data.divisionId?.[0]);
+    formData.append("DistrictId", data.districtId?.[0]);
+    formData.append("UpazilaId", data.upazilaId?.[0]);
+
+    formData.append("PostalCode", data.PostalCode);
+
+    data.CategoryId?.forEach((id, index) => {
+      formData.append(`CategoryId[${index}]`, id);
+    });
+
+    data.SubCategoryId?.forEach((id, index) => {
+      formData.append(`SubCategoryId[${index}]`, id);
+    });
+
+    formData.append("IsActive", data.IsActive);
+
+    if (data.Photo instanceof File) {
+      formData.append("Photo", data.Photo);
+    }
+    if (data.NidFile instanceof File) {
+      formData.append("NidFile", data.NidFile);
+    }
+
+    // Edit mode
+    if (selectedId) {
+      formData.append("Id", selectedId);
+    }
 
     try {
       if (selectedId) {
-        const res = await apiService.put(`staff/update/${selectedId}`, payload);
+        const res = await apiService.put(
+          `provider-staff/update/${selectedId}`,
+          formData
+        );
 
-        if (res.message) {
+        if (res.status === 200) {
           fetchData();
           setIsModalOpen(false);
           toast.success(res.message);
           reset();
         } else {
-          toast.error(res.error);
+          toast.error(res.error || res.message);
         }
       } else {
-        const res = await apiService.post("staff/create", payload);
+        const res = await apiService.post("provider-staff/create", formData);
 
-        if (res.message) {
+        if (res.status === 200) {
           toast.success(res.message);
           fetchData();
           setIsModalOpen(false);
+          reset();
         } else {
           toast.error(res.error);
         }

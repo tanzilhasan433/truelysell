@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { FaRegEye } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
-import { StaffData } from "@/data/json/staffData";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import DeleteButton from "@/components/shared/DeleteButton";
 import StaffDetailsModal from "./StaffDetailsModal";
+import { baseProviderURL } from "@/services/apiService";
 
 const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
   const {
@@ -26,7 +25,7 @@ const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
         <table className="max-w-7xl w-full   text-sm text-left text-gray-600">
           <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
             <tr>
-              <th className="py-5 px-3"> Id</th>
+              <th className="py-5 px-3">No</th>
               <th className="py-5 px-3"> name </th>
               <th className="py-5 px-3">Created On</th>
               <th className="py-5 px-3">No of services</th>
@@ -37,26 +36,28 @@ const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
             </tr>
           </thead>
           <tbody className="text-[13px]">
-            {StaffData.map((item) => (
+            {allData.map((item, inx) => (
               <tr
                 key={item.id}
                 className="border-t border-gray-200/80 hover:bg-gray-100 transition"
               >
-                <td className="py-4 px-3">{item.staffId}</td>
+                <td className="py-4 px-3">{inx + 1}</td>
                 <td className="py-4 px-3 flex items-center gap-2">
                   <img
-                    src={item.img}
-                    alt={item.name}
+                    src={`${baseProviderURL}files/provider-staff/${item.photoUrl}`}
+                    alt={item.staffName}
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-medium text-gray-900">{item.name}</p>
+                    <p className="font-medium text-gray-900">
+                      {item.staffName}
+                    </p>
                     <p>{item.email}</p>
                   </div>
                 </td>
                 <td className="py-4 px-3">{item.createdOn}</td>
-                <td className="py-4 px-3">{item.noOfServices}</td>
-                <td className="py-4 px-3 font-medium">{item.totalBookings}</td>
+                <td className="py-4 px-3">{item.noOfService}</td>
+                <td className="py-4 px-3 font-medium">{item.totalBooking}</td>
                 <td className="py-4 px-3 font-medium">
                   {" "}
                   <button
@@ -92,7 +93,7 @@ const ProviderStaffsTable = ({ allData, setAllData, pageSize }) => {
                       <FaRegEye size={25} />
                     </button>
                     <DeleteButton
-                      endpoint={`staff/delete/${item?.id}`}
+                      endpoint={`provider-staff/delete/${item?.id}`}
                       type="service man"
                       onComplete={(status) => {
                         if (status) {

@@ -62,9 +62,10 @@ export const AppProvider = ({ children }) => {
   }, [token]);
 
   const onClose = () => {
-    reset();
     setIsModalOpen(false);
     setIsDetailsModalOpen(false);
+    setSelectedId(null);
+    reset();
   };
 
   const isTokenExpired = (token) => {

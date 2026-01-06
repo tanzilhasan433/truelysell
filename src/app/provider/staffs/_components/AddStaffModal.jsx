@@ -1,13 +1,15 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
-import { IoCloudUploadOutline } from "react-icons/io5";
-import { FaRegTrashCan } from "react-icons/fa6";
 import { useProviderStaff } from "@/hooks/provider/useProviderStaff";
 import { useAppContext } from "@/context/AppContext";
 import StaffLocationSelect from "./StaffLocationSelect";
+import { BsPersonCircle } from "react-icons/bs";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { baseProviderURL } from "@/services/apiService";
+import Select from "react-select";
 
 const AddStaffModal = ({ onSubmit }) => {
   const {
@@ -19,14 +21,23 @@ const AddStaffModal = ({ onSubmit }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      userName: "",
-      phone: 0,
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-      status: true,
+      FirstName: "",
+      LastName: "",
+      Email: "",
+      MobileNumber: "",
+      Password: "",
+      DateOfBirth: "",
+      PostalCode: "",
+      Address: "",
+      Bio: "",
+      divisionId: [],
+      districtId: [],
+      upazilaId: [],
+      CategoryId: [],
+      SubCategoryId: [],
+      Gender: "",
+      IsActive: true,
+      Photo: null,
     },
   });
   const { selectedId, onClose } = useAppContext();
@@ -40,64 +51,130 @@ const AddStaffModal = ({ onSubmit }) => {
     allDivision,
     isSubCategoryDisabled,
     setIsSubCategoryDisabled,
-    noSubCategoryFound,
-    setNoSubCategoryFound,
     getDistrictByDivision,
     getUpazilaByDistrict,
     getSubCategories,
   } = useProviderStaff();
   const isEditMode = Boolean(selectedId);
 
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
-
-  // Ref for file input
+  const [preview, setPreview] = useState("");
+  const [nidPreview, setNidPreview] = useState("");
   const fileInputRef = useRef(null);
+  const nidFileInputRef = useRef(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
 
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
-  };
+  const handleCategoryChange = (selectedOptions) => {
+    const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
+    setSelectedCategories(selectedOptions || []);
+    setValue("CategoryId", ids);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
+    if (ids.length > 0) {
+      getSubCategories(ids);
+      setIsSubCategoryDisabled(false);
+    } else {
+      setIsSubCategoryDisabled(true);
     }
+
+    setAllSubCategoryData([]);
+    setSelectedSubCategories([]);
+    setValue("SubCategoryId", []);
   };
+
+  const handleSubCategoryChange = (selectedOptions) => {
+    const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
+    setSelectedSubCategories(selectedOptions || []);
+    setValue("SubCategoryId", ids);
+  };
+
+  const subCategoriesOptions = allSubCategoryData.map((sub) => ({
+    value: sub.id,
+    label: sub.name,
+  }));
+
+  const categories = allCategoryData.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }));
 
   useEffect(() => {
     if (singleData && selectedId) {
       reset({
-        Title: singleData.title,
-        Details: singleData.details,
-        Position: singleData.position,
+        FirstName: singleData.firstName,
+        LastName: singleData.lastName,
+        Email: singleData.email,
+        MobileNumber: singleData.mobileNumber,
+        Password: singleData.password,
+        DateOfBirth: singleData.dateOfBirth,
+        Address: singleData.address,
+        Bio: singleData.bio,
+        PostalCode: singleData.postalCode,
         IsActive: singleData.isActive,
+        Photo: singleData.photo,
+        NidFile: singleData.nidFile,
+        divisionId: [singleData.divisionId],
+        districtId: [singleData.districtId],
+        upazilaId: [singleData.upazilaId],
+
+        CategoryId: singleData.categoryId || [],
+        SubCategoryId: singleData.subCategoryId || [],
+
+        Gender:
+          singleData.gender === "male"
+            ? 0
+            : singleData.gender === "female"
+            ? 1
+            : 2,
       });
-    } else {
-      reset({
-        Title: "",
-        Details: "",
-        Position: "",
-        IsActive: true,
-      });
+
+      if (singleData?.divisionId) {
+        getDistrictByDivision([singleData.divisionId]);
+      }
+      if (singleData?.districtId) {
+        getUpazilaByDistrict([singleData?.districtId]);
+      }
+      if (singleData?.categoryId) {
+        getSubCategories(singleData?.categoryId);
+      }
+      if (singleData.profileImageUrl) {
+        setPreview(
+          `${baseProviderURL}files/provider-staff/${singleData.profileImageUrl}`
+        );
+      }
+      if (singleData.nidFileUrl) {
+        setNidPreview(
+          `${baseProviderURL}files/provider-staff/${singleData.nidFileUrl?.[0]}`
+        );
+      }
     }
   }, [singleData, selectedId]);
+
+  useEffect(() => {
+    if (singleData && allCategoryData.length > 0) {
+      const selectedCats = allCategoryData
+        .filter((cat) => singleData.categoryId.includes(cat.id))
+        .map((cat) => ({ value: cat.id, label: cat.name }));
+
+      setSelectedCategories(selectedCats);
+    }
+  }, [singleData, allCategoryData]);
+
+  useEffect(() => {
+    if (singleData && allSubCategoryData.length > 0) {
+      const selectedSubs = allSubCategoryData
+        .filter((sub) => singleData.subCategoryId.includes(sub.id))
+        .map((sub) => ({ value: sub.id, label: sub.name }));
+
+      setSelectedSubCategories(selectedSubs);
+    }
+  }, [singleData, allSubCategoryData]);
 
   const gen = [
     { value: 0, label: "Male" },
     { value: 1, label: "Female" },
     { value: 2, label: "Other" },
   ];
-  const branchLocation = [
-    { value: 0, label: "Branch 1" },
-    { value: 1, label: "Branch 2" },
-    { value: 2, label: "Branch 3" },
-  ];
-  const roles = [
-    { value: 0, label: "Admin" },
-    { value: 1, label: "Manager" },
-    { value: 2, label: "Staff" },
-  ];
+
   return (
     <div className="fixed inset-0 z-50 flex justify-center  bg-black/50 overflow-y-auto  ">
       <div className="bg-white w-full lg:max-w-3/6 rounded-xl shadow-lg p-6 relative my-5    overflow-y-auto sidebar-scroll ">
@@ -117,60 +194,103 @@ const AddStaffModal = ({ onSubmit }) => {
         <form
           onSubmit={handleSubmit(async (data) => {
             await onSubmit(data);
-            reset();
+
             setPreview("");
+            setNidPreview("");
+            console.log("submitted data:", data);
           })}
           className="space-y-4"
         >
           {/* Upload */}
           <div>
             <div className="flex items-center gap-3">
-              <img
-                src={preview}
-                alt="preview"
-                className="w-12 h-12 rounded-full object-cover"
-              />
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <BsPersonCircle size={40} className="text-gray-500" />
+              )}
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={handleUploadClick}
+                  onClick={() => fileInputRef?.current?.click()}
                   className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
                 >
                   Upload
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setPreview("https://i.pravatar.cc/80")}
-                  className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
-                >
-                  Remove
-                </button>
+                {preview && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPreview("");
+                      setValue("Photo", null);
+                    }}
+                    className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
 
             {/* Hidden File Input */}
             <input
               type="file"
-              accept="image/png, image/jpeg"
-              ref={fileInputRef}
-              onChange={handleFileChange}
+              accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml,"
+              {...register("Photo", {
+                required: !isEditMode && "Photo is required",
+              })}
+              ref={(el) => {
+                fileInputRef.current = el;
+              }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setPreview(URL.createObjectURL(file));
+                  setValue("Photo", file, { shouldValidate: true });
+                }
+              }}
               className="hidden"
             />
+            {errors.Photo && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.Photo.message}
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 justify-center">
-            {/* user name */}
+            {/* first name */}
             <div>
-              <label className="block text-sm text-gray-800">User Name</label>
+              <label className="block text-sm text-gray-800">First Name</label>
               <input
                 type="text"
-                {...register("UserName", {
-                  required: !isEditMode && "Name is required",
+                {...register("FirstName", {
+                  required: !isEditMode && "First Name is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.UserName && (
+              {errors.FirstName && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.UserName.message}
+                  {errors.FirstName.message}
+                </p>
+              )}
+            </div>
+            {/* last name */}
+            <div>
+              <label className="block text-sm text-gray-800">Last Name</label>
+              <input
+                type="text"
+                {...register("LastName", {
+                  required: !isEditMode && "Last Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.LastName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.LastName.message}
                 </p>
               )}
             </div>
@@ -197,17 +317,36 @@ const AddStaffModal = ({ onSubmit }) => {
               </label>
               <input
                 type="tel"
-                {...register("PhoneNumber", {
+                {...register("MobileNumber", {
                   required: !isEditMode && "Phone Number is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.PhoneNumber && (
+              {errors.MobileNumber && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.PhoneNumber.message}
+                  {errors.MobileNumber.message}
                 </p>
               )}
             </div>
+            {/* password */}
+            {!isEditMode && (
+              <div>
+                <label className="block text-sm text-gray-800">Password</label>
+                <input
+                  type="password"
+                  {...register("Password", {
+                    required: !isEditMode && "Password is required",
+                  })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+                />
+                {errors.Password && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.Password.message}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Date of Birth */}
             <div>
               <label className="block text-sm text-gray-800">
@@ -231,7 +370,7 @@ const AddStaffModal = ({ onSubmit }) => {
               <label className="block text-sm text-gray-800">Gender</label>
               <select
                 {...register("Gender", {
-                  required: "Gender is required",
+                  required: !isEditMode && "Gender is required",
                 })}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
               >
@@ -295,123 +434,63 @@ const AddStaffModal = ({ onSubmit }) => {
             {/* Category */}
             <div>
               <label
-                htmlFor="categoryId"
+                htmlFor="CategoryId"
                 className="block text-sm text-gray-800"
               >
                 Category
               </label>
-              <select
-                id="categoryId"
-                {...register("categoryId", {
-                  required: !isEditMode && "Category is required",
-                })}
-                onChange={(e) => {
-                  const selected = Number(e.target.value);
-                  setValue("categoryId", selected);
-                  setValue("subCategoryId", "");
-                  if (selected) {
-                    getSubCategories(selected);
-                  } else {
-                    setAllSubCategoryData([]);
-                    setIsSubCategoryDisabled(true);
-                    setNoSubCategoryFound(false);
-                  }
+
+              <Select
+                id="CategoryId"
+                options={categories}
+                isMulti
+                value={selectedCategories}
+                onChange={handleCategoryChange}
+                placeholder="Select Category"
+                className="mt-1"
+                classNames={{
+                  control: () =>
+                    "mt-1 block w-full rounded-xl text-gray-600 text-sm border border-gray-300 py-0.5 focus:outline-none",
                 }}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none "
-              >
-                <option value="" className="">
-                  Select Category
-                </option>
-                {allCategoryData.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              {errors.categoryId && (
+              />
+
+              {errors.CategoryId && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.categoryId.message}
+                  {errors.CategoryId.message}
                 </p>
               )}
             </div>
             {/* sub category Title */}
             <div>
               <label
-                htmlFor="subCategoryId"
+                htmlFor="SubCategoryId"
                 className="block text-sm text-gray-800"
               >
                 Sub Category
               </label>
-              <select
-                id="subCategoryId"
-                {...register("subCategoryId", {
-                  required: !isEditMode && "Sub Category is required",
-                })}
-                disabled={isSubCategoryDisabled}
-                className={`mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none ${
-                  isSubCategoryDisabled ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-              >
-                <option value="">
-                  {noSubCategoryFound
-                    ? "No Sub Category Found"
-                    : "Please Select Sub Category"}
-                </option>
-                {allSubCategoryData.map((subCategory) => (
-                  <option key={subCategory.id} value={subCategory.id}>
-                    {subCategory.name}
-                  </option>
-                ))}
-              </select>
-              {errors.subCategoryId && (
+
+              <Select
+                id="SubCategoryId"
+                options={subCategoriesOptions}
+                isMulti
+                isDisabled={isSubCategoryDisabled}
+                value={selectedSubCategories}
+                onChange={handleSubCategoryChange}
+                placeholder="Select Sub Category"
+                className="mt-1"
+                classNames={{
+                  control: () =>
+                    `mt-1 block w-full rounded-xl text-gray-600 text-sm border border-gray-300 py-0.5 focus:outline-none ${
+                      isSubCategoryDisabled
+                        ? "bg-gray-100 cursor-not-allowed"
+                        : ""
+                    }`,
+                }}
+              />
+
+              {errors.SubCategoryId && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.subCategoryId.message}
-                </p>
-              )}
-            </div>
-            {/* branch location */}
-            <div>
-              <label className="block text-sm text-gray-800">
-                Branch Location
-              </label>
-              <select
-                {...register("branchLocation", {
-                  required: "Branch Location is required",
-                })}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
-              >
-                <option value="">Select Branch Location</option>
-                {branchLocation.map((g) => (
-                  <option key={g.value} value={g.value}>
-                    {g.label}
-                  </option>
-                ))}
-              </select>
-              {errors.branchLocation && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.branchLocation.message}
-                </p>
-              )}
-            </div>
-            {/* role */}
-            <div>
-              <label className="block text-sm text-gray-800">Role</label>
-              <select
-                {...register("role", {
-                  required: "Role is required",
-                })}
-                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
-              >
-                <option value="">Select Role</option>
-                {roles.map((g) => (
-                  <option key={g.value} value={g.value}>
-                    {g.label}
-                  </option>
-                ))}
-              </select>
-              {errors.role && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.role.message}
+                  {errors.SubCategoryId.message}
                 </p>
               )}
             </div>
@@ -423,7 +502,7 @@ const AddStaffModal = ({ onSubmit }) => {
             <textarea
               rows={3}
               {...register("Bio", {
-                required: "Bio is required",
+                required: !isEditMode && "Bio is required",
               })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
             />
@@ -437,7 +516,7 @@ const AddStaffModal = ({ onSubmit }) => {
             <div className="">
               <button
                 type="button"
-                onClick={() => fileInputRef?.current?.click()}
+                onClick={() => nidFileInputRef?.current?.click()}
                 className="px-3 py-5 bg-gray-50 block w-full border-gray-300 border border-dashed rounded-md text-sm flex justify-center"
               >
                 <div>
@@ -451,45 +530,49 @@ const AddStaffModal = ({ onSubmit }) => {
                 </div>
               </button>
             </div>
-            {/* {preview && (
+            {nidPreview && (
               <div className="relative my-5 inline-block">
                 <img
-                  src={preview}
+                  src={nidPreview}
                   alt="preview"
                   className="w-16 h-16  object-cover"
                 />
                 <button
                   type="button"
                   onClick={() => {
-                    setPreview("");
-                    setValue("serviceImages", null);
+                    setNidPreview("");
+                    setValue("NidFile", null);
                   }}
                   className=" text-red-500  m-1 absolute top-0 right-0 z-20"
                 >
                   <FaRegTrashCan />
                 </button>
               </div>
-            )} */}
+            )}
 
             <input
               type="file"
-              accept="image/png, image/jpeg"
+              accept="image/png, image/jpeg, image/jpg, application/pdf"
               multiple
+              {...register("NidFile", {
+                required: !isEditMode && "NID is required",
+              })}
               ref={(el) => {
-                fileInputRef.current = el;
-                register("serviceImages");
+                nidFileInputRef.current = el;
               }}
               onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                setPreview(URL.createObjectURL(files[0]));
-                setValue("serviceImages", files, { shouldValidate: true });
+                const file = e.target.files?.[0];
+                if (file) {
+                  setNidPreview(URL.createObjectURL(file));
+                  setValue("NidFile", file, { shouldValidate: true });
+                }
               }}
               className="hidden"
             />
 
-            {errors.serviceImages && (
+            {errors.NidFile && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.serviceImages.message}
+                {errors.NidFile.message}
               </p>
             )}
           </div>
@@ -499,7 +582,7 @@ const AddStaffModal = ({ onSubmit }) => {
             <label className="text-sm font-medium">Status</label>
             <input
               type="checkbox"
-              {...register("status")}
+              {...register("IsActive")}
               className="toggle toggle-success"
             />
           </div>
@@ -509,7 +592,11 @@ const AddStaffModal = ({ onSubmit }) => {
             <button type="button" onClick={onClose} className="secondaryButton">
               Cancel
             </button>
-            <button type="submit" className="darkButton">
+            <button
+              type="submit"
+              className="darkButton"
+              onClick={() => console.log("click")}
+            >
               Save
             </button>
           </div>

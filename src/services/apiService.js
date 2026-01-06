@@ -1,11 +1,11 @@
 "use client";
 
-const baseAdminURL = process.env.NEXT_PUBLIC_API_ADMIN_URL;
-const baseProviderURL = process.env.NEXT_PUBLIC_API_PROVIDER_URL;
-const baseCustomerURL = process.env.NEXT_PUBLIC_API_CUSTOMER_URL;
-const basePublicURL = process.env.NEXT_PUBLIC_API_AUTH_URL;
+export const baseAdminURL = process.env.NEXT_PUBLIC_API_ADMIN_URL;
+export const baseProviderURL = process.env.NEXT_PUBLIC_API_PROVIDER_URL;
+export const baseCustomerURL = process.env.NEXT_PUBLIC_API_CUSTOMER_URL;
+export const basePublicURL = process.env.NEXT_PUBLIC_API_AUTH_URL;
 
-const getBaseURL = () => {
+export const getBaseURL = () => {
   const role = localStorage.getItem("userRole");
 
   if (role === "Admin") return baseAdminURL;
