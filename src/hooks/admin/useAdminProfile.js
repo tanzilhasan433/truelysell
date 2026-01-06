@@ -17,7 +17,7 @@ export const useAdminProfile = (pageSize = 10) => {
     setLoading(true);
     try {
       const res = await apiService.get(`admin-profile/getAdminprofile`);
-      console.log("profileInfo", res);
+
       setProfileInfo(res.data);
     } catch {
       setProfileInfo(null);

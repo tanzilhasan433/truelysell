@@ -194,10 +194,8 @@ const AddStaffModal = ({ onSubmit }) => {
         <form
           onSubmit={handleSubmit(async (data) => {
             await onSubmit(data);
-
             setPreview("");
             setNidPreview("");
-            console.log("submitted data:", data);
           })}
           className="space-y-4"
         >
@@ -592,11 +590,7 @@ const AddStaffModal = ({ onSubmit }) => {
             <button type="button" onClick={onClose} className="secondaryButton">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="darkButton"
-              onClick={() => console.log("click")}
-            >
+            <button type="submit" className="darkButton">
               Save
             </button>
           </div>

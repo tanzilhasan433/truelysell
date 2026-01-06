@@ -37,10 +37,8 @@ const AddPage = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log("Form Data Submitted: ", data);
     // try {
     //   setLoading(true);
-
     //   const response = await fetch(
     //     `${process.env.NEXT_PUBLIC_API_URL}service/`,
     //     {
@@ -55,7 +53,6 @@ const AddPage = () => {
     //       }),
     //     }
     //   );
-
     //   if (response.ok) {
     //     toast.success("Service added successfully");
     //     router.push("/admin/services");

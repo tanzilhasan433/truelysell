@@ -66,8 +66,6 @@ const initialItems = [
 const ProfileVerificationPage = () => {
   const [items, setItems] = useState(initialItems);
   const { ducmentsType, ducmentStatus } = useProviderProfileVerification();
-  console.log("ducmentsType", ducmentsType);
-  console.log("ducmentStatus", ducmentStatus);
 
   const [inputs, setInputs] = useState({
     phone: "",

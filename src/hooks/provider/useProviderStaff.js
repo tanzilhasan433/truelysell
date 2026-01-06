@@ -243,7 +243,6 @@ export const useProviderStaff = (pageSize = 10) => {
   }, [currentPage]);
 
   const saveData = async (data) => {
-    console.log("form data to submit:", data);
     const formData = new FormData();
 
     formData.append("FirstName", data.FirstName);

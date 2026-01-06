@@ -22,7 +22,7 @@ const BlogViewPage = ({ searchParams }) => {
       );
       if (response.ok) {
         const { data } = await response.json();
-        console.log("blog data", data);
+
         setBlogData(data);
         setLoading(false);
       } else {

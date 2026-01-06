@@ -11,7 +11,6 @@ const ProviderCouponsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddTestimonial = (data) => {
-    console.log("Form Submitted:", data);
     setIsModalOpen(false);
   };
   return (

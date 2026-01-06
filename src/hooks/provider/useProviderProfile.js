@@ -18,7 +18,7 @@ export const useProviderProfile = (pageSize = 10) => {
     setLoading(true);
     try {
       const res = await apiService.get(`provider-profile/getproviderprofile`);
-      console.log("profileInfo", res);
+
       setProfileInfo(res.data);
     } catch {
       setProfileInfo(null);

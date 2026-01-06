@@ -2,7 +2,7 @@ import { useAppContext } from "@/context/AppContext";
 
 const BookingDetailsModal = ({ item, allStatusData, updateBookingStatus }) => {
   const { onClose } = useAppContext();
-  console.log("item", item);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50  px-4">
       <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl overflow-hidden">

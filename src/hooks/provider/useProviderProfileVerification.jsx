@@ -15,7 +15,6 @@ export const useProviderProfileVerification = () => {
       setLoading(true);
       try {
         const res = await apiService.get("dropdown/getverificationtypes");
-        console.log("getverificationtypes", res);
 
         if (res.data.length > 0) {
           setLoading(false);
@@ -36,7 +35,6 @@ export const useProviderProfileVerification = () => {
       setLoading(true);
       try {
         const res = await apiService.get("dropdown/getverificationstatuses");
-        console.log("getverificationstatuses", res);
 
         if (res.data.length > 0) {
           setLoading(false);

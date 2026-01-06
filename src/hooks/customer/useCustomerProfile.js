@@ -18,7 +18,7 @@ export const useCustomerProfile = (pageSize = 10) => {
     setLoading(true);
     try {
       const res = await apiService.get(`customer-profile/getcustomerprofile`);
-      console.log("profileInfo", res);
+
       setProfileInfo(res.data);
     } catch {
       setProfileInfo(null);

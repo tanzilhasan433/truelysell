@@ -12,7 +12,7 @@ export const useAdminVerificationRequest = () => {
         const res = await apiService.get(
           "verificationrequests/getall?PageNumber=0&SearchText=&SortBy=Id&SortDirection=desc&PageSize=10&ProviderId=&Status=&DocumentType="
         );
-        console.log("verificationrequests", res);
+
         if (res.data.length > 0) {
           setLoading(false);
           setVerificationrequests(res.data);
