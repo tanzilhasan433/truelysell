@@ -56,124 +56,87 @@ const AddBookingModal = ({ isOpen, onClose, onSubmit, role }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Upload */}
-          <div className="flex items-center gap-3">
-            <img
-              src={preview}
-              alt="preview"
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleUploadClick}
-                className="px-3 py-1 bg-[var(--primary-blue)]/10 text-blue-500 border border-[var(--primary-blue)]/10 rounded-md text-sm"
-              >
-                Upload
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreview("https://i.pravatar.cc/80")}
-                className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
-              >
-                Remove
-              </button>
-            </div>
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Staff
+            </label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
+            >
+              <option value="" className="text-sm  ">
+                Select
+              </option>
+              <option value="">John</option>
+            </select>
           </div>
-          <p className="text-xs text-gray-500">
-            * Recommends a minimum size of 320 x 320 pixels. Allowed files .png
-            and .jpg.
-          </p>
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Service
+            </label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
+            >
+              <option value="" className="text-sm  ">
+                Select
+              </option>
+              <option value="">Computer service</option>
+            </select>
+          </div>
 
-          {/* Hidden File Input */}
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          {/* Name */}
-          <input
-            type="text"
-            placeholder="Name"
-            {...register("name")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-
-          {/* Job Title */}
-          <input
-            type="text"
-            placeholder="User Name"
-            {...register("userName")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* phone */}
-          <input
-            type="tel"
-            placeholder="Phone"
-            {...register("phone")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* phone */}
-          <input
-            type="email"
-            placeholder="Email"
-            {...register("email")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* password */}
-          <div className="relative">
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Customer
+            </label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
+            >
+              <option value="" className="text-sm  ">
+                Select
+              </option>
+              <option value="">John</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Staff
+            </label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              {...register("password")}
+              type="date"
+              placeholder="Phone"
+              {...register("phone")}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
           </div>
-          {/*confirm  password */}
-
-          <div className="relative">
+          <div>
+            {/* <label htmlFor="" className="block text-sm text-gray-800">Staff</label> */}
             <input
-              type={showConfirm ? "text" : "password"}
-              placeholder="Confirm Password"
-              {...register("confirmPassword")}
+              type="time"
+              placeholder="Phone"
+              {...register("phone")}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             />
-            <span
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            >
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
           </div>
-
-          <select
-            {...register("role")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
-          >
-            <option value="" className="text-sm  ">
-              Select Role
-            </option>
-            <option value="admin">Admin</option>
-            <option value="provider">Provider</option>
-            <option value="customer">Customer</option>
-          </select>
-
-          {/* Status */}
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Status</label>
+          <div>
+            {/* <label htmlFor="" className="block text-sm text-gray-800">Staff</label> */}
             <input
-              type="checkbox"
-              {...register("status")}
-              className="toggle toggle-success"
+              type="time"
+              placeholder="Phone"
+              {...register("phone")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Message
+            </label>
+            <textarea
+              rows={3}
+              placeholder="message"
+              {...register("message")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
             />
           </div>
 

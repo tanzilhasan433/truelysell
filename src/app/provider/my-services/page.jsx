@@ -4,6 +4,7 @@ import { useState } from "react";
 import MyServices from "@/components/provider/myServicesComponents/MyServices";
 
 import { services } from "@/data/json/provider-my-services";
+import { useProviderService } from "@/hooks/provider/useProviderService";
 
 const activeServices = services.filter(
   (service) => service.status === "Active"
@@ -33,6 +34,8 @@ const tabs = [
 ];
 
 const MyServicesPage = () => {
+  const { allData } = useProviderService();
+  console.log("allData in MyServicesPage:", allData);
   const [activeTab, setActiveTab] = useState("Active Services");
 
   const ActiveComponent =
