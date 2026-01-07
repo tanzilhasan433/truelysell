@@ -4,8 +4,6 @@ import AddCustomerModal from "@/app/provider/customers/_components/AddCustomerMo
 import BookingCustomerTable from "./_components/BookingCustomerTable";
 import { FaPlus } from "react-icons/fa";
 import { useAppContext } from "@/context/AppContext";
-import Loader from "@/components/shared/Loader";
-import NoFoundData from "@/components/shared/NoFoundData";
 import { useBookingCustomer } from "@/hooks/provider/useBookingCustomer";
 import BookingCustomerOverview from "./_components/BookingCustomerOverview";
 import BookingCustomerReview from "./_components/BookingCustomerReview";
@@ -58,18 +56,6 @@ const ProviderCustomersPage = () => {
           <FaPlus size={15} /> Add Customer
         </button>
       </div>
-      {/* table */}
-      {/* {loading ? (
-        <Loader />
-      ) : allData && allData.length < 0 ? (
-        <NoFoundData />
-      ) : (
-        <BookingCustomerTable
-          allData={allData}
-          setAllData={setAllData}
-          pageSize={pageSize}
-        />
-      )} */}
 
       <nav className="flex space-x-6 mt-10 mb-5">
         {tabs.map((tab) => (

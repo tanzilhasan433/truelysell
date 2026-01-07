@@ -7,7 +7,14 @@ import { useBookingCustomer } from "@/hooks/provider/useBookingCustomer";
 import { useAppContext } from "@/context/AppContext";
 
 const AddCustomerModal = ({ onSubmit }) => {
-  const { register, handleSubmit, setValue, watch, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: "",
       userName: "",
@@ -121,78 +128,167 @@ const AddCustomerModal = ({ onSubmit }) => {
             className="hidden"
           />
 
-          {/* Name */}
-          <input
-            type="text"
-            placeholder="Name"
-            {...register("name")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-
-          {/* Job Title */}
-          <input
-            type="text"
-            placeholder="User Name"
-            {...register("userName")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* phone */}
-          <input
-            type="tel"
-            placeholder="Phone"
-            {...register("phone")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* phone */}
-          <input
-            type="email"
-            placeholder="Email"
-            {...register("email")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
+          {/* first name */}
+          <div>
+            <label className="block text-sm text-gray-800">First Name</label>
+            <input
+              type="text"
+              {...register("FirstName", {
+                required: !isEditMode && "First Name is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+            {errors.FirstName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.FirstName.message}
+              </p>
+            )}
+          </div>
+          {/* last name */}
+          <div>
+            <label className="block text-sm text-gray-800">Last Name</label>
+            <input
+              type="text"
+              {...register("LastName", {
+                required: !isEditMode && "Last Name is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+            {errors.LastName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.LastName.message}
+              </p>
+            )}
+          </div>
+          {/* email */}
+          <div>
+            <label className="block text-sm text-gray-800">Email</label>
+            <input
+              type="email"
+              {...register("Email", {
+                required: !isEditMode && "Email is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+            {errors.Email && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.Email.message}
+              </p>
+            )}
+          </div>
+          {/* Phone Number */}
+          <div>
+            <label className="block text-sm text-gray-800">Phone Number</label>
+            <input
+              type="tel"
+              {...register("MobileNumber", {
+                required: !isEditMode && "Phone Number is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+            {errors.MobileNumber && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.MobileNumber.message}
+              </p>
+            )}
+          </div>
           {/* password */}
-          <div className="relative">
+          {!isEditMode && (
+            <div>
+              <label className="block text-sm text-gray-800">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  {...register("password")}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 cursor-pointer text-gray-500"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              {errors.Password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Password.message}
+                </p>
+              )}
+            </div>
+          )}
+          {/* Address */}
+          <div>
+            <label className="block text-sm text-gray-800">Address</label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              {...register("password")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+              type="text"
+              {...register("Address", {
+                required: !isEditMode && "Address is required",
+              })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            {errors.Address && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.Address.message}
+              </p>
+            )}
           </div>
-          {/*confirm  password */}
-
-          <div className="relative">
-            <input
-              type={showConfirm ? "text" : "password"}
-              placeholder="Confirm Password"
-              {...register("confirmPassword")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-            />
-            <span
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-3 cursor-pointer text-gray-500"
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Diviion
+            </label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
             >
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
+              <option value="" className="text-sm  ">
+                Select
+              </option>
+              <option value="">Dhaka</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Zila
+            </label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
+            >
+              <option value="" className="text-sm  ">
+                Select
+              </option>
+              <option value="">Dhaka</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="" className="block text-sm text-gray-800">
+              Upazila
+            </label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
+            >
+              <option value="" className="text-sm  ">
+                Select
+              </option>
+              <option value="">Dhaka</option>
+            </select>
           </div>
 
-          <select
-            {...register("role")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
-          >
-            <option value="" className="text-sm  ">
-              Select Role
-            </option>
-            <option value="admin">Admin</option>
-            <option value="provider">Provider</option>
-            <option value="customer">Customer</option>
-          </select>
+          <div>
+            <label className="block text-sm text-gray-800">Role</label>
+            <select
+              {...register("role")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
+            >
+              <option value="" className="text-sm  ">
+                Select Role
+              </option>
+
+              <option value="customer">Customer</option>
+            </select>
+          </div>
 
           {/* Status */}
           <div className="flex items-center justify-between">
