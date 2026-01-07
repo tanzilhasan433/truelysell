@@ -3,9 +3,16 @@
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
 import { useRef, useState } from "react";
+import { useAppContext } from "@/context/AppContext";
 
 const AddCouponModal = ({ isOpen, onClose, onSubmit, role }) => {
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: "",
       userName: "",
@@ -17,31 +24,13 @@ const AddCouponModal = ({ isOpen, onClose, onSubmit, role }) => {
       status: true,
     },
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  // State for preview
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
-
-  // Ref for file input
-  const fileInputRef = useRef(null);
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
-    }
-  };
-
+  const { selectedId } = useAppContext();
+  const isEditMode = Boolean(selectedId);
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 lg:h-[200px] overflow-y-auto  sidebar-scroll">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">Coupon</h6>
@@ -56,15 +45,141 @@ const AddCouponModal = ({ isOpen, onClose, onSubmit, role }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name */}
-          <input
-            type="text"
-            placeholder="number"
-            {...register("cardNumber", { required: true })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-
-          {/* Buttons */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 justify-center">
+            {/* service */}
+            <div>
+              <label className="block text-sm text-gray-800">Service</label>
+              <select
+                {...register("Gender", {
+                  required: !isEditMode && "Gender is required",
+                })}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
+              >
+                <option value="">Select </option>
+                {/* {gen.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))} */}
+              </select>
+              {errors.Gender && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Gender.message}
+                </p>
+              )}
+            </div>
+            {/* Coupon name */}
+            <div>
+              <label className="block text-sm text-gray-800">Coupon Name</label>
+              <input
+                type="text"
+                {...register("FirstName", {
+                  required: !isEditMode && "First Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.FirstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.FirstName.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm text-gray-800">Coupon Code</label>
+              <input
+                type="text"
+                {...register("FirstName", {
+                  required: !isEditMode && "First Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.FirstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.FirstName.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm text-gray-800">Coupon type</label>
+              <select
+                {...register("Gender", {
+                  required: !isEditMode && "Gender is required",
+                })}
+                className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
+              >
+                <option value="">Select </option>
+                {/* {gen.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))} */}
+              </select>
+              {errors.Gender && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.Gender.message}
+                </p>
+              )}
+            </div>
+            {/* Start date */}
+            <div>
+              <label className="block text-sm text-gray-800">Start Date</label>
+              <input
+                type="date"
+                {...register("FirstName", {
+                  required: !isEditMode && "First Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.FirstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.FirstName.message}
+                </p>
+              )}
+            </div>
+            {/* End date */}
+            <div>
+              <label className="block text-sm text-gray-800">End Date</label>
+              <input
+                type="date"
+                {...register("FirstName", {
+                  required: !isEditMode && "First Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.FirstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.FirstName.message}
+                </p>
+              )}
+            </div>
+            {/* Company name */}
+            <div>
+              <label className="block text-sm text-gray-800">
+                Company Name
+              </label>
+              <input
+                type="text"
+                {...register("FirstName", {
+                  required: !isEditMode && "First Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.FirstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.FirstName.message}
+                </p>
+              )}
+            </div>
+          </div>
+          {/* Status */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium">Status</label>
+            <input
+              type="checkbox"
+              {...register("IsActive")}
+              className="toggle toggle-success"
+            />
+          </div>
           <div className="flex justify-end gap-3 mt-4 text-sm">
             <button
               type="button"

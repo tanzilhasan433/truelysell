@@ -41,6 +41,7 @@ const AddStaffModal = ({ onSubmit }) => {
     },
   });
   const { selectedId, onClose } = useAppContext();
+  const isEditMode = Boolean(selectedId);
   const {
     singleData,
     allCategoryData,
@@ -55,7 +56,6 @@ const AddStaffModal = ({ onSubmit }) => {
     getUpazilaByDistrict,
     getSubCategories,
   } = useProviderStaff();
-  const isEditMode = Boolean(selectedId);
 
   const [preview, setPreview] = useState("");
   const [nidPreview, setNidPreview] = useState("");
