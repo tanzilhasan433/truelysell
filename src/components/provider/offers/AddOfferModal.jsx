@@ -1,11 +1,16 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useAppContext } from "@/context/AppContext";
 
 const AddOfferModal = ({ isOpen, onClose, onSubmit, role }) => {
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: "",
       userName: "",
@@ -17,31 +22,15 @@ const AddOfferModal = ({ isOpen, onClose, onSubmit, role }) => {
       status: true,
     },
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  // State for preview
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
 
-  // Ref for file input
-  const fileInputRef = useRef(null);
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
-    }
-  };
+  const { selectedId } = useAppContext();
+  const isEditMode = Boolean(selectedId);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5 lg:h-[360px] overflow-y-auto  sidebar-scroll">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h6 className="text-lg font-semibold mx-auto">Add Offer</h6>
@@ -56,36 +45,49 @@ const AddOfferModal = ({ isOpen, onClose, onSubmit, role }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <select
-            {...register("offerType")}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
-          >
-            <option value="" className="text-sm  ">
-              Select Offer Type
-            </option>
-            <option value="fixed">Fixed</option>
-          </select>
+          <div>
+            <label className="block text-sm text-gray-800">Offer Type</label>
+            <select
+              {...register("offerType")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
+            >
+              <option value="" className="text-sm  ">
+                Select Offer Type
+              </option>
+              <option value="fixed">Fixed</option>
+            </select>
+            {errors.FirstName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.FirstName.message}
+              </p>
+            )}
+          </div>
           {/* Name */}
-          <input
-            type="text"
-            placeholder="Offe Price"
-            {...register("cardNumber", { required: true })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
-          />
-          {/* start date */}
-          <input
-            type="date"
-            placeholder="Start Date"
-            {...register("startDate", { required: true })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500"
-          />
-          {/* end date */}
-          <input
-            type="date"
-            placeholder="End Date"
-            {...register("endDate", { required: true })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500"
-          />
+          <div>
+            <label className="block text-sm text-gray-800">Offer Price</label>
+            <input
+              type="text"
+              placeholder="Offe Price"
+              {...register("cardNumber", { required: true })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-800">Start Date</label>
+            <input
+              type="date"
+              {...register("cardNumber", { required: true })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-800">End Date</label>
+            <input
+              type="date"
+              {...register("cardNumber", { required: true })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+            />
+          </div>
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 mt-4 text-sm">

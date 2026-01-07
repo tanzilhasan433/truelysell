@@ -32,8 +32,8 @@ const AddCouponModal = ({ isOpen, onClose, onSubmit, role }) => {
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
         {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <h6 className="text-lg font-semibold mx-auto">Coupon</h6>
+        <div className="flex items-center justify-between mb-5">
+          <h6 className="text-lg font-semibold mx-auto">Add Coupon</h6>
           <button
             type="button"
             onClick={onClose}
