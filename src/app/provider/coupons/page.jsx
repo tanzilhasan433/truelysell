@@ -1,7 +1,6 @@
 "use client";
 import AddCouponModal from "@/components/provider/coupon/AddCouponModal";
 import { couponsData } from "@/data/json/coupons";
-import { StaffData } from "@/data/json/staffData";
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -19,7 +18,7 @@ const ProviderCouponsPage = () => {
         <h4>Coupons</h4>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-[var(--dark)] text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-(--dark) text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <FaPlus size={15} /> Add Coupon
         </button>
@@ -73,10 +72,10 @@ const ProviderCouponsPage = () => {
                 <td className="py-4 px-2 font-medium">
                   <div className=" flex items-center gap-2">
                     {" "}
-                    <button className="bg-gray-200 text-gray-500 hover:bg-[var(--primary-blue)] hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
+                    <button className="bg-gray-200 text-gray-500 hover:bg-(--primary-blue) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2">
                       <FiEdit size={25} />
                     </button>
-                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-[var(--primary-blue)] hover:text-white  rounded-full flex items-center  justify-center  gap-2">
+                    <button className="bg-gray-200 text-gray-500 p-2 h-7 w-7 hover:bg-(--primary-blue) hover:text-white  rounded-full flex items-center  justify-center  gap-2">
                       <FaRegTrashCan size={25} />
                     </button>
                   </div>

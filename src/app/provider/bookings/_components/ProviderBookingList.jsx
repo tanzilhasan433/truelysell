@@ -7,9 +7,15 @@ import React from "react";
 import { FaStar, FaRegCommentDots } from "react-icons/fa";
 import { FiPhone, FiMail, FiMapPin, FiHeart } from "react-icons/fi";
 
-const BookingListComponent = () => {
-  const { isRedscheduleModalOpen, setIsRedscheduleModalOpen } =
-    useProviderBooking();
+const ProviderBookingList = ({
+  setIsRedscheduleModalOpen,
+  setIsAddReviewModalOpen,
+  setService,
+}) => {
+  // const { isRedscheduleModalOpen, setIsRedscheduleModalOpen, allData } =
+  //   useProviderBooking();
+
+  // console.log("allData:", allData);
   const getStatusColor = (status) => {
     switch (status) {
       case "Completed":
@@ -97,15 +103,16 @@ const BookingListComponent = () => {
           <div className="flex flex-col justify-between sm:items-end gap-3 sm:w-32">
             <div className="flex flex-wrap gap-2">
               {item.actions.includes("Rebook") && (
-                <button className="bg-black text-white px-4 py-1.5 rounded-md text-sm">
+                <button
+                  // onClick={() => setIsAddReviewModalOpen(true)}
+                  className="bg-black text-white px-4 py-1.5 rounded-md text-sm"
+                >
                   Rebook
                 </button>
               )}
               {item.actions.includes("Reschedule") && (
                 <button
-                  onClick={() => {
-                    setIsRedscheduleModalOpen(true);
-                  }}
+                  onClick={() => setIsRedscheduleModalOpen(true)}
                   className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm"
                 >
                   Reschedule
@@ -125,7 +132,13 @@ const BookingListComponent = () => {
 
             {item.actions.includes("Add Review") && (
               <div className="text-right">
-                <button className="text-gray-700 text-sm flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    setService(item);
+                    setIsAddReviewModalOpen(true);
+                  }}
+                  className="text-gray-700 text-sm flex items-center gap-1 cursor-pointer"
+                >
                   Add Review
                 </button>
                 <div className="flex justify-end text-yellow-400 mt-1">
@@ -145,4 +158,4 @@ const BookingListComponent = () => {
   );
 };
 
-export default BookingListComponent;
+export default ProviderBookingList;
