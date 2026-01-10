@@ -194,7 +194,7 @@ export const useProviderBooking = (pageSize = 10) => {
       const res = await apiService.get(
         `booking/getall?PageNumber=${
           page - 1
-        }&SearchText=&PageSize=${pageSize}&StartDate=2026-01-01&EndDate=2026-01-31&SortBy=bookingdate&SortDirection=desc`
+        }&SearchText=&PageSize=${pageSize}&StartDate=&EndDate=&SortBy=bookingdate&SortDirection=desc`
       );
 
       setAllData(res.data || []);

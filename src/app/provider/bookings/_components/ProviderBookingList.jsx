@@ -2,8 +2,6 @@
 
 import { BookingsData } from "@/data/json/bookingsData";
 import { useProviderBooking } from "@/hooks/provider/useProviderBooking";
-import React from "react";
-// update path as needed
 import { FaStar, FaRegCommentDots } from "react-icons/fa";
 import { FiPhone, FiMail, FiMapPin, FiHeart } from "react-icons/fi";
 
@@ -12,10 +10,9 @@ const ProviderBookingList = ({
   setIsAddReviewModalOpen,
   setService,
 }) => {
-  // const { isRedscheduleModalOpen, setIsRedscheduleModalOpen, allData } =
-  //   useProviderBooking();
+  const { allData } = useProviderBooking();
 
-  // console.log("allData:", allData);
+  console.log("allData:", allData);
   const getStatusColor = (status) => {
     switch (status) {
       case "Completed":
@@ -49,10 +46,10 @@ const ProviderBookingList = ({
 
           {/* Details */}
           <div className="flex-1 space-y-2">
-            <div className="flex justify-between items-start">
+            <div className="flex gap-2  items-center">
               <h3 className="text-lg font-semibold">{item.service}</h3>
               <span
-                className={`px-3 py-1 text-sm font-medium rounded ${getStatusColor(
+                className={`px-3 py-1 text-xs font-medium rounded ${getStatusColor(
                   item.status
                 )}`}
               >
@@ -100,7 +97,7 @@ const ProviderBookingList = ({
           </div>
 
           {/* Right Actions */}
-          <div className="flex flex-col justify-between sm:items-end gap-3 sm:w-32">
+          <div className="flex flex-col justify-between sm:items-end gap-3 ">
             <div className="flex flex-wrap gap-2">
               {item.actions.includes("Rebook") && (
                 <button
@@ -123,6 +120,20 @@ const ProviderBookingList = ({
                   <FaRegCommentDots /> Chat
                 </button>
               )} */}
+
+              {item.actions.includes("Add Review") && (
+                <div className="text-right">
+                  <button
+                    onClick={() => {
+                      setService(item);
+                      setIsAddReviewModalOpen(true);
+                    }}
+                    className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm"
+                  >
+                    Add Review
+                  </button>
+                </div>
+              )}
               {item.actions.includes("Cancel") && (
                 <button className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm">
                   Cancel
@@ -132,15 +143,6 @@ const ProviderBookingList = ({
 
             {item.actions.includes("Add Review") && (
               <div className="text-right">
-                <button
-                  onClick={() => {
-                    setService(item);
-                    setIsAddReviewModalOpen(true);
-                  }}
-                  className="text-gray-700 text-sm flex items-center gap-1 cursor-pointer"
-                >
-                  Add Review
-                </button>
                 <div className="flex justify-end text-yellow-400 mt-1">
                   {[...Array(5)].map((_, i) => (
                     <FaStar key={i} />
