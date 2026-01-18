@@ -11,14 +11,21 @@ import { useState } from "react";
 
 const ProviderCustomersPage = () => {
   const { loading, isModalOpen, setIsModalOpen } = useAppContext();
-  const { allData, setAllData, saveData } = useBookingCustomer();
+  const {
+    allData,
+    setAllData,
+    saveData,
+    overview,
+    setCustomerId,
+    customerData,
+  } = useBookingCustomer();
   const [activeTab, setActiveTab] = useState("Overview");
   const pageSize = 10;
 
   const tabs = [
     {
       name: "Overview",
-      component: <BookingCustomerOverview />,
+      component: <BookingCustomerOverview overview={overview} />,
     },
     {
       name: "Booking",
@@ -28,6 +35,8 @@ const ProviderCustomersPage = () => {
           setAllData={setAllData}
           pageSize={pageSize}
           loading={loading}
+          setCustomerId={setCustomerId}
+          customerData={customerData}
         />
       ),
     },
@@ -47,17 +56,17 @@ const ProviderCustomersPage = () => {
     tabs.find((tab) => tab.name === activeTab)?.component || (() => null);
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h4>Booking Customers</h4>
+      <div className="flex items-center justify-between  mb-4">
+        <h4 className="">Booking Customers</h4>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-(--dark) text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-(--dark) text-white px-4 py-2 rounded-md flex items-center gap-2 "
         >
           <FaPlus size={15} /> Add Customer
         </button>
       </div>
 
-      <nav className="flex space-x-6 mt-10 mb-5">
+      <nav className="flex flex-wrap  mt-10 gap-2 mb-5">
         {tabs.map((tab) => (
           <button
             key={tab.name}

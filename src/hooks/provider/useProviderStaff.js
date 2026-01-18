@@ -28,9 +28,7 @@ export const useProviderStaff = (pageSize = 10) => {
     isModalOpen,
     setIsModalOpen,
     detailsId,
-    setDetailsId,
     isDetailsModalOpen,
-    setIsDetailsModalOpen,
   } = useAppContext();
 
   const getCategories = async () => {
@@ -61,7 +59,7 @@ export const useProviderStaff = (pageSize = 10) => {
 
       const response = await apiService.post(
         `dropdown/getsubcategoriesbycategory`,
-        catId
+        catId,
       );
       if (response.status === 200) {
         setLoading(false);
@@ -101,7 +99,7 @@ export const useProviderStaff = (pageSize = 10) => {
 
       const response = await apiService.post(
         `dropdown/getupazilabydistrict`,
-        districtIds
+        districtIds,
       );
 
       if (response.status === 200) {
@@ -135,7 +133,7 @@ export const useProviderStaff = (pageSize = 10) => {
 
       const response = await apiService.post(
         `dropdown/getdistrictbydivision`,
-        divisionIds
+        divisionIds,
       );
 
       if (response.status == 200) {
@@ -193,7 +191,7 @@ export const useProviderStaff = (pageSize = 10) => {
       const res = await apiService.get(
         `provider-staff/getall?SearchText=&SortBy=Id&SortDirection=desc&PageNumber=${
           page - 1
-        }&PageSize=${pageSize}`
+        }&PageSize=${pageSize}`,
       );
 
       setAllData(res.data || []);
@@ -215,7 +213,7 @@ export const useProviderStaff = (pageSize = 10) => {
     if (selectedId && isModalOpen) {
       (async () => {
         const res = await apiService.get(
-          `provider-staff/getroviderstaffbyid/${selectedId}`
+          `provider-staff/getroviderstaffbyid/${selectedId}`,
         );
         setSingleData(res.data);
       })();
@@ -228,7 +226,7 @@ export const useProviderStaff = (pageSize = 10) => {
     if (detailsId && isDetailsModalOpen) {
       (async () => {
         const res = await apiService.get(
-          `provider-staff/getbookingdetailsbyproviderstaff/${detailsId}`
+          `provider-staff/getbookingdetailsbyproviderstaff/${detailsId}`,
         );
 
         setDetailsData(res.data);
@@ -288,7 +286,7 @@ export const useProviderStaff = (pageSize = 10) => {
       if (selectedId) {
         const res = await apiService.put(
           `provider-staff/update/${selectedId}`,
-          formData
+          formData,
         );
 
         if (res.status === 200) {

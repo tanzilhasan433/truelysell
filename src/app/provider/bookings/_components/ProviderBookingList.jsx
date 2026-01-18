@@ -39,9 +39,9 @@ const ProviderBookingList = ({
               alt={item.service}
               className="w-full h-40 object-cover rounded-md"
             />
-            <button className="absolute top-2 right-2 bg-white p-2 rounded-full shadow">
+            {/* <button className="absolute top-2 right-2 bg-white p-2 rounded-full shadow">
               <FiHeart className="text-gray-600" />
-            </button>
+            </button> */}
           </div>
 
           {/* Details */}

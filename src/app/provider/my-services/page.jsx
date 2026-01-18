@@ -35,7 +35,7 @@ const tabs = [
 
 const MyServicesPage = () => {
   const { allData } = useProviderService();
-  console.log("allData in MyServicesPage:", allData);
+
   const [activeTab, setActiveTab] = useState("Active Services");
 
   const ActiveComponent =
@@ -57,8 +57,8 @@ const MyServicesPage = () => {
               onClick={() => setActiveTab(tab.name)}
               className={`relative py-2 text-sm font-medium transition-colors duration-200 ${
                 activeTab === tab.name
-                  ? "text-white  bg-[var(--dark)] px-4 py-2 rounded"
-                  : "bg-gray-200 hover:text-white text-gray-700 hover:bg-[var(--dark)] px-4 py-2 rounded "
+                  ? "text-white  bg-(--dark) px-4 py-2 rounded"
+                  : "bg-gray-200 hover:text-white text-gray-700 hover:bg-(--dark) px-4 py-2 rounded "
               }`}
             >
               {tab.name}

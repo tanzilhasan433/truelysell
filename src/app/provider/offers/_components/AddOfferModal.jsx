@@ -2,31 +2,52 @@
 
 import { useForm } from "react-hook-form";
 import { useAppContext } from "@/context/AppContext";
+import { useProviderOffer } from "@/hooks/provider/useProviderOffer";
+import { useEffect } from "react";
 
-const AddOfferModal = ({ isOpen, onClose, onSubmit, role }) => {
+const AddOfferModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      userName: "",
-      phone: 0,
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-      status: true,
+      Title: "",
+      Details: "",
+      Position: null,
+      IsActive: true,
     },
   });
-
-  const { selectedId } = useAppContext();
+  const { selectedId, onClose } = useAppContext();
+  const { singleData } = useProviderOffer();
   const isEditMode = Boolean(selectedId);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (singleData && selectedId) {
+      reset({
+        serviceId: singleData.serviceId,
+        offerTitle: singleData.offerTitle,
+        discountType: singleData.discountType,
+        discountValue: singleData.discountValue,
+        startDate: singleData.startDate,
+        endDate: singleData.endDate,
+        description: singleData.description,
+        isActive: singleData.isActive,
+      });
+    } else {
+      reset({
+        serviceId: null,
+        offerTitle: "",
+        discountType: "",
+        discountValue: "",
+        startDate: "",
+        endDate: "",
+        description: "",
+        isActive: true,
+      });
+    }
+  }, [singleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">

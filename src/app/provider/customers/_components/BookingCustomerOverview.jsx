@@ -1,63 +1,64 @@
 "use client";
 
-import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { FiEdit2, FiMail, FiPhone } from "react-icons/fi";
-import { useAppContext } from "@/context/AppContext";
+import StatCard from "./StatCard";
 
-const chartData = [
-  { name: "Pending", value: 0, color: "#3B82F6" },
-  { name: "Accepted", value: 0, color: "#22C55E" },
-  { name: "Ongoing", value: 0, color: "#F59E0B" },
-  { name: "Completed", value: 1, color: "#EF4444" },
-  { name: "Canceled", value: 0, color: "#8B5CF6" },
-];
+const BookingCustomerOverview = ({ overview }) => {
+  const chartData = [
+    {
+      name: "Pending",
+      value: overview?.pendingBooking || 0,
+      color: "#3B82F6",
+    },
+    {
+      name: "Accepted",
+      value: overview?.acceptedBooking || 0,
+      color: "#22C55E",
+    },
+    {
+      name: "Ongoing",
+      value: overview?.ongoingBooking || 0,
+      color: "#F59E0B",
+    },
+    {
+      name: "Completed",
+      value: overview?.completedBooking || 0,
+      color: "#10B981",
+    },
+    {
+      name: "Canceled",
+      value: overview?.canceledBooking || 0,
+      color: "#8B5CF6",
+    },
+  ];
 
-const StatCard = ({ title, value, border, text }) => (
-  <div
-    className={`relative overflow-hidden rounded-xl border ${border} bg-white p-2 `}
-  >
-    <p className="text-sm text-gray-500">{title}</p>
-    <p className={`mt-2 text-2xl font-semibold ${text}`}>{value}</p>
+  const totalBookings = chartData.reduce((sum, item) => sum + item.value, 0);
 
-    {/* Curved background */}
-    <div className="absolute right-0 bottom-0 w-32 h-32 rounded-full bg-gray-100 translate-x-1/3 translate-y-1/3" />
-  </div>
-);
-
-const BookingCustomerOverview = () => {
-  const { setSelectedId, setIsModalOpen } = useAppContext();
-  const item = {
-    id: "1",
-    name: "Fatima",
-    email: " fatimaakter874874@gmail.com",
-    phone: "+8801712345678",
-  };
   return (
     <div className="space-y-8">
       <div className="flex  lg:flex-row flex-col w-full gap-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:w-[65%]">
           <StatCard
             title="Total Booking Placed"
-            value="1"
+            value={overview?.totalBookingPlaced}
             border="border-blue-200"
             text="text-blue-600"
           />
           <StatCard
             title="Wallet Balance"
-            value="৳0.00"
+            value={`৳${overview?.walletBalance || 0}`}
             border="border-orange-200"
             text="text-orange-500"
           />
           <StatCard
             title="Total Booking Amount"
-            value="৳250.00"
+            value={`৳${overview?.totalBookingAmount || 0}`}
             border="border-green-200"
             text="text-green-600"
           />
           <StatCard
             title="Loyalty Point"
-            value="2.5"
+            value={overview?.loyaltyPoint || 0}
             border="border-red-200"
             text="text-red-500"
           />
@@ -85,7 +86,7 @@ const BookingCustomerOverview = () => {
 
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-xs text-gray-500">1 Bookings</p>
+              <p className="text-xs text-gray-500"> {totalBookings} Bookings</p>
             </div>
           </div>
 
@@ -101,44 +102,6 @@ const BookingCustomerOverview = () => {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* PERSONAL DETAILS */}
-      <div className="border border-gray-200 rounded-xl bg-white p-6 mb-6">
-        <h4 className=" font-semibold mb-4">Personal Details</h4>
-
-        <div className="flex justify-between items-center flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-lg font-semibold">
-              F
-            </div>
-
-            <div>
-              <p className="font-semibold text-gray-800">{item.name}</p>
-
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <FiPhone />
-                {item.phone}
-              </div>
-
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <FiMail />
-                {item.email}
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              setSelectedId(item.id);
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 darkButton "
-          >
-            <FiEdit2 />
-            EDIT
-          </button>
         </div>
       </div>
     </div>

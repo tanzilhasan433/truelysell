@@ -5,6 +5,9 @@ import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { useBookingCustomer } from "@/hooks/provider/useBookingCustomer";
 import { useAppContext } from "@/context/AppContext";
+import StaffLocationSelect from "../../staffs/_components/StaffLocationSelect";
+import { BsPersonCircle } from "react-icons/bs";
+import { baseProviderURL } from "@/services/apiService";
 
 const AddCustomerModal = ({ onSubmit }) => {
   const {
@@ -14,53 +17,58 @@ const AddCustomerModal = ({ onSubmit }) => {
     watch,
     reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: "",
-      userName: "",
-      phone: 0,
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-      status: true,
-    },
-  });
+  } = useForm();
   const { selectedId, onClose } = useAppContext();
-  const { singleData } = useBookingCustomer();
+  const {
+    singleData,
+    allUpazila,
+    allDistrict,
+    allDivision,
+    getDistrictByDivision,
+    getUpazilaByDistrict,
+  } = useBookingCustomer();
   const isEditMode = Boolean(selectedId);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const [preview, setPreview] = useState("https://i.pravatar.cc/80");
+  const [preview, setPreview] = useState("");
 
   const fileInputRef = useRef(null);
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click(); // Open file browser
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Show preview
-      setValue("image", file); // Save to form
-    }
-  };
 
   useEffect(() => {
     if (singleData && selectedId) {
       reset({
-        Title: singleData.title,
-        Details: singleData.details,
-        Position: singleData.position,
+        FirstName: singleData.firstName,
+        LastName: singleData.lastName,
+        Email: singleData.email,
+        Password: singleData.password,
+        Address: singleData.address,
+        MobileNumber: singleData.mobileNumber,
+        divisionId: [singleData.divisionId],
+        districtId: [singleData.districtId],
+        upazilaId: [singleData.upazilaId],
         IsActive: singleData.isActive,
       });
+      if (singleData?.divisionId) {
+        getDistrictByDivision([singleData.divisionId]);
+      }
+      if (singleData?.districtId) {
+        getUpazilaByDistrict([singleData?.districtId]);
+      }
+      if (singleData.profileImageUrl) {
+        setPreview(
+          `${baseProviderURL}files/provider-customer/${singleData.profileImageUrl}`,
+        );
+      }
     } else {
       reset({
-        Title: "",
-        Details: "",
-        Position: "",
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Password: "",
+        Address: "",
+        MobileNumber: 0,
+        DivisionId: null,
+        DistrictId: null,
+        UpazilaId: null,
         IsActive: true,
       });
     }
@@ -85,48 +93,71 @@ const AddCustomerModal = ({ onSubmit }) => {
         <form
           onSubmit={handleSubmit(async (data) => {
             await onSubmit(data);
-            reset();
+
             setPreview("");
           })}
           className="space-y-4"
         >
           {/* Upload */}
-          <div className="flex items-center gap-3">
-            <img
-              src={preview}
-              alt="preview"
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleUploadClick}
-                className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
-              >
-                Upload
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreview("https://i.pravatar.cc/80")}
-                className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
-              >
-                Remove
-              </button>
+          <div>
+            <div className="flex items-center gap-3">
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <BsPersonCircle size={40} className="text-gray-500" />
+              )}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef?.current?.click()}
+                  className="px-3 py-1 bg-(--primary-blue)/10 text-blue-500 border border-(--primary-blue)/10 rounded-md text-sm"
+                >
+                  Upload
+                </button>
+                {preview && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPreview("");
+                      setValue("ProfileImage", null);
+                    }}
+                    className="px-3 py-1 text-red-500 border border-red-500 rounded-md text-sm"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <p className="text-xs text-gray-500">
-            * Recommends a minimum size of 320 x 320 pixels. Allowed files .png
-            and .jpg.
-          </p>
 
-          {/* Hidden File Input */}
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml,"
+              {...register("ProfileImage", {
+                required: !isEditMode && "Photo is required",
+              })}
+              ref={(el) => {
+                fileInputRef.current = el;
+              }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setPreview(URL.createObjectURL(file));
+                  setValue("ProfileImage", file, { shouldValidate: true });
+                }
+              }}
+              className="hidden"
+            />
+            {errors.ProfileImage && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.ProfileImage.message}
+              </p>
+            )}
+          </div>
 
           {/* first name */}
           <div>
@@ -233,69 +264,24 @@ const AddCustomerModal = ({ onSubmit }) => {
               </p>
             )}
           </div>
-          <div>
-            <label htmlFor="" className="block text-sm text-gray-800">
-              Diviion
-            </label>
-            <select
-              {...register("role")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
-            >
-              <option value="" className="text-sm  ">
-                Select
-              </option>
-              <option value="">Dhaka</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="" className="block text-sm text-gray-800">
-              Zila
-            </label>
-            <select
-              {...register("role")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
-            >
-              <option value="" className="text-sm  ">
-                Select
-              </option>
-              <option value="">Dhaka</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="" className="block text-sm text-gray-800">
-              Upazila
-            </label>
-            <select
-              {...register("role")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 mt-1 "
-            >
-              <option value="" className="text-sm  ">
-                Select
-              </option>
-              <option value="">Dhaka</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-800">Role</label>
-            <select
-              {...register("role")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none text-gray-500 "
-            >
-              <option value="" className="text-sm  ">
-                Select Role
-              </option>
-
-              <option value="customer">Customer</option>
-            </select>
-          </div>
+          <StaffLocationSelect
+            allDivision={allDivision}
+            allDistrict={allDistrict}
+            allUpazila={allUpazila}
+            getDistrictByDivision={getDistrictByDivision}
+            getUpazilaByDistrict={getUpazilaByDistrict}
+            register={register}
+            setValue={setValue}
+            watch={watch}
+            errors={errors}
+          />
 
           {/* Status */}
           <div className="flex items-center justify-between">
             <label className="text-sm font-medium">Status</label>
             <input
               type="checkbox"
-              {...register("status")}
+              {...register("IsActive")}
               className="toggle toggle-success"
             />
           </div>

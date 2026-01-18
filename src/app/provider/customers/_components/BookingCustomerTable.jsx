@@ -8,8 +8,16 @@ import Pagination from "@/components/shared/Pagination";
 import { useState } from "react";
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
+import { baseProviderURL } from "@/services/apiService";
 
-const BookingCustomerTable = ({ allData, setAllData, pageSize, loading }) => {
+const BookingCustomerTable = ({
+  allData,
+  setAllData,
+  pageSize,
+  loading,
+  setCustomerId,
+  customerData,
+}) => {
   const {
     setSelectedId,
     currentPage,
@@ -19,7 +27,7 @@ const BookingCustomerTable = ({ allData, setAllData, pageSize, loading }) => {
     isDetailsModalOpen,
     setIsDetailsModalOpen,
   } = useAppContext();
-  const [bookingCustomerDetails, setBookingCustomerDetails] = useState();
+  // const [bookingCustomerDetails, setBookingCustomerDetails] = useState();
 
   return (
     <div>
@@ -32,41 +40,43 @@ const BookingCustomerTable = ({ allData, setAllData, pageSize, loading }) => {
           <table className="max-w-7xl w-full  text-sm text-left text-gray-600">
             <thead className="bg-sky-600/10 text-gray-800 text-xs uppercase">
               <tr>
+                <th className="py-5 px-3">No</th>
                 <th className="py-5 px-3">Customer Id</th>
                 <th className="py-5 px-3">Cutomer name </th>
                 <th className="py-5 px-3">phone </th>
-                <th className="py-5 px-3">Created On</th>
+
                 <th className="py-5 px-3">payments</th>
                 <th className="py-5 px-3">Total Booking</th>
-                <th className="py-5 px-3">last Booking</th>
+
                 <th className="py-5 px-3">Status</th>
 
                 <th className="py-5 px-3">Action</th>
               </tr>
             </thead>
             <tbody className="text-[13px]">
-              {CustomersData.map((item) => (
+              {allData.map((item, indx) => (
                 <tr
-                  key={item.customerId}
+                  key={item.id}
                   className="border-t border-gray-200/80 hover:bg-gray-100 transition"
                 >
-                  <td className="py-4 px-3">{item.customerId}</td>
+                  <td className="py-4 px-3">{indx + 1}</td>
+                  <td className="py-4 px-3">{item.id}</td>
                   <td className="py-4 px-3 flex items-center gap-2 lg:flex-row flex-col">
-                    {/* <img
-                    src={item.img}
-                    alt={item.name}
-                    className="w-8 h-8 rounded-full object-cover"
-                  /> */}
+                    <img
+                      src={`${baseProviderURL}files/provider-customer/${item.profileImageUrl}`}
+                      alt={item.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
                     <div>
                       <p className="font-medium text-gray-900">{item.name}</p>
                       <p>{item.email}</p>
                     </div>
                   </td>
-                  <td className="py-4 px-3">{item.phone}</td>
-                  <td className="py-4 px-3">{item.createdOn}</td>
+                  <td className="py-4 px-3">{item.mobileNumber}</td>
+
                   <td className="py-4 px-3">{item.payments}</td>
                   <td className="py-4 px-3 font-medium">{item.totalBooking}</td>
-                  <td className="py-4 px-3 font-medium">{item.lastBooking}</td>
+
                   <td className={`py-4 px-3 font-medium `}>
                     <button
                       className={`${
@@ -93,7 +103,8 @@ const BookingCustomerTable = ({ allData, setAllData, pageSize, loading }) => {
                       </button>
                       <button
                         onClick={() => {
-                          setBookingCustomerDetails(item);
+                          // setBookingCustomerDetails(item);
+                          setCustomerId(item.id);
                           setIsDetailsModalOpen(true);
                         }}
                         className="bg-gray-200 text-gray-500 hover:bg-(--primary) hover:text-white p-2 h-8 w-8 rounded-full flex items-center justify-center gap-2"
@@ -101,12 +112,12 @@ const BookingCustomerTable = ({ allData, setAllData, pageSize, loading }) => {
                         <FaRegEye size={25} />
                       </button>
                       <DeleteButton
-                        endpoint={`customer/delete/${item?.id}`}
+                        endpoint={`provider-customer/delete/${item?.id}`}
                         type="customer"
                         onComplete={(status) => {
                           if (status) {
                             setAllData((prev) =>
-                              prev.filter((b) => b.id !== item.id)
+                              prev.filter((b) => b.id !== item.id),
                             );
                           } else {
                           }
@@ -127,7 +138,7 @@ const BookingCustomerTable = ({ allData, setAllData, pageSize, loading }) => {
         pageSize={pageSize}
         onPageChange={(page) => setCurrentPage(page)}
       />
-      {isDetailsModalOpen && <CustomerDetails item={bookingCustomerDetails} />}
+      {isDetailsModalOpen && <CustomerDetails item={customerData} />}
     </div>
   );
 };

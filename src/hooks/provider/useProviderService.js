@@ -12,7 +12,20 @@ export const useProviderService = (pageSize = 10) => {
   const [allDistrict, setAllDistrict] = useState([]);
   const [allDivision, setAllDivision] = useState([]);
   const { reset } = useForm({});
-  const { setLoading } = useAppContext();
+  const {
+    setLoading,
+    currentPage,
+    setTotalRecords,
+    selectedId,
+    isModalOpen,
+    setIsModalOpen,
+    detailsId,
+    setDetailsId,
+    isDetailsModalOpen,
+    setIsDetailsModalOpen,
+  } = useAppContext();
+
+  
 
   const fetchData = async (page = 1) => {
     setLoading(true);
@@ -20,11 +33,11 @@ export const useProviderService = (pageSize = 10) => {
       const res = await apiService.get(
         `myservice/getall?PageNumber=${
           page - 1
-        }&SearchText=&SortBy=Title&SortDirection=asc&PageSize=${pageSize}`
+        }&SearchText=&SortBy=Title&SortDirection=asc&PageSize=${pageSize}&StatusType=`
       );
 
-      console.log("res in useProviderService:", res);
-      setAllData(res.data || []);
+      console.log("res in useProviderService:", res.data);
+      setAllData(res?.data || []);
       setTotalRecords(res.numberOfRecords);
     } catch {
       setAllData([]);
@@ -34,8 +47,8 @@ export const useProviderService = (pageSize = 10) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   const getAllDivision = async () => {
     setLoading(true);

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-export const useProviderPayout = (pageSize = 10) => {
+export const useProviderCoupon = (pageSize = 10) => {
   const [allData, setAllData] = useState([]);
   const [singleData, setSingleData] = useState(null);
   const { reset } = useForm({});
@@ -23,10 +23,11 @@ export const useProviderPayout = (pageSize = 10) => {
     setLoading(true);
     try {
       const res = await apiService.get(
-        `provider-payout/getall?PageNumber=${
+        `provider-coupon/getall?pageNumber=${
           page - 1
-        }&SearchText=&SortBy=Title&SortDirection=asc&PageSize=${pageSize}`
+        }&pageSize=${pageSize}&searchText=&sortBy=CreatedDate&sortDirection=desc`
       );
+
       setAllData(res.data);
       setTotalRecords(res.numberOfRecords);
     } catch {
@@ -40,7 +41,7 @@ export const useProviderPayout = (pageSize = 10) => {
     if (selectedId && isModalOpen) {
       (async () => {
         const res = await apiService.get(
-          `provider-payout/getstaffbyid/${selectedId}`
+          `provider-coupon/getcouponbyid/${selectedId}`
         );
         setSingleData(res.data);
       })();
@@ -55,17 +56,23 @@ export const useProviderPayout = (pageSize = 10) => {
 
   const saveData = async (data) => {
     const payload = {
-      Title: data.Title,
-      Details: data.Details,
-      Position: data.Position,
-      IsActive: data.IsActive,
+      couponCode: data.couponCode,
+      discountType: data.discountType,
+      discountValue: data.discountValue,
+      minimumOrderAmount: data.minimumOrderAmount,
+      maximumDiscountAmount: data.maximumDiscountAmount,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      usageLimit: data.usageLimit,
+      serviceId: data.serviceId,
+      isActive: data.isActive,
       ...(selectedId && { Id: selectedId }),
     };
 
     try {
       if (selectedId) {
         const res = await apiService.put(
-          `provider-payout/update/${selectedId}`,
+          `provider-coupon/update/${selectedId}`,
           payload
         );
 
@@ -78,7 +85,7 @@ export const useProviderPayout = (pageSize = 10) => {
           toast.error(res.error);
         }
       } else {
-        const res = await apiService.post("provider-payout/create", payload);
+        const res = await apiService.post("provider-coupon/create", payload);
 
         if (res.message) {
           toast.success(res.message);

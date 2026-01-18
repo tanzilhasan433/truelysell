@@ -1,32 +1,58 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
-import { useRef, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
+import { useProviderCoupon } from "@/hooks/provider/useProviderCoupon";
+import { useEffect } from "react";
 
-const AddCouponModal = ({ isOpen, onClose, onSubmit, role }) => {
+const AddCouponModal = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      userName: "",
-      phone: 0,
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-      status: true,
+      Title: "",
+      Details: "",
+      Position: null,
+      IsActive: true,
     },
   });
-  const { selectedId } = useAppContext();
+  const { selectedId, onClose } = useAppContext();
+  const { singleData } = useProviderCoupon();
   const isEditMode = Boolean(selectedId);
-  if (!isOpen) return null;
+  console.log("Fetched datsingleData:", singleData);
+
+  useEffect(() => {
+    if (singleData && selectedId) {
+      reset({
+        couponCode: singleData.couponCode,
+        discountType: singleData.discountType,
+        discountValue: singleData.discountValue,
+        minimumOrderAmount: singleData.minimumOrderAmount,
+        maximumDiscountAmount: singleData.maximumDiscountAmount,
+        startDate: singleData.startDate,
+        endDate: singleData.endDate,
+        usageLimit: singleData.usageLimit,
+        serviceId: singleData.serviceId,
+        isActive: singleData.isActive,
+      });
+    } else {
+      reset({
+        serviceId: null,
+        couponCode: "",
+        discountType: "",
+        discountValue: "",
+        minimumOrderAmount: "",
+        maximumDiscountAmount: "",
+        startDate: "",
+        endDate: "",
+        usageLimit: "",
+        isActive: true,
+      });
+    }
+  }, [singleData, selectedId]);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/50 overflow-y-auto ">
