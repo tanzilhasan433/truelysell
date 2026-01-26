@@ -20,7 +20,7 @@ const AddCouponModal = ({ onSubmit }) => {
     },
   });
   const { selectedId, onClose } = useAppContext();
-  const { singleData } = useProviderCoupon();
+  const { singleData, serviceAllData } = useProviderCoupon();
   const isEditMode = Boolean(selectedId);
   console.log("Fetched datsingleData:", singleData);
 
@@ -76,73 +76,91 @@ const AddCouponModal = ({ onSubmit }) => {
             <div>
               <label className="block text-sm text-gray-800">Service</label>
               <select
-                {...register("Gender", {
-                  required: !isEditMode && "Gender is required",
+                {...register("serviceId", {
+                  required: !isEditMode && "Service is required",
                 })}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
               >
                 <option value="">Select </option>
-                {/* {gen.map((g) => (
-                  <option key={g.value} value={g.value}>
-                    {g.label}
+                {serviceAllData.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
                   </option>
-                ))} */}
+                ))}
               </select>
-              {errors.Gender && (
+              {errors.serviceId && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.Gender.message}
+                  {errors.serviceId.message}
                 </p>
               )}
             </div>
-            {/* Coupon name */}
-            <div>
-              <label className="block text-sm text-gray-800">Coupon Name</label>
-              <input
-                type="text"
-                {...register("FirstName", {
-                  required: !isEditMode && "First Name is required",
-                })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
-              />
-              {errors.FirstName && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.FirstName.message}
-                </p>
-              )}
-            </div>
+            {/* coupon code */}
             <div>
               <label className="block text-sm text-gray-800">Coupon Code</label>
               <input
                 type="text"
-                {...register("FirstName", {
-                  required: !isEditMode && "First Name is required",
+                {...register("couponCode", {
+                  required: !isEditMode && "Coupon Code is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.FirstName && (
+              {errors.couponCode && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.FirstName.message}
+                  {errors.couponCode.message}
+                </p>
+              )}
+            </div>
+            {/* coupon Name */}
+            <div>
+              <label className="block text-sm text-gray-800">Coupon Name</label>
+              <input
+                type="text"
+                {...register("couponName", {
+                  required: !isEditMode && "Coupon Name is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.couponName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.couponName.message}
                 </p>
               )}
             </div>
             <div>
-              <label className="block text-sm text-gray-800">Coupon type</label>
+              <label className="block text-sm text-gray-800">
+                discountType
+              </label>
               <select
-                {...register("Gender", {
-                  required: !isEditMode && "Gender is required",
+                {...register("discountType", {
+                  required: !isEditMode && "Discount Type is required",
                 })}
                 className="mt-1 block w-full rounded-md text-gray-600 text-sm border border-gray-300 px-4 py-3 focus:outline-none"
               >
                 <option value="">Select </option>
-                {/* {gen.map((g) => (
-                  <option key={g.value} value={g.value}>
-                    {g.label}
-                  </option>
-                ))} */}
+                <option value="Percentage">Percentage </option>
+                <option value="Fixed">Fixed </option>
               </select>
-              {errors.Gender && (
+              {errors.discountType && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.Gender.message}
+                  {errors.discountType.message}
+                </p>
+              )}
+            </div>
+            {/* Discount Value */}
+            <div>
+              <label className="block text-sm text-gray-800">
+                Discount Value
+              </label>
+              <input
+                type="number"
+                {...register("discountValue", {
+                  required: !isEditMode && "Discount Value is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.discountValue && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.discountValue.message}
                 </p>
               )}
             </div>
@@ -151,14 +169,14 @@ const AddCouponModal = ({ onSubmit }) => {
               <label className="block text-sm text-gray-800">Start Date</label>
               <input
                 type="date"
-                {...register("FirstName", {
-                  required: !isEditMode && "First Name is required",
+                {...register("startDate", {
+                  required: !isEditMode && "Start Date is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.FirstName && (
+              {errors.startDate && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.FirstName.message}
+                  {errors.startDate.message}
                 </p>
               )}
             </div>
@@ -167,45 +185,84 @@ const AddCouponModal = ({ onSubmit }) => {
               <label className="block text-sm text-gray-800">End Date</label>
               <input
                 type="date"
-                {...register("FirstName", {
-                  required: !isEditMode && "First Name is required",
+                {...register("endDate", {
+                  required: !isEditMode && "End Date is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.FirstName && (
+              {errors.endDate && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.FirstName.message}
+                  {errors.endDate.message}
                 </p>
               )}
             </div>
-            {/* Company name */}
+
+            {/* minimumOrderAmount */}
             <div>
               <label className="block text-sm text-gray-800">
-                Company Name
+                Minimum Order Amount
               </label>
               <input
-                type="text"
-                {...register("FirstName", {
-                  required: !isEditMode && "First Name is required",
+                type="number"
+                {...register("minimumOrderAmount", {
+                  required: !isEditMode && "Minimum Order Amount is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.FirstName && (
+              {errors.minimumOrderAmount && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.FirstName.message}
+                  {errors.minimumOrderAmount.message}
                 </p>
               )}
             </div>
+
+            {/* maximumDiscountAmount */}
+            <div>
+              <label className="block text-sm text-gray-800">
+                Maximum Discount Amount
+              </label>
+              <input
+                type="number"
+                {...register("maximumDiscountAmount", {
+                  required:
+                    !isEditMode && "Maximum Discount Amount is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.maximumDiscountAmount && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.maximumDiscountAmount.message}
+                </p>
+              )}
+            </div>
+
+            {/* usageLimit */}
+            <div>
+              <label className="block text-sm text-gray-800">Usage Limit</label>
+              <input
+                type="number"
+                {...register("usageLimit", {
+                  required: !isEditMode && "Usage Limit is required",
+                })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
+              />
+              {errors.usageLimit && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.usageLimit.message}
+                </p>
+              )}
+            </div>
+            {/* Status */}
+            <div className="flex items-center gap-10">
+              <label className="text-sm font-medium">Status</label>
+              <input
+                type="checkbox"
+                {...register("isActive")}
+                className="toggle toggle-success"
+              />
+            </div>
           </div>
-          {/* Status */}
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Status</label>
-            <input
-              type="checkbox"
-              {...register("IsActive")}
-              className="toggle toggle-success"
-            />
-          </div>
+
           <div className="flex justify-end gap-3 mt-4 text-sm">
             <button
               type="button"
@@ -216,7 +273,7 @@ const AddCouponModal = ({ onSubmit }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[var(--dark)] text-white rounded-md"
+              className="px-4 py-2 bg-(--dark) text-white rounded-md"
             >
               Save
             </button>

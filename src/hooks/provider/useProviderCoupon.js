@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 export const useProviderCoupon = (pageSize = 10) => {
   const [allData, setAllData] = useState([]);
+  const [serviceAllData, setServiceAllData] = useState([]);
   const [singleData, setSingleData] = useState(null);
   const { reset } = useForm({});
 
@@ -25,7 +26,7 @@ export const useProviderCoupon = (pageSize = 10) => {
       const res = await apiService.get(
         `provider-coupon/getall?pageNumber=${
           page - 1
-        }&pageSize=${pageSize}&searchText=&sortBy=CreatedDate&sortDirection=desc`
+        }&pageSize=${pageSize}&searchText=&sortBy=CreatedDate&sortDirection=desc`,
       );
 
       setAllData(res.data);
@@ -38,10 +39,21 @@ export const useProviderCoupon = (pageSize = 10) => {
   };
 
   useEffect(() => {
+    if (isModalOpen) {
+      (async () => {
+        const res = await apiService.get(`dropdown/getservices`);
+        setServiceAllData(res.data);
+      })();
+    } else {
+      setServiceAllData([]);
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
     if (selectedId && isModalOpen) {
       (async () => {
         const res = await apiService.get(
-          `provider-coupon/getcouponbyid/${selectedId}`
+          `provider-coupon/getcouponbyid/${selectedId}`,
         );
         setSingleData(res.data);
       })();
@@ -57,6 +69,7 @@ export const useProviderCoupon = (pageSize = 10) => {
   const saveData = async (data) => {
     const payload = {
       couponCode: data.couponCode,
+      couponName: data.couponName,
       discountType: data.discountType,
       discountValue: data.discountValue,
       minimumOrderAmount: data.minimumOrderAmount,
@@ -73,7 +86,7 @@ export const useProviderCoupon = (pageSize = 10) => {
       if (selectedId) {
         const res = await apiService.put(
           `provider-coupon/update/${selectedId}`,
-          payload
+          payload,
         );
 
         if (res.message) {
@@ -99,5 +112,5 @@ export const useProviderCoupon = (pageSize = 10) => {
       toast.error(err.message);
     }
   };
-  return { allData, setAllData, singleData, saveData };
+  return { allData, setAllData, singleData, saveData, serviceAllData };
 };

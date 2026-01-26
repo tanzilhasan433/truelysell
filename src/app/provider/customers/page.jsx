@@ -40,16 +40,16 @@ const ProviderCustomersPage = () => {
         />
       ),
     },
-    {
-      name: "Reviews",
-      component: (
-        <BookingCustomerReview
-          allData={allData}
-          pageSize={pageSize}
-          loading={loading}
-        />
-      ),
-    },
+    // {
+    //   name: "Reviews",
+    //   component: (
+    //     <BookingCustomerReview
+    //       allData={allData}
+    //       pageSize={pageSize}
+    //       loading={loading}
+    //     />
+    //   ),
+    // },
   ];
 
   const ActiveComponent =

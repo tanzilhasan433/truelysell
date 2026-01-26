@@ -1,16 +1,20 @@
 "use client";
 
+import { useAppContext } from "@/context/AppContext";
 import { BookingsData } from "@/data/json/bookingsData";
 import { useProviderBooking } from "@/hooks/provider/useProviderBooking";
 import { FaStar, FaRegCommentDots } from "react-icons/fa";
 import { FiPhone, FiMail, FiMapPin, FiHeart } from "react-icons/fi";
 
-const ProviderBookingList = ({
-  setIsRedscheduleModalOpen,
-  setIsAddReviewModalOpen,
-  setService,
-}) => {
+const ProviderBookingList = ({ setService }) => {
   const { allData } = useProviderBooking();
+  const {
+    setIsRedscheduleModalOpen,
+    setIsAddReviewModalOpen,
+    setSelectedId,
+    setIsBookingCancle,
+    setIsRebookModalOpen,
+  } = useAppContext();
 
   console.log("allData:", allData);
   const getStatusColor = (status) => {
@@ -39,9 +43,6 @@ const ProviderBookingList = ({
               alt={item.service}
               className="w-full h-40 object-cover rounded-md"
             />
-            {/* <button className="absolute top-2 right-2 bg-white p-2 rounded-full shadow">
-              <FiHeart className="text-gray-600" />
-            </button> */}
           </div>
 
           {/* Details */}
@@ -50,7 +51,7 @@ const ProviderBookingList = ({
               <h3 className="text-lg font-semibold">{item.service}</h3>
               <span
                 className={`px-3 py-1 text-xs font-medium rounded ${getStatusColor(
-                  item.status
+                  item.status,
                 )}`}
               >
                 {item.status}
@@ -101,7 +102,10 @@ const ProviderBookingList = ({
             <div className="flex flex-wrap gap-2">
               {item.actions.includes("Rebook") && (
                 <button
-                  // onClick={() => setIsAddReviewModalOpen(true)}
+                  onClick={() => {
+                    setIsRebookModalOpen(true);
+                    setSelectedId(item.id);
+                  }}
                   className="bg-black text-white px-4 py-1.5 rounded-md text-sm"
                 >
                   Rebook
@@ -109,7 +113,10 @@ const ProviderBookingList = ({
               )}
               {item.actions.includes("Reschedule") && (
                 <button
-                  onClick={() => setIsRedscheduleModalOpen(true)}
+                  onClick={() => {
+                    setIsRedscheduleModalOpen(true);
+                    setSelectedId(item.id);
+                  }}
                   className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm"
                 >
                   Reschedule
@@ -127,6 +134,7 @@ const ProviderBookingList = ({
                     onClick={() => {
                       setService(item);
                       setIsAddReviewModalOpen(true);
+                      setSelectedId(item.id);
                     }}
                     className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm"
                   >
@@ -135,7 +143,13 @@ const ProviderBookingList = ({
                 </div>
               )}
               {item.actions.includes("Cancel") && (
-                <button className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm">
+                <button
+                  onClick={() => {
+                    setIsBookingCancle(true);
+                    setSelectedId(item.id);
+                  }}
+                  className="bg-gray-100 text-gray-800 px-4 py-1.5 rounded-md text-sm"
+                >
                   Cancel
                 </button>
               )}

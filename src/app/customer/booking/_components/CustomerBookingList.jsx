@@ -7,7 +7,7 @@ import React from "react";
 import { FaStar, FaRegCommentDots } from "react-icons/fa";
 import { FiPhone, FiMail, FiMapPin, FiHeart } from "react-icons/fi";
 
-const BookingListComponent = () => {
+const CustomerBookingList = () => {
   const { isRedscheduleModalOpen, setIsRedscheduleModalOpen } =
     useProviderBooking();
   const getStatusColor = (status) => {
@@ -47,7 +47,7 @@ const BookingListComponent = () => {
               <h3 className="text-lg font-semibold">{item.service}</h3>
               <span
                 className={`px-3 py-1 text-sm font-medium rounded ${getStatusColor(
-                  item.status
+                  item.status,
                 )}`}
               >
                 {item.status}
@@ -145,4 +145,4 @@ const BookingListComponent = () => {
   );
 };
 
-export default BookingListComponent;
+export default CustomerBookingList;

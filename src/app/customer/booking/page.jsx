@@ -1,12 +1,12 @@
 "use client";
 
-import BookingListComponent from "@/components/provider/booking/BookingListComponent";
+import CustomerBookingList from "./_components/CustomerBookingList";
 
 const CustomerBookingPage = () => {
   return (
     <div className="container mx-auto ">
       <h4 className=" mb-5 ">Booking List</h4>
-      <BookingListComponent />
+      <CustomerBookingList />
     </div>
   );
 };

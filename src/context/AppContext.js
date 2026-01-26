@@ -24,6 +24,10 @@ export const AppProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
   const [detailsId, setDetailsId] = useState(null);
+  const [isRedscheduleModalOpen, setIsRedscheduleModalOpen] = useState(false);
+  const [isAddReviewModalOpen, setIsAddReviewModalOpen] = useState(false);
+  const [isRebookModalOpen, setIsRebookModalOpen] = useState(false);
+  const [isBookingCancle, setIsBookingCancle] = useState(false);
 
   const { reset } = useForm();
 
@@ -65,7 +69,11 @@ export const AppProvider = ({ children }) => {
   const onClose = () => {
     setIsModalOpen(false);
     setIsDetailsModalOpen(false);
+    setIsRedscheduleModalOpen(false);
+    setIsAddReviewModalOpen(false);
     setSelectedId(null);
+    setIsRebookModalOpen(false);
+    setIsBookingCancle(false);
     reset();
   };
 
@@ -73,7 +81,7 @@ export const AppProvider = ({ children }) => {
     try {
       const [, payload] = token.split(".");
       const decoded = JSON.parse(atob(payload));
-      const exp = decoded.exp * 1000; // convert to ms
+      const exp = decoded.exp * 1000;
       return Date.now() > exp;
     } catch {
       return true;
@@ -120,6 +128,14 @@ export const AppProvider = ({ children }) => {
     onClose,
     detailsId,
     setDetailsId,
+    isRedscheduleModalOpen,
+    setIsRedscheduleModalOpen,
+    isAddReviewModalOpen,
+    setIsAddReviewModalOpen,
+    isRebookModalOpen,
+    setIsRebookModalOpen,
+    isBookingCancle,
+    setIsBookingCancle,
   };
 
   return (

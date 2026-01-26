@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useAppContext } from "@/context/AppContext";
 
-const RescheduleFormModal = ({ onSubmit }) => {
+const AddRebookForm = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -16,9 +16,7 @@ const RescheduleFormModal = ({ onSubmit }) => {
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h6 className="text-lg font-semibold mx-auto">
-            Reschedule Appointment
-          </h6>
+          <h6 className="text-lg font-semibold mx-auto">Rebook</h6>
           <button
             type="button"
             onClick={onClose}
@@ -63,21 +61,27 @@ const RescheduleFormModal = ({ onSubmit }) => {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-800">
-                Reschedule Reason
-              </label>
+              <label className="block text-sm text-gray-800">Message</label>
               <input
                 type="text"
-                {...register("rescheduleReason", {
+                {...register("message", {
                   required: "This is required",
                 })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none mt-1"
               />
-              {errors.rescheduleReason && (
+              {errors.message && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.rescheduleReason.message}
+                  {errors.message.message}
                 </p>
               )}
+            </div>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Use Same Staff</label>
+              <input
+                type="checkbox"
+                {...register("useSameStaff")}
+                className="toggle toggle-success"
+              />
             </div>
           </div>
 
@@ -102,4 +106,4 @@ const RescheduleFormModal = ({ onSubmit }) => {
   );
 };
 
-export default RescheduleFormModal;
+export default AddRebookForm;

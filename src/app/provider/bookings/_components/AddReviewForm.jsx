@@ -2,7 +2,7 @@ import { useAppContext } from "@/context/AppContext";
 import { useForm } from "react-hook-form";
 import { FaStar } from "react-icons/fa";
 
-const AddReviewForm = ({ isOpen, onClose, onSubmit, item }) => {
+const AddReviewForm = ({ onSubmit, item }) => {
   const {
     register,
     handleSubmit,
@@ -16,9 +16,9 @@ const AddReviewForm = ({ isOpen, onClose, onSubmit, item }) => {
     },
   });
   const rating = watch("rating");
-  const { selectedId } = useAppContext();
+  const { selectedId, onClose } = useAppContext();
   const isEditMode = Boolean(selectedId);
-  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 overflow-y-auto ">
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative my-5  overflow-y-auto  sidebar-scroll">

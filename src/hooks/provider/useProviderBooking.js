@@ -7,18 +7,11 @@ import toast from "react-hot-toast";
 
 export const useProviderBooking = (pageSize = 10) => {
   const [allData, setAllData] = useState([]);
-  const [allCategoryData, setAllCategoryData] = useState([]);
-  const [allSubCategoryData, setAllSubCategoryData] = useState([]);
-  const [allUpazila, setAllUpazila] = useState([]);
-  const [allDistrict, setAllDistrict] = useState([]);
-  const [allDivision, setAllDivision] = useState([]);
-  const [isSubCategoryDisabled, setIsSubCategoryDisabled] = useState(true);
-  const [noSubCategoryFound, setNoSubCategoryFound] = useState(false);
-  const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
-  const [isUpazilaDisabled, setIsUpazilaDisabled] = useState(true);
+  const [staffData, setStaffData] = useState([]);
+  const [serviceData, setServiceData] = useState([]);
+  const [customerData, setCustomerData] = useState([]);
   const [singleData, setSingleData] = useState(null);
   const [detailsData, setDetailsData] = useState({});
-  const [isRedscheduleModalOpen, setIsRedscheduleModalOpen] = useState(false);
   const { reset, watch, setValue } = useForm({});
 
   const {
@@ -31,162 +24,11 @@ export const useProviderBooking = (pageSize = 10) => {
     detailsId,
     setDetailsId,
     isDetailsModalOpen,
-    setIsDetailsModalOpen,
+    setIsRebookModalOpen,
+    setIsRedscheduleModalOpen,
+    setIsAddReviewModalOpen,
+    setSelectedId,
   } = useAppContext();
-
-  const getCategories = async () => {
-    try {
-      setLoading(true);
-
-      const response = await apiService.get(`dropdown/getcategories`);
-      if (response.status === 200) {
-        setAllCategoryData(response?.data);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        setAllCategoryData([]);
-      }
-    } catch (error) {
-      setAllCategoryData([]);
-      setLoading(false);
-    }
-  };
-  const getSubCategories = async (catId = []) => {
-    setAllSubCategoryData([]);
-    if (!catId.length || catId[0] === 0) {
-      setIsSubCategoryDisabled(true);
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const response = await apiService.post(
-        `dropdown/getsubcategoriesbycategory`,
-        catId
-      );
-      if (response.status === 200) {
-        setLoading(false);
-
-        const data = response?.data || [];
-        setAllSubCategoryData(data);
-
-        if (data.length > 0) {
-          setIsSubCategoryDisabled(false);
-          setNoSubCategoryFound(false);
-        } else {
-          setIsSubCategoryDisabled(true);
-          setNoSubCategoryFound(true);
-        }
-      } else {
-        setLoading(false);
-        setAllSubCategoryData([]);
-        setIsSubCategoryDisabled(true);
-        setNoSubCategoryFound(true);
-      }
-    } catch (error) {
-      setAllSubCategoryData([]);
-      setIsSubCategoryDisabled(true);
-      setNoSubCategoryFound(true);
-      setLoading(false);
-    }
-  };
-
-  const getUpazilaByDistrict = async (districtIds = []) => {
-    setAllUpazila([]);
-    if (!districtIds.length || districtIds[0] === 0) {
-      setIsUpazilaDisabled(true);
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const response = await apiService.post(
-        `dropdown/getupazilabydistrict`,
-        districtIds
-      );
-
-      if (response.status === 200) {
-        setAllUpazila(response?.data || []);
-        setIsUpazilaDisabled(false);
-      } else {
-        setAllUpazila([]);
-        setIsUpazilaDisabled(true);
-      }
-    } catch (error) {
-      setAllUpazila([]);
-      setIsUpazilaDisabled(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getDistrictByDivision = async (divisionIds = []) => {
-    setAllDistrict([]);
-    setAllUpazila([]);
-    setValue("districtId", "");
-    setValue("upazilaId", "");
-    setIsUpazilaDisabled(true);
-
-    if (!divisionIds.length || divisionIds[0] === 0) {
-      setIsDistrictDisabled(true);
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const response = await apiService.post(
-        `dropdown/getdistrictbydivision`,
-        divisionIds
-      );
-
-      if (response.status == 200) {
-        setAllDistrict(response?.data || []);
-        setIsDistrictDisabled(false);
-      } else {
-        setAllDistrict([]);
-      }
-    } catch (error) {
-      setIsDistrictDisabled(true);
-      setAllDistrict([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getAllDivision = async () => {
-    try {
-      setLoading(true);
-
-      const response = await apiService.get(`dropdown/getdivisions`);
-
-      if (response.status === 200) {
-        setAllDivision(response?.data);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        setAllDivision([]);
-      }
-    } catch (error) {
-      setAllDivision([]);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === "categoryId" && value.categoryId && !selectedId) {
-        const selected = Number(value.categoryId);
-        if (selected) {
-          getSubCategories(selected);
-        } else {
-          setAllSubCategoryData([]);
-          setIsSubCategoryDisabled(true);
-          setNoSubCategoryFound(false);
-        }
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, selectedId]);
 
   const fetchData = async (page = 1) => {
     setLoading(true);
@@ -194,7 +36,7 @@ export const useProviderBooking = (pageSize = 10) => {
       const res = await apiService.get(
         `booking/getall?PageNumber=${
           page - 1
-        }&SearchText=&PageSize=${pageSize}&StartDate=&EndDate=&SortBy=bookingdate&SortDirection=desc`
+        }&SearchText=&PageSize=${pageSize}&StartDate=&EndDate=&SortBy=bookingdate&SortDirection=desc`,
       );
 
       setAllData(res.data || []);
@@ -206,30 +48,62 @@ export const useProviderBooking = (pageSize = 10) => {
     }
   };
 
+  // get all staff
   useEffect(() => {
     if (isModalOpen) {
-      getCategories();
-      getAllDivision();
-    }
-  }, []);
-  useEffect(() => {
-    if (selectedId && isModalOpen) {
       (async () => {
-        const res = await apiService.get(
-          `booking/getroviderstaffbyid/${selectedId}`
-        );
-        setSingleData(res.data);
+        const res = await apiService.get(`dropdown/getproviderstaff`);
+
+        if (res.status === 200) {
+          setStaffData(res.data);
+        } else {
+          setStaffData([]);
+        }
       })();
     } else {
-      setSingleData(null);
+      setStaffData([]);
     }
-  }, [selectedId, isModalOpen]);
+  }, [isModalOpen]);
+
+  // get services data
+  useEffect(() => {
+    if (isModalOpen) {
+      (async () => {
+        const res = await apiService.get(`dropdown/getservices`);
+        console.log("services res", res);
+        if (res.status === 200) {
+          setServiceData(res.data);
+        } else {
+          setServiceData([]);
+        }
+      })();
+    } else {
+      setServiceData([]);
+    }
+  }, [isModalOpen]);
+
+  // get customers data
+  useEffect(() => {
+    if (isModalOpen) {
+      (async () => {
+        const res = await apiService.get(`dropdown/getcustomer`);
+        console.log("customer res", res);
+        if (res.status === 200) {
+          setCustomerData(res.data);
+        } else {
+          setCustomerData([]);
+        }
+      })();
+    } else {
+      setCustomerData([]);
+    }
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (detailsId && isDetailsModalOpen) {
       (async () => {
         const res = await apiService.get(
-          `booking/getbookingdetailsbyproviderstaff/${detailsId}`
+          `booking/getbookingdetailsbyproviderstaff/${detailsId}`,
         );
 
         setDetailsData(res.data);
@@ -244,20 +118,22 @@ export const useProviderBooking = (pageSize = 10) => {
   }, [currentPage]);
 
   const saveData = async (data) => {
-    const formData = new FormData();
-
-    formData.append("IsActive", data.IsActive);
-
-    // Edit mode
-    if (selectedId) {
-      formData.append("Id", selectedId);
-    }
+    const payload = {
+      staffId: data.staffId,
+      serviceId: data.serviceId,
+      customerId: data.customerId,
+      bookingDate: data.bookingDate,
+      bookingStartTime: data.bookingStartTime,
+      bookingEndTime: data.bookingEndTime,
+      message: data.message,
+      ...(selectedId && { Id: selectedId }),
+    };
 
     try {
       if (selectedId) {
         const res = await apiService.put(
           `booking/update/${selectedId}`,
-          formData
+          payload,
         );
 
         if (res.status === 200) {
@@ -269,7 +145,7 @@ export const useProviderBooking = (pageSize = 10) => {
           toast.error(res.error || res.message);
         }
       } else {
-        const res = await apiService.post("booking/create", formData);
+        const res = await apiService.post("booking/create", payload);
 
         if (res.status === 200) {
           toast.success(res.message);
@@ -284,35 +160,123 @@ export const useProviderBooking = (pageSize = 10) => {
       toast.error(err.message);
     }
   };
+  const handleAddReschedule = async (data) => {
+    const payload = {
+      bookingDate: data.bookingDate,
+      bookingStartTime: data.bookingStartTime,
+      bookingEndTime: data.bookingEndTime,
+      rescheduleReason: data.rescheduleReason,
+    };
+    try {
+      const res = await apiService.put(
+        `booking/reschedule/${selectedId}`,
+        payload,
+      );
+
+      if (res.status === 200) {
+        fetchData();
+        setIsRedscheduleModalOpen(false);
+        setSelectedId(null);
+        toast.success(res.message);
+        reset();
+      } else {
+        toast.error(res.error || res.message);
+        setIsRedscheduleModalOpen(true);
+      }
+    } catch (err) {
+      toast.error(err.error || "Something went wrong");
+    }
+  };
+
+  const handleAddReview = async (data) => {
+    const payload = {
+      bookingDate: data.bookingDate,
+      bookingStartTime: data.bookingStartTime,
+      bookingEndTime: data.bookingEndTime,
+      rescheduleReason: data.rescheduleReason,
+    };
+    try {
+      const res = await apiService.put(`booking/review/${selectedId}`, payload);
+
+      if (res.status === 200) {
+        fetchData();
+        setIsAddReviewModalOpen(false);
+        toast.success(res.message);
+        reset();
+      } else {
+        toast.error(res.error || res.message);
+        setIsAddReviewModalOpen(true);
+      }
+    } catch (err) {
+      toast.error(err.error || "Something went wrong");
+    }
+  };
+
+  const handleAddRebook = async (data) => {
+    const payload = {
+      bookingDate: data.bookingDate,
+      bookingStartTime: data.bookingStartTime,
+      bookingEndTime: data.bookingEndTime,
+      useSameStaff: data.useSameStaff,
+      message: data.message,
+    };
+    try {
+      const res = await apiService.post(
+        `booking/rebook/${selectedId}`,
+        payload,
+      );
+
+      if (res.status === 200) {
+        fetchData();
+        setIsRebookModalOpen(false);
+        setSelectedId(null);
+        toast.success(res.message);
+        reset();
+      } else {
+        toast.error(res.error || res.message);
+        setIsRebookModalOpen(true);
+      }
+    } catch (err) {
+      toast.error(err.error || "Something went wrong");
+    }
+  };
+  const handleBookingCancle = async (data) => {
+    const payload = {
+      cancellationReason: data.cancellationReason,
+    };
+    try {
+      const res = await apiService.put(`booking/cancel/${selectedId}`, payload);
+
+      if (res.status === 200) {
+        fetchData();
+        setIsRebookModalOpen(false);
+        setSelectedId(null);
+        toast.success(res.message);
+        reset();
+      } else {
+        toast.error(res.error || res.message);
+        setIsRebookModalOpen(true);
+      }
+    } catch (err) {
+      toast.error(err.error || "Something went wrong");
+    }
+  };
   return {
     allData,
     setAllData,
     singleData,
     saveData,
-    allCategoryData,
-    setAllCategoryData,
-    allSubCategoryData,
-    setAllSubCategoryData,
-    allUpazila,
-    setAllUpazila,
-    allDistrict,
-    setAllDistrict,
-    allDivision,
-    setAllDivision,
-    isSubCategoryDisabled,
-    setIsSubCategoryDisabled,
-    noSubCategoryFound,
-    setNoSubCategoryFound,
-    isDistrictDisabled,
-    setIsDistrictDisabled,
-    isUpazilaDisabled,
-    setIsUpazilaDisabled,
-    getDistrictByDivision,
-    getUpazilaByDistrict,
-    getSubCategories,
     detailsData,
     setDetailsData,
-    isRedscheduleModalOpen,
-    setIsRedscheduleModalOpen,
+    handleAddReview,
+    handleAddReschedule,
+    staffData,
+    setStaffData,
+    serviceData,
+    setServiceData,
+    customerData,
+    setCustomerData,
+    handleAddRebook,
+    handleBookingCancle,
   };
 };
