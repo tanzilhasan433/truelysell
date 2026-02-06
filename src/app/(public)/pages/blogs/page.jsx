@@ -1,7 +1,6 @@
 // import AllBlogs from "@/components/shared/AllBlogs";
 import HeadingSection from "@/components/shared/HeadingSection";
 import Link from "next/link";
-import { FaEdit, FaTrash, FaRegCircle } from "react-icons/fa";
 import { FaRegCalendarAlt } from "react-icons/fa";
 export const allData = [
   {
