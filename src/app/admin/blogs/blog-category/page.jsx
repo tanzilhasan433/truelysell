@@ -1,15 +1,14 @@
 "use client";
 
-import AddBlogCategoryModal from "@/components/admin/blog/AddBlogCategoryModal";
 import DeleteButton from "@/components/shared/DeleteButton";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
-import { blogsData } from "@/data/json/blog_categories";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus, FaStar } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { FadeLoader } from "react-spinners";
+import AddBlogCategoryModal from "../_components/AddBlogCategoryModal";
 
 const BlogCategoriesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +35,7 @@ const BlogCategoriesPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
       if (response.ok) {
         const result = await response.json();
@@ -174,7 +173,7 @@ const BlogCategoriesPage = () => {
                           onComplete={(status) => {
                             if (status) {
                               setAllData((prev) =>
-                                prev.filter((b) => b.id !== item.id)
+                                prev.filter((b) => b.id !== item.id),
                               );
                             } else {
                             }

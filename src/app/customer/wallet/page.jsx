@@ -1,11 +1,12 @@
 "use client";
-import CustomerWalletComponent from "@/components/customer/wallet/CustomerWalletComponent";
-import WalletSummary from "@/components/customer/wallet/WalletSummary";
+
 import { useAppContext } from "@/context/AppContext";
 import { useAdminWallet } from "@/hooks/customer/useCustomerWallet";
 
 import { FaPlus } from "react-icons/fa";
 import AddCutomerWalletModal from "./_components/AddCutomerWalletModal";
+import WalletSummary from "./_components/WalletSummary";
+import CustomerWalletComponent from "./_components/CustomerWalletComponent";
 
 const CustomerWalletPage = () => {
   const pageSize = 10;

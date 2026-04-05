@@ -1,4 +1,4 @@
-import CustomerReviewCard from "@/components/customer/reviews/CustomerReviewCard";
+import CustomerReviewCard from "./_components/CustomerReviewCard";
 
 const CustomerReviewsPage = () => {
   return (

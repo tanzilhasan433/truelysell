@@ -1,6 +1,6 @@
 "use client";
 
-import ToggleSwitch from "@/components/admin/category/ToggleSwitch";
+import ToggleSwitch from "@/components/shared/ToggleSwitch";
 import { pagesData } from "@/data/services";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";

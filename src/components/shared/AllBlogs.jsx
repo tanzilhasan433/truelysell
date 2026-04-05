@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import Pagination from "@/components/shared/Pagination";
 import { FadeLoader } from "react-spinners";
-import BlogDelete from "../admin/blog/BlogDelete";
+import BlogDelete from "@/app/admin/blogs/_components/BlogDelete";
 
 const AllBlogs = ({ blogStatus, blgFrom }) => {
   const { loading, setLoading } = useAppContext();
@@ -36,7 +36,7 @@ const AllBlogs = ({ blogStatus, blgFrom }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
       if (response.ok) {
         const result = await response.json();
@@ -133,7 +133,7 @@ const AllBlogs = ({ blogStatus, blgFrom }) => {
                       onComplete={(status) => {
                         if (status) {
                           setAllData((prev) =>
-                            prev.filter((b) => b.id !== blog.id)
+                            prev.filter((b) => b.id !== blog.id),
                           );
                         } else {
                         }

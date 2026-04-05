@@ -4,11 +4,11 @@ import { use, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
 import { useAppContext } from "@/context/AppContext";
-import AddUpazilaModal from "@/components/admin/location/AddUpazilaModal";
 import DeleteButton from "@/components/shared/DeleteButton";
 import { FiEdit } from "react-icons/fi";
 import { FadeLoader } from "react-spinners";
 import Pagination from "@/components/shared/Pagination";
+import AddUpazilaModal from "../_components/AddUpazilaModal";
 
 const LocationUpazilaPage = ({ searchParams }) => {
   const { id } = use(searchParams);
@@ -35,7 +35,7 @@ const LocationUpazilaPage = ({ searchParams }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
 
       const result = await response.json();
@@ -62,7 +62,7 @@ const LocationUpazilaPage = ({ searchParams }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
 
       const result = await response.json();
@@ -195,7 +195,7 @@ const LocationUpazilaPage = ({ searchParams }) => {
                           onComplete={(status) => {
                             if (status) {
                               setAllData((prev) =>
-                                prev.filter((b) => b.id !== item.id)
+                                prev.filter((b) => b.id !== item.id),
                               );
                             } else {
                             }

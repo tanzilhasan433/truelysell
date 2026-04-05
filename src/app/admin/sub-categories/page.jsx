@@ -1,12 +1,13 @@
 "use client";
 
 import { FaPlus } from "react-icons/fa";
-import AllSubCategories from "@/app/admin/sub-categories/_components/AllSubCategories";
+
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
 import { useAppContext } from "@/context/AppContext";
 import { useSubCategory } from "@/hooks/admin/useSubCategory";
 import AddSubCategoryModal from "./_components/AddSubCategoryModal";
+import AllSubCategories from "./_components/AllSubCategories";
 
 const SubCategoriesPage = () => {
   const { loading, isModalOpen, setIsModalOpen } = useAppContext();

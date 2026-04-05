@@ -1,6 +1,6 @@
 "use client";
 
-import AddDistrictModal from "@/components/admin/location/AddDistrictModal";
+import AddDistrictModal from "@/app/admin/location/_components/AddDistrictModal";
 import DeleteButton from "@/components/shared/DeleteButton";
 import Pagination from "@/components/shared/Pagination";
 import Link from "next/link";
@@ -81,7 +81,7 @@ const DistrictComponent = ({
                           onComplete={(status) => {
                             if (status) {
                               setAllData((prev) =>
-                                prev.filter((b) => b.id !== item.id)
+                                prev.filter((b) => b.id !== item.id),
                               );
                             } else {
                             }

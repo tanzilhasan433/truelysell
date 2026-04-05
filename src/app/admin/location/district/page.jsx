@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
-import DistrictComponent from "@/components/admin/location/DistrictComponent";
+
 import { useAppContext } from "@/context/AppContext";
+import DistrictComponent from "../_components/DistrictComponent";
 
 const LocationDistrictPage = () => {
   const { loading, setLoading } = useAppContext();
@@ -29,7 +30,7 @@ const LocationDistrictPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
 
       const result = await response.json();
@@ -63,7 +64,7 @@ const LocationDistrictPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
 
       const result = await response.json();
@@ -114,7 +115,7 @@ const LocationDistrictPage = () => {
         toast.success(
           isEditing
             ? "District updated successfully"
-            : "District created successfully"
+            : "District created successfully",
         );
 
         setIsModalOpen(false);

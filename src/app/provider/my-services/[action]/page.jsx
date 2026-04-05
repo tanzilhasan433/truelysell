@@ -1,6 +1,6 @@
 "use client";
-import ServiceAddForm from "@/app/admin/services/_components/ServiceAddForm";
 import { use } from "react";
+import ProviderServiceAddForm from "../_components/ProviderServiceAddForm";
 
 const AddServicePage = ({ params, searchParams }) => {
   const { action } = use(params);
@@ -10,7 +10,7 @@ const AddServicePage = ({ params, searchParams }) => {
     <div className="">
       <h4 className="mb-5">Add Service - Service Information</h4>
 
-      <ServiceAddForm isEditMode={isEditMode} id={id} />
+      <ProviderServiceAddForm isEditMode={isEditMode} id={id} />
     </div>
   );
 };

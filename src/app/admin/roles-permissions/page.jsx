@@ -1,12 +1,12 @@
 "use client";
 
-import AddRoleModal from "@/app/admin/roles-permissions/_components/AddRoleModal";
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
 import { useAppContext } from "@/context/AppContext";
 import { useAdminRolePermission } from "@/hooks/admin/useAdminRolePermission";
 import { FaPlus } from "react-icons/fa";
 import RolesTable from "./_components/RolesTable";
+import AddRoleModal from "./_components/AddRoleModal";
 
 const RolesPermissionsPage = () => {
   const pageSize = 10;

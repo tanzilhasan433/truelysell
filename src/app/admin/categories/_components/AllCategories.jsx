@@ -1,9 +1,10 @@
 "use client";
 import { FiEdit } from "react-icons/fi";
-import ToggleSwitch from "../../../../components/admin/category/ToggleSwitch";
+
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import DeleteButton from "@/components/shared/DeleteButton";
+import ToggleSwitch from "@/components/shared/ToggleSwitch";
 
 const AllCategories = ({
   setAllData,
@@ -74,7 +75,7 @@ const AllCategories = ({
                       onComplete={(status) => {
                         if (status) {
                           setAllData((prev) =>
-                            prev.filter((b) => b.id !== item.id)
+                            prev.filter((b) => b.id !== item.id),
                           );
                         } else {
                         }

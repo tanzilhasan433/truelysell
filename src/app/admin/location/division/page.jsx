@@ -1,15 +1,14 @@
 "use client";
 
-import AddDivisionModal from "@/components/admin/location/AddDivisionModal";
 import DeleteButton from "@/components/shared/DeleteButton";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
-import { countriesData } from "@/data/json/countries";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { FadeLoader } from "react-spinners";
+import AddDivisionModal from "../_components/AddDivisionModal";
 
 const LocationDivisionPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +33,7 @@ const LocationDivisionPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
       if (response.ok) {
         const result = await response.json();
@@ -90,7 +89,7 @@ const LocationDivisionPage = () => {
         toast.success(
           isEditing
             ? "Division updated successfully"
-            : "Division created successfully"
+            : "Division created successfully",
         );
         setIsModalOpen(false);
         setSelectedId(null);
@@ -164,7 +163,7 @@ const LocationDivisionPage = () => {
                           onComplete={(status) => {
                             if (status) {
                               setAllData((prev) =>
-                                prev.filter((b) => b.id !== item.id)
+                                prev.filter((b) => b.id !== item.id),
                               );
                             } else {
                             }

@@ -2,19 +2,19 @@
 
 import { useState } from "react";
 import { banktransfer } from "@/data/services";
-import BankTransferList from "@/components/admin/bankTransfer/BankTransferList";
+import BankTransferList from "./_components/BankTransferList";
 
 const pendingData = banktransfer.filter(
-  (booking) => booking.status === "Pending"
+  (booking) => booking.status === "Pending",
 );
 const approvedData = banktransfer.filter(
-  (booking) => booking.status === "Approved"
+  (booking) => booking.status === "Approved",
 );
 const completedData = banktransfer.filter(
-  (booking) => booking.status === "Successful"
+  (booking) => booking.status === "Successful",
 );
 const rejectedData = banktransfer.filter(
-  (booking) => booking.status === "Rejected"
+  (booking) => booking.status === "Rejected",
 );
 
 const tabs = [

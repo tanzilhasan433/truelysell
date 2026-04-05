@@ -1,6 +1,7 @@
 "use client";
-import ServiceAddForm from "@/app/admin/services/_components/ServiceAddForm";
+
 import { use } from "react";
+import ServiceAddForm from "../_components/ServiceAddForm";
 
 const AddServicePage = ({ params, searchParams }) => {
   const { action } = use(params);

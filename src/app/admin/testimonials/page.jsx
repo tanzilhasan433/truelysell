@@ -1,12 +1,12 @@
 "use client";
 
-import TestimonialModal from "@/app/admin/testimonials/_components/TestimonialModal";
 import { useAppContext } from "@/context/AppContext";
 import { FaPlus } from "react-icons/fa";
 import TestimonialTable from "./_components/TestimonialTable";
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
 import { useAdminTestimonial } from "@/hooks/admin/useAdminTestimonial";
+import TestimonialModal from "./_components/TestimonialModal";
 
 const TestimonialsPage = () => {
   const { loading, isModalOpen, setIsModalOpen } = useAppContext();

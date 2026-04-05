@@ -1,5 +1,5 @@
 "use client";
-import AllCategories from "@/app/admin/categories/_components/AllCategories";
+
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
 import { useAppContext } from "@/context/AppContext";
@@ -7,6 +7,7 @@ import { useCategory } from "@/hooks/admin/useCategory";
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import AddCategoryModal from "./_components/AddCategoryModal";
+import AllCategories from "./_components/AllCategories";
 
 const CategoriesPage = () => {
   const { loading, isModalOpen, setIsModalOpen } = useAppContext();

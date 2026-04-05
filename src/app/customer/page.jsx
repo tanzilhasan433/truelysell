@@ -1,8 +1,8 @@
 "use client";
 
-import OrderEstimation from "@/components/customer/customerdashboard/OrderEstimation";
-import RecentBooking from "@/components/customer/customerdashboard/RecentBooking";
-import RecentTransaction from "@/components/customer/customerdashboard/RecentTransaction";
+import OrderEstimation from "./_components/OrderEstimation";
+import RecentBooking from "./_components/RecentBooking";
+import RecentTransaction from "./_components/RecentTransaction";
 
 const CustomerDashboardPage = () => {
   return (

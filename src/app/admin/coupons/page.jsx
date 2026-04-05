@@ -1,19 +1,13 @@
 "use client";
 
-import AddCouponModal from "@/app/admin/coupons/_components/AddCouponModal";
-import DeleteButton from "@/components/shared/DeleteButton";
 import Loader from "@/components/shared/Loader";
 import NoFoundData from "@/components/shared/NoFoundData";
-import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
-import { couponsData } from "@/data/json/coupons";
 import { useAdminCoupons } from "@/hooks/admin/useAdminCoupons";
-import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { FiEdit } from "react-icons/fi";
-import { FadeLoader } from "react-spinners";
+
 import AdminCouponsTable from "./_components/AdminCouponsTable";
+import AddCouponModal from "./_components/AddCouponModal";
 
 const CouponsPage = () => {
   const { loading, isModalOpen, setIsModalOpen } = useAppContext();

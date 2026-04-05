@@ -1,6 +1,5 @@
 "use client";
 
-import BlogCommentModal from "@/components/admin/blog/BlogCommentModal";
 import DeleteButton from "@/components/shared/DeleteButton";
 import Pagination from "@/components/shared/Pagination";
 import { useAppContext } from "@/context/AppContext";
@@ -8,6 +7,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FiEdit } from "react-icons/fi";
 import { FadeLoader } from "react-spinners";
+import BlogCommentModal from "../_components/BlogCommentModal";
 
 const BlogCommentsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +34,7 @@ const BlogCommentsPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("user")}`,
           },
-        }
+        },
       );
       if (response.ok) {
         const result = await response.json();
@@ -159,7 +159,7 @@ const BlogCommentsPage = () => {
                           onComplete={(status) => {
                             if (status) {
                               setAllData((prev) =>
-                                prev.filter((b) => b.id !== item.id)
+                                prev.filter((b) => b.id !== item.id),
                               );
                             } else {
                             }
